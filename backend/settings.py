@@ -1,8 +1,7 @@
-from pathlib import Path
 import os
+from pathlib import Path
 
-from decouple import config, Csv
-
+from decouple import Csv, config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -24,10 +23,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-   # apps de terceiros
+    # apps de terceiros
     'django_extensions',
     # minhas apps
     'backend.core',
+    'backend.crm',
 ]
 
 MIDDLEWARE = [
@@ -65,12 +65,12 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-#DATABASES = {
- #   'default': {
-  #      'ENGINE': 'django.db.backends.sqlite3',
-   #     'NAME': BASE_DIR / 'db.sqlite3',
-    #}
-#}
+# DATABASES = {
+#   'default': {
+#      'ENGINE': 'django.db.backends.sqlite3',
+#     'NAME': BASE_DIR / 'db.sqlite3',
+# }
+# }
 
 # settings.py
 DATABASES = {
@@ -127,7 +127,6 @@ USE_TZ = True
 USE_THOUSAND_SEPARATOR = True
 
 DECIMAL_SEPARATOR = ','
-
 
 
 # Static files (CSS, JavaScript, Images)
