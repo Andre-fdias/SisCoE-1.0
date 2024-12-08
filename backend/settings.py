@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # apps de terceiros
     'django_extensions',
+    'widget_tweaks',
     # minhas apps
     'backend.core',
     'backend.crm',
@@ -143,3 +144,7 @@ STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RUN_SERVER_PORT = 8090  # Escolha uma porta diferente (por exemplo, 8081, 8090)
+
+
+LOGIN_REDIRECT_URL = 'core:dashboard'
+LOGOUT_REDIRECT_URL = 'core:index'
