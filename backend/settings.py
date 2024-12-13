@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     # apps de terceiros
     'django_extensions',
     'widget_tweaks',
+     'compressor', 
     # minhas apps
     'backend.core',
     'backend.crm',
@@ -146,5 +147,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 RUN_SERVER_PORT = 8090  # Escolha uma porta diferente (por exemplo, 8081, 8090)
 
 
-LOGIN_REDIRECT_URL = 'core:dashboard'
-LOGOUT_REDIRECT_URL = 'core:index'
+LOGIN_REDIRECT_URL = 'core:index'
+
