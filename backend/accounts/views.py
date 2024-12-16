@@ -13,9 +13,11 @@ from backend.accounts.services import send_mail_to_user
 
 from .forms import CustomUserForm
 
+
 def my_logout(request):
     # ... logout logic
     return redirect('core:capa')
+
 
 def signup(request):
     '''

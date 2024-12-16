@@ -10,7 +10,7 @@
     <meta name="generator" content="Hugo 0.107.0">
 
     <title>SisCoE | Dashboard</title>
-   
+
     <link rel="canonical" href="https://themesberg.com/product/tailwind-css/dashboard-windster">
     <link href="https://cdn.jsdelivr.net/npm/flowbite@2.5.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css">
@@ -22,15 +22,15 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="icon" href="{% static 'img\favicon.ico' %}">
     <link rel="mask-icon" href="https://demo.themesberg.com/windster/safari-pinned-tab.svg" color="#5bbad5">
-    
+
     <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
      <!-- FontAwesome Icons -->
     <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
-    
+
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
-    
+
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@">
@@ -52,7 +52,7 @@
 
   </head>
   <body class="bg-gray-500">
-  
+
 
     {% include "includes/nav.html" %}
     <div class="flex overflow-hidden bg-white pt-16">
@@ -62,7 +62,9 @@
       <div class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10" id="sidebarBackdrop"></div>
 
       <div id="main-content" class="h-full w-full bg-gray-500 relative overflow-y-auto lg:ml-64">
-        {% block content %}{% endblock content %}
+    {% block 'body' %}
+        <main class="mt-15" ></main>
+    {% endblock  %}
         {% include "includes/footer.html" %}
 
       </div>

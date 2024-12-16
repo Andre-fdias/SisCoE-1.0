@@ -1,0 +1,292 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cadastrar Militares{% endblock %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'efetivo/css/cadastrar_militar.css' %}">
+{% endblock head %}
+
+{% block 'body' %}
+</head>
+<body class="w-4/5 mt-30 mx-auto">
+
+    <div class="container mx-auto p-4 mt-30" id="cad_efetivo">
+    <fieldset class="  bg-blue-500  p-4 mb-8 rounded-md">
+        <legend>
+            {% if messages %}
+            {% for message in messages %}
+                <section class="alert {{ message.tags }}">
+                    {{ message }}
+                </section>
+            {% endfor %}
+            {% endif %}
+        </legend>
+        <div id="01" class="mb-4">
+            <div class="bg-blue-400 p-4 rounded-md">
+                <div class="flex flex-wrap items-center justify-between py-3">
+                    <div class="w-full md:w-9/12">
+                        <h1 class="text-3xl font-bold">Cadastrar Militar</h1>
+                    </div>
+                    <div class="w-full md:w-3/12 text-right">
+                        <button type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</button>
+                        
+                        <a href="{% url 'efetivo:listar_militar' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <form class="needs-validation" novalidate action="{% url 'efetivo:cadastrar_militar' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+            <div class="mb-4">
+                <p class="text-lg font-bold">Dados de Posto e Graduação</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div>
+                    <label for="posto_grad" class="block text-sm font-medium text-gray-700">Posto/Grad</label>
+                    <select name="posto_grad" id="posto_grad" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in posto_grad %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1">Por favor, selecione um posto/graduação.</div>
+                </div>
+                <div>
+                    <label for="quadro" class="block text-sm font-medium text-gray-700">Quadro</label>
+                    <select name="quadro" id="quadro" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in quadro %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1">Por favor, selecione um quadro.</div>
+                </div>
+                <div>
+                    <label for="grupo" class="block text-sm font-medium text-gray-700">Grupo</label>
+                    <select name="grupo" id="grupo" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in grupo %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1">Por favor, selecione um grupo.</div>
+                </div>
+                <div>
+                    <label for="re" class="block text-sm font-medium text-gray-700">RE</label>
+                    <input type="number" name="re" id="re" placeholder="Digite o RE ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1">Por favor, insira o RE.</div>
+                </div>
+                <div>
+                    <label for="dig" class="block text-sm font-medium text-gray-700">Dig</label>
+                    <input type="text" name="dig" id="dig" placeholder="Digite o Dígito ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1">Por favor, insira o dígito.</div>
+                </div>
+                <div>
+                    <label for="genero" class="block text-sm font-medium text-gray-700">Gênero</label>
+                    <select name="genero" id="genero" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in genero %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1">Por favor, selecione um gênero.</div>
+                </div>
+                <div class="col-span-2">
+                    <label for="nome" class="block text-sm font-medium text-gray-700">Nome</label>
+                    <input type="text" name="nome" id="nome" placeholder="Digite o nome do militar ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1">Por favor, insira o nome.</div>
+                </div>
+                <div>
+                    <label for="nome_de_guerra" class="block text-sm font-medium text-gray-700">Nome de Guerra</label>
+                    <input type="text" name="nome_de_guerra" id="nome_de_guerra" placeholder="Digite o nome de Guerra ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1">Por favor, insira o nome de guerra.</div>
+                </div>
+            </div>
+        </fieldset>
+    </form>
+
+
+    <fieldset class="border  bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+        <div class="mb-4">
+            <p class="text-lg font-bold">Situação Funcional</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+                <label for="situacao" class="block text-sm font-medium text-gray-700">Situação</label>
+                <select name="situacao" id="situacao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    {% for i in situacao %}
+                    <option value="{{ i.0 }}" {% if i.1 == "Efetivo" %}selected{% endif %}>{{ i.1 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-red-500 text-sm mt-1">Por favor, selecione uma situação.</div>
+            </div>
+            <div>
+                <label for="cad_efetivo" class="block text-sm font-medium text-gray-700">Detalhamento</label>
+                <select name="cad_efetivo" id="cad_efetivo" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    {% for i in cad_efetivo %}
+                    <option value="{{ i.0 }}" {% if i.1 == "Ativo" %}selected{% endif %}>{{ i.1 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-red-500 text-sm mt-1">Por favor, selecione um Detalhamento.</div>
+            </div>
+            <div>
+                <label for="sgb" class="block text-sm font-medium text-gray-700">SGB</label>
+                <select name="sgb" id="sgb" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    {% for i in sgb %}
+                    <option value="{{ i.0 }}">{{ i.1 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-red-500 text-sm mt-1">Por favor, selecione um SGB.</div>
+            </div>
+            <div>
+                <label for="posto_secao" class="block text-sm font-medium text-gray-700">Posto ou Seção</label>
+                <select name="posto_secao" id="posto_secao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    {% for i in posto_secao %}
+                    <option value="{{ i.0 }}">{{ i.1 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-red-500 text-sm mt-1">Por favor, selecione um posto ou seção.</div>
+            </div>
+            <div>
+                <label for="esta_adido" class="block text-sm font-medium text-gray-700">Está Adido a outro Posto ou Seção?</label>
+                <select name="esta_adido" id="esta_adido" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    {% for i in esta_adido %}
+                    <option value="{{ i.0 }}">{{ i.1 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-red-500 text-sm mt-1">Por favor, selecione se está adido a outro posto ou seção.</div>
+            </div>
+            <div>
+                <label for="funcao" class="block text-sm font-medium text-gray-700">Função que exerce</label>
+                <select name="funcao" id="funcao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    {% for i in funcao %}
+                    <option value="{{ i.0 }}">{{ i.1 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-red-500 text-sm mt-1">Por favor, selecione uma função.</div>
+            </div>
+            <div>
+                <label for="op_adm" class="block text-sm font-medium text-gray-700">É Operacional ou Administrativo</label>
+                <select name="op_adm" id="op_adm" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    {% for i in op_adm %}
+                    <option value="{{ i.0 }}">{{ i.1 }}</option>
+                    {% endfor %}
+                </select>
+                <div class="text-red-500 text-sm mt-1">Por favor, selecione se é operacional ou administrativo.</div>
+            </div>
+            <div>
+                <label for="apresentacao_na_unidade" class="block text-sm font-medium text-gray-700">Data da Apresentação na Unidade</label>
+                <input type="date" name="apresentacao_na_unidade" id="apresentacao_na_unidade" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira a data da apresentação na unidade.</div>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="border bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+        <div class="mb-4">
+            <p class="text-lg font-bold">Datas</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+                <label for="nasc" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                <input type="date" name="nasc" id="nasc" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira a data de nascimento.</div>
+            </div>
+            <div>
+                <label for="matricula" class="block text-sm font-medium text-gray-700">Data de Matrícula</label>
+                <input type="date" name="matricula" id="matricula" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira a data de matrícula.</div>
+            </div>
+            <div>
+                <label for="admissao" class="block text-sm font-medium text-gray-700">Data de Admissão</label>
+                <input type="date" name="admissao" id="admissao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira a data de admissão.</div>
+            </div>
+            <div>
+                <label for="previsao_de_inatividade" class="block text-sm font-medium text-gray-700">Data de Previsão de Inatividade</label>
+                <input type="date" name="previsao_de_inatividade" id="previsao_de_inatividade" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira a data de previsão de inatividade.</div>
+            </div>
+            <div>
+                <label for="ultima_promocao" class="block text-sm font-medium text-gray-700">Data da Última Promoção</label>
+                <input type="date" name="ultima_promocao" id="ultima_promocao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira a data da última promoção.</div>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="border bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+        <div class="mb-4">
+            <p class="text-lg font-bold">Documentos e Contatos</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+                <input type="text" name="cpf" id="cpf" placeholder="xxx.xxx.xxx-xx" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira o CPF.</div>
+            </div>
+            <div>
+                <label for="rg" class="block text-sm font-medium text-gray-700">RG</label>
+                <input type="text" name="rg" id="rg" placeholder="xx.xxxx.xxx-x" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira o RG.</div>
+            </div>
+            <div>
+                <label for="email_funcional" class="block text-sm font-medium text-gray-700">Email</label>
+                <input type="email" name="email_funcional" id="email_funcional" placeholder=".......@policiamilitar.sp.gov.br" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira um email válido.</div>
+            </div>
+            <div>
+                <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
+                <input type="tel" name="telefone" id="telefone" placeholder="(xx) xxxxx-xxxx" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1">Por favor, insira um telefone válido.</div>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="border bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+        <div class="mb-4">
+            <p class="text-lg font-bold">Averbação</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="tempo_para_averbar_inss" class="block text-sm font-medium text-gray-700">INSS</label>
+                <input type="text" name="tempo_para_averbar_inss" id="tempo_para_averbar_inss" placeholder="Se não possuir lançar 0 ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <div class="text-red-500 text-sm mt-1">Por favor, insira o tempo para averbar INSS.</div>
+            </div>
+            <div>
+                <label for="tempo_para_averbar_militar" class="block text-sm font-medium text-gray-700">Militar</label>
+                <input type="text" name="tempo_para_averbar_militar" id="tempo_para_averbar_militar" placeholder="Se não possuir lançar 0 ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                <div class="text-red-500 text-sm mt-1">Por favor, insira o tempo para averbar militar.</div>
+            </div>
+        </div>
+    </fieldset>
+
+    <fieldset class="border bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+        <div class="mb-4">
+            <p class="text-lg font-bold">Imagem de Perfil</p>
+        </div>
+        <div class="mb-3">
+            <label for="image" class="block text-sm font-medium text-gray-700">Envie a foto para o perfil</label>
+            <br><br>
+            <img id="preview" src="#" alt="Pré-visualização da imagem" style="display: none; max-width: 200px;">
+            <br><br>
+            <input class="mt-1 block w-full text-base border-gray-300  border-blue-400   focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)">
+            <div class="text-red-500 text-sm mt-1">Por favor, envie uma imagem de perfil.</div>
+        </div>
+    </fieldset>
+
+    <fieldset class="border bg-blue-400 border-blue-400 p-4 mb-8 rounded-md">
+        <div class="mb-4">
+            <div class="flex items-center justify-between py-3">
+                <div class="w-full md:w-auto">
+                    <input type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" value="Cadastrar">
+                </div>
+                <div class="flex space-x-2">
+                    <button type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</button>
+                            
+                    <a href="{% url 'efetivo:listar_militar' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    </div>
+</body>
+{% endblock 'body' %}

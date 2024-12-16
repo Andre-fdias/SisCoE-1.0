@@ -1,0 +1,818 @@
+{% extends "base.html" %}
+{% load static %}
+{% block 'title' %} Consultar Efetivo{% endblock %}
+{% block 'head' %}
+
+<link rel="stylesheet" href="{% static 'efetivo\css\ver_militar.css' %}">
+
+
+
+{% endblock 'head' %}
+
+
+{% block 'body' %}
+
+
+
+</head>
+<body>
+<br>
+<br>
+<div class="container-fluid" id="ver_cad">
+    {% if messages %}
+    {% for message in messages %}
+        <section class="alert {{message.tags}}">
+            {{message}}
+
+        </section>
+    {% endfor %}
+{% endif %}
+    <fieldset>
+        <legend>
+            <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between ">
+                <div class="col-md-6">
+                    <div class="d-grid gap-12 d-md-block">
+                        <h1 class="titulo3"> {{cadastro.nome}}</h1>
+                    </div>
+                </div>
+                <div class="col-md-6 text-end">
+                  
+                </head>
+                <body>
+                    <button id="modalgeral" type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editarDadosPessoaisModal">Editar Dados Pessoais e Contatos</button>
+                                    
+                                    <!-- Modal de Edição de Dados Pessoais e Contatos -->
+                    <div class="modal fade" id="editarDadosPessoaisModal" tabindex="-1" aria-labelledby="editarDadosPessoaisModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="editarDadosPessoaisModalLabel">Editar Dados Pessoais e Contatos</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <form method="POST" action="{% url 'editar_dados_pessoais_contatos' cadastro.id %}" enctype="multipart/form-data" id="editForm1">
+                                            {% csrf_token %}
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="re" class="form-label form-label-sm">RE</label>
+                                                    <input type="number" name="re" class="form-control form-control-sm" id="re" value="{{ cadastro.re }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="dig" class="form-label form-label-sm">Dig</label>
+                                                    <input type="text" name="dig" class="form-control form-control-sm" id="dig" value="{{ cadastro.dig }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="nome" class="form-label form-label-sm">Nome</label>
+                                                    <input type="text" name="nome" class="form-control form-control-sm" id="nome" value="{{ cadastro.nome }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="nome_de_guerra" class="form-label form-label-sm">Nome de Guerra</label>
+                                                    <input type="text" name="nome_de_guerra" class="form-control form-control-sm" id="nome_de_guerra" value="{{ cadastro.nome_de_guerra }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="genero" class="form-label form-label-sm">Gênero</label>
+                                                    <select name="genero" class="form-select form-select-sm" id="genero" required>
+                                                        {% for i in genero %}
+                                                        <option value="{{ i.0 }}" {% if cadastro.genero == i.0 %}selected{% endif %}>{{ i.1 }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="nasc" class="form-label form-label-sm">Data de Nascimento</label>
+                                                    <input type="date" name="nasc" class="form-control form-control-sm" id="nasc" value="{{ cadastro.nasc|date:'Y-m-d' }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="matricula" class="form-label form-label-sm">Data de Matrícula</label>
+                                                    <input type="date" name="matricula" class="form-control form-control-sm" id="matricula" value="{{ cadastro.matricula|date:'Y-m-d' }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="admissao" class="form-label form-label-sm">Data de Admissão</label>
+                                                    <input type="date" name="admissao" class="form-control form-control-sm" id="admissao" value="{{ cadastro.admissao|date:'Y-m-d' }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="previsao_de_inatividade" class="form-label form-label-sm">Data de Previsão de Inatividade</label>
+                                                    <input type="date" name="previsao_de_inatividade" class="form-control form-control-sm" id="previsao_de_inatividade" value="{{ cadastro.previsao_de_inatividade|date:'Y-m-d' }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="cpf" class="form-label form-label-sm">CPF</label>
+                                                    <input type="text" name="cpf" class="form-control form-control-sm" id="cpf" value="{{ cadastro.cpf }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="rg" class="form-label form-label-sm">RG</label>
+                                                    <input type="text" name="rg" class="form-control form-control-sm" id="rg" value="{{ cadastro.rg }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="tempo_para_averbar_inss" class="form-label form-label-sm">INSS</label>
+                                                    <input type="text" name="tempo_para_averbar_inss" class="form-control form-control-sm" id="tempo_para_averbar_inss" value="{{ cadastro.tempo_para_averbar_inss }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="tempo_para_averbar_militar" class="form-label form-label-sm">Militar</label>
+                                                    <input type="text" name="tempo_para_averbar_militar" class="form-control form-control-sm" id="tempo_para_averbar_militar" value="{{ cadastro.tempo_para_averbar_militar }}">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="email_funcional" class="form-label form-label-sm">Email</label>
+                                                    <input type="email" name="email_funcional" class="form-control form-control-sm" id="email_funcional" value="{{ cadastro.email_funcional }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="telefone" class="form-label form-label-sm">Telefone</label>
+                                                    <input type="tel" name="telefone" class="form-control form-control-sm" id="telefone" value="{{ cadastro.telefone }}" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="mb-3">
+                                                    <label for="alteracao" class="form-label form-label-sm">Motivo da Alteração</label>
+                                                    <select name="alteracao" class="form-select form-select-sm" id="alteracao" required>
+                                                        {% for i in alteracao %}
+                                                        <option value="{{ i.0 }}" {% if cadastro.alteracao == i.0 %}selected{% endif %}>{{ i.1 }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal-geral">Salvar</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+                                     </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  
+                    <!-- Modal de Confirmação -->
+                    <div class="modal fade" id="confirmModal-geral" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmModalLabel">Confirmar Alterações</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Tem certeza de que deseja salvar as alterações?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-success" id="confirmSave1">Salvar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <script id="modalgeral">
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const confirmSave1 = document.getElementById('confirmSave1');
+                            confirmSave1.addEventListener('click', () => {
+                                document.getElementById('editForm1').submit();
+                                
+                            });
+                        });
+                    </script>
+                       
+                
+                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Excluir</button>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Excluir</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Você tem certeza que deseja excluir o cadastro?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                                    <a href="{% url 'excluir_militar' cadastro.id %}" class="btn btn-danger">Excluir</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a class="btn btn-primary " href="{% url 'listar_militar' %}" role="button">Voltar</a>
+                </div>
+            </div>
+        </legend>
+        <div id="01" class="row">
+            <div class="col-12 highlighted-div bg-lightblue">
+                <div class="row">
+            
+                    
+                    <div class="col-md-2" name="cabecalho">
+                        {% if cadastro.imagens.exists %}
+                            <img src="{{ cadastro.imagens.last.image.url }}" class="foto-empresa" alt="">
+                           
+                        {% else %}
+                            Sem imagem
+                        {% endif %}
+                        <!-- Botão para abrir o modal de troca de foto -->
+                        <button type="button" class="btn btn-secondary mt-2 col-md-12" data-bs-toggle="modal" data-bs-target="#trocaFotoModal">Trocar Foto</button>
+                   </div>
+                    
+                    <!-- Modal de Troca de Foto -->
+                    <div class="modal fade" id="trocaFotoModal" tabindex="-1" aria-labelledby="trocaFotoModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="trocaFotoModalLabel">Trocar Foto</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form method="POST" action="{% url 'editar_imagem' cadastro.id %}" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="mb-3">
+                                            <label for="image" class="form-label">Envie a nova foto para o perfil</label>
+                                            <br><br>
+                                            <img id="preview" src="#" alt="Pré-visualização da imagem" style="display: none; max-width: 200px;">
+                                            <br><br>
+                                            <input class="form-control" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)">
+                                            <div class="invalid-feedback">
+                                                Por favor, envie uma imagem de perfil.
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Salvar</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>              
+                    <div class="col-md-9">
+                        <h3 class="titulo5"> {{promocao.grad}}  </h3>
+                        <h4 class="titulo5"> <b>RE:</b><span class="espaco-direita">{{cadastro.re}}-{{cadastro.dig}}</h4>
+                        <h4 class="titulo5"><b>Nome de Guerra:</b><span class="espaco-direita">{{cadastro.nome_de_guerra}}</span></h4>
+                        <h4 class="titulo5"><b>Quadro:</b><span class="espaco-direita">{{promocao.quadro}}</span></h4>
+                        <h4 class="titulo5"><b>Grupo:</b><span class="espaco-direita">{{promocao.grupo}}</span></h4>
+                        <h4 class="titulo5"><b>Genero:</b><span class="espaco-direita">{{cadastro.genero}}</span></h4>
+                        <div class="col-md-6">
+                            <div class="col-md-6">
+                                <!-- Botão para abrir o modal -->
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">
+                                    Editar Posto e Graduação
+                                </button>
+                                <!-- Modal de Edição de Posto e Graduação -->
+                                <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="editModalLabel">Editar Posto e Graduação</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                {% if messages %}
+                                                    <div class="container mt-3">
+                                                        {% for message in messages %}
+                                                            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                                                {{ message }}
+                                                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                            </div>
+                                                        {% endfor %}
+                                                    </div>
+                                                {% endif %}
+                                                <!-- Formulário de Edição -->
+                                                <form id="editForm" method="POST" action="{% url 'editar_posto_graduacao' cadastro.id %}" novalidate>
+                                                    {% csrf_token %}
+                                                    <div class="mb-3">
+                                                        <label for="posto_grad" class="form-label">Posto/Grad</label>
+                                                        <select name="posto_grad" class="form-select" id="posto_grad" required>
+                                                            {% for i in posto_grad %}
+                                                            <option value="{{ i.0 }}" {% if promocao and promocao.posto_grad == i.0 %}selected{% endif %}>{{ i.1 }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <div class="invalid-feedback">
+                                                            Por favor, selecione um posto/graduação.
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="quadro" class="form-label">Quadro</label>
+                                                        <select name="quadro" class="form-select" id="quadro" required>
+                                                            {% for i in quadro %}
+                                                            <option value="{{ i.0 }}" {% if promocao and promocao.quadro == i.0 %}selected{% endif %}>{{ i.1 }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <div class="invalid-feedback">
+                                                            Por favor, selecione um quadro.
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="grupo" class="form-label">Grupo</label>
+                                                        <select name="grupo" class="form-select" id="grupo" required>
+                                                            {% for i in grupo %}
+                                                            <option value="{{ i.0 }}" {% if promocao and promocao.grupo == i.0 %}selected{% endif %}>{{ i.1 }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <div class="invalid-feedback">
+                                                            Por favor, selecione um grupo.
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label for="ultima_promocao" class="form-label">Data da Última Promoção</label>
+                                                        <input type="date" name="ultima_promocao" class="form-control" id="ultima_promocao" value="{% if promocao %}{{ promocao.ultima_promocao|date:'Y-m-d' }}{% endif %}" required>
+                                                        <div class="invalid-feedback">
+                                                            Por favor, insira a data da última promoção.
+                                                        </div>
+                                                    </div>
+                                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#confirmModal">Salvar</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Modal de Confirmação -->
+                                <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                
+                                            
+                                                <h5 class="modal-title" id="confirmModalLabel">Confirmar Alterações</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+
+                                                {% if messages %}
+                                                <div class="container mt-3">
+                                                    {% for message in messages %}
+                                                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                                                            {{ message }}
+                                                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                               {% endif %}
+
+
+
+
+                                                Tem certeza de que deseja salvar as alterações?
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                                <button type="button" class="btn btn-success" id="confirmSave">Salvar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <script>
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                    const confirmSave = document.getElementById('confirmSave');
+                                    confirmSave.addEventListener('click', () => {
+                                        document.getElementById('editForm').submit();
+                                        const modal = bootstrap.Modal.getInstance(document.getElementById('confirmModal'));
+                                        modal.hide();
+                                    });
+                                });
+                                </script>
+                            </div>            
+                        </div>
+                    </div>                                            
+                    <br>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <div class="row row-bg">
+            <div id="02" class="col-lg-6 col-md-12 order-1 highlighted-div">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h2 class="titulo2">Situação Funcional</h2>
+                        <a href="{% url 'historico_movimentacoes' cadastro.id %}"     id="link_hist"  class="sub-fonte">Histórico de Movimentações e Promoções</a>
+                        <div class="col-md-12">
+                            <hr>
+                            <br>
+                            <h4 class="titulo6"><b>Situação:</b><span class="espaco-direita">{{ cadastro.detalhes_situacao.last.status }}</span></h4>
+                            <h4 class="titulo6"><b>Sgb:</b><span class="espaco-direita">{{cadastro.detalhes_situacao.last.sgb}}</span></h4>
+                            <h4 class="titulo6"><b>Posto ou Seção:</b><span class="espaco-direita">{{cadastro.detalhes_situacao.last.posto_secao}}</span></h4>
+                            <h4 class="titulo6"><b>Adido ao:</b><span class="espaco-direita">{{cadastro.detalhes_situacao.last.esta_adido}}</span></h4>
+                            <h4 class="titulo6"><b>Função:</b><span class="espaco-direita">{{cadastro.detalhes_situacao.last.funcao}}</span></h4>
+                            <h4 class="titulo6"><b>Operacional ou Adm:</b><span class="espaco-direita">{{cadastro.detalhes_situacao.last.op_adm}}</span></h4>  <div>
+                                <!-- Botão para abrir o modal -->
+                          <!-- Botão para abrir o primeiro modal -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editSituacaoModal">
+                                Editar Situação Funcional
+                            </button>
+                            <!-- Primeiro Modal (Edição da Situação Atual) -->
+                            <div class="modal fade" id="editSituacaoModal" tabindex="-1" aria-labelledby="editSituacaoModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editSituacaoModalLabel">Editar Situação Funcional</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Formulário de Edição -->
+                                            <form id="editSituacaoForm" method="POST" action="{% url 'editar_situacao_atual' cadastro.id %}">
+                                                {% csrf_token %}
+                                                <!-- Campos do formulário -->
+                                                <div class="col-md-6">
+                                                    <label for="situacao_atual" class="form-label">Situação Atual</label>
+                                                    <select name="situacao_atual" class="form-select" id="situacao_atual" required>
+                                                        {% for value, label in situacao %}
+                                                        <option value="{{ value }}" {% if detalhes and detalhes.situacao == value %}selected{% endif %}>{{ label }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="saida_da_unidade" class="form-label">Data de Saída da Unidade</label>
+                                                    <input type="date" name="saida_da_unidade" class="form-control" id="saida_da_unidade" value="{% if detalhes %}{{ detalhes.saida_da_unidade|date:'Y-m-d' }}{% endif %}" required>
+                                                </div>
+                                                <button type="submit" class="btn btn-success">Salvar</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Segundo Modal (Cadastro da Nova Situação) -->
+                            <div class="modal fade" id="newSituacaoModal" tabindex="-1" aria-labelledby="newSituacaoModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="newSituacaoModalLabel">Cadastrar Nova Situação</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <!-- Formulário de Cadastro -->
+                                            <form id="newSituacaoForm" method="POST" action="{% url 'cadastrar_nova_situacao' cadastro.id %}" class="row g-3 needs-validation" novalidate>
+                                                {% csrf_token %}
+                                                <!-- Campos do formulário -->
+                                                <h2>Nova Situação</h2>
+                                                <div class="col-md-6">
+                                                    <label for="situacao" class="form-label">Situação</label>
+                                                    <select name="situacao" class="form-select" id="situacao" required>
+                                                        {% for i in situacao %}
+                                                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="invalid-feedback">
+                                                        Por favor, selecione a nova situação.
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="sgb" class="form-label">SGB</label>
+                                                    <select name="sgb" class="form-select" id="sgb" required>
+                                                        {% for i in sgb %}
+                                                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="invalid-feedback">
+                                                        Por favor, selecione o SGB.
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="posto_secao" class="form-label">Posto ou Seção</label>
+                                                    <select name="posto_secao" class="form-select" id="posto_secao" required>
+                                                        {% for i in posto_secao %}
+                                                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="invalid-feedback">
+                                                        Por favor, selecione o posto ou seção.
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="esta_adido" class="form-label">Está Adido a outro Posto ou Seção?</label>
+                                                    <select name="esta_adido" class="form-select" id="esta_adido" required>
+                                                        {% for i in esta_adido %}
+                                                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="invalid-feedback">
+                                                        Por favor, selecione se está adido a outro posto ou seção.
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="funcao" class="form-label">Função que exerce</label>
+                                                    <select name="funcao" class="form-select" id="funcao" required>
+                                                        {% for i in funcao %}
+                                                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="invalid-feedback">
+                                                        Por favor, selecione a função que exerce.
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="op_adm" class="form-label">É Operacional ou Administrativo</label>
+                                                    <select name="op_adm" class="form-select" id="op_adm" required>
+                                                        {% for i in op_adm %}
+                                                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                                                        {% endfor %}
+                                                    </select>
+                                                    <div class="invalid-feedback">
+                                                        Por favor, selecione se é operacional ou administrativo.
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="apresentacao_na_unidade" class="form-label">Data da Apresentação na Unidade</label>
+                                                    <input type="date" name="apresentacao_na_unidade" class="form-control" id="apresentacao_na_unidade" required>
+                                                    <div class="invalid-feedback">
+                                                        Por favor, insira a data da apresentação na unidade.
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <button type="submit" class="btn btn-success">Salvar</button>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Cancelar</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Modal de Confirmação -->
+                            <div class="modal fade" id="confirmationModal" tabindex="-1" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="confirmationModalLabel">Confirmação</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Nova situação cadastrada com sucesso!
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" id="closeAllModals">OK</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- JavaScript para controlar a abertura e fechamento dos modais -->
+                            <script>
+                                document.getElementById('editSituacaoForm').addEventListener('submit', function(event) {
+                                    event.preventDefault();
+                                    var formData = new FormData(this);
+                                    fetch(this.action, {
+                                        method: 'POST',
+                                        body: formData,
+                                        headers: {
+                                            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            var editSituacaoModal = bootstrap.Modal.getInstance(document.getElementById('editSituacaoModal'));
+                                            editSituacaoModal.hide();
+                                            var newSituacaoModal = new bootstrap.Modal(document.getElementById('newSituacaoModal'));
+                                            newSituacaoModal.show();
+                                        } else {
+                                            response.text().then(text => {
+                                                console.error('Erro ao salvar a situação atual:', text);
+                                                alert('Erro ao salvar a situação atual.');
+                                            });
+                                        }
+                                    }).catch(error => {
+                                        console.error('Erro ao salvar a situação atual:', error);
+                                        alert('Erro ao salvar a situação atual.');
+                                    });
+                                });
+                                
+                                document.getElementById('newSituacaoForm').addEventListener('submit', function(event) {
+                                    event.preventDefault();
+                                    var formData = new FormData(this);
+                                    fetch(this.action, {
+                                        method: 'POST',
+                                        body: formData,
+                                        headers: {
+                                            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+                                        }
+                                    }).then(response => {
+                                        if (response.ok) {
+                                            var newSituacaoModal = bootstrap.Modal.getInstance(document.getElementById('newSituacaoModal'));
+                                            newSituacaoModal.hide();
+                                            var confirmationModal = new bootstrap.Modal(document.getElementById('confirmationModal'));
+                                            confirmationModal.show();
+                                        } else {
+                                            response.text().then(text => {
+                                                console.error('Erro ao cadastrar a nova situação:', text);
+                                                alert('Erro ao cadastrar a nova situação.');
+                                            });
+                                        }
+                                    }).catch(error => {
+                                        console.error('Erro ao cadastrar a nova situação:', error);
+                                        alert('Erro ao cadastrar a nova situação.');
+                                    });
+                                });
+                                
+                                document.getElementById('closeAllModals').addEventListener('click', function() {
+                                    var editSituacaoModal = bootstrap.Modal.getInstance(document.getElementById('editSituacaoModal'));
+                                    var newSituacaoModal = bootstrap.Modal.getInstance(document.getElementById('newSituacaoModal'));
+                                    var confirmationModal = bootstrap.Modal.getInstance(document.getElementById('confirmationModal'));
+                                    editSituacaoModal.hide();
+                                    newSituacaoModal.hide();
+                                    confirmationModal.hide();
+                                    window.location.reload(); // Recarregar a página para exibir as mensagens do Django
+                                });
+                            </script>
+
+                        </div> 
+                        </div>
+                    </div> 
+                </div>
+            </div>
+            <div id="03" class="col-lg-6 col-md-12 order-1 highlighted-div">
+                <div class="container1">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="titulo2">Documentos e Contatos</h2>
+                            <br>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                                    <br>
+                                    <h4 class="titulo6"><b>CPF:</b><span class="espaco-direita">{{cadastro.cpf}}</span></h4>
+                                    <h4 class="titulo6"><b>RG:</b><span class="espaco-direita">{{cadastro.rg}}</span></h4>
+                                    <h4 class="titulo6"><b>Email:</b><span class="espaco-direita">{{cadastro.email_funcional}}</span></h4>
+                                    <h4 class="titulo6"><b>Telefone:</b><span class="espaco-direita">{{cadastro.telefone}}</span></h4> </div>
+                                </div>
+                        </div>
+                 </div>   
+        </div>
+         <div class="row row-bg">
+            <div id="04" class="col-lg-6 col-md-12 order-1 highlighted-div">
+                <div class="col-md-12">
+                    <h2 class="titulo2">Datas</h2>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <br>
+                            <h4 class="titulo6"><b>Nascimento:</b><span class="espaco-direita">{{cadastro.nasc|date:"d/m/Y"}}</span></h4>
+                            <h4 class="titulo6"><b>Matrícula:</b><span class="espaco-direita data-matricula">{{cadastro.matricula|date:"d/m/Y"}}</span></h4>
+                            <h4 class="titulo6"><b>Admissão:</b><span class="espaco-direita">{{cadastro.admissao|date:"d/m/Y"}}</span></h4>
+                            <h4 class="titulo6"><b>Apresentação na Unidade:</b><span class="espaco-direita">{{cadastro.detalhes_situacao.last.apresentacao_na_unidade|date:"d/m/Y"}}</span></h4>
+                            <h4 class="titulo6"><b>Saída da Unidade:</b><span class="espaco-direita">{{cadastro.detalhes_situacao.last.saida_da_unidade|date:"d/m/Y"}}</span></h4>
+                            <h4 class="titulo6"><b>Previsão de Inatividade:</b><span class="espaco-direita">{{cadastro.previsao_de_inatividade|date:"d/m/Y"}}</span></h4>
+                            <h4 class="titulo6"><b>Última Promoção:</b><span class="espaco-direita">{{promocao.ultima_promocao|date:"d/m/Y"}}</span></h4>          
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="05" class="col-lg-6 col-md-12 order-1 highlighted-div">
+                <div class="col-md-6">
+                    <h2 class="titulo2">Total de Tempo</h2>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <br>
+                        <h4 class="titulo6"><b>Idade Detalhada:</b><span class="espaco-direita">{{ cadastro.idade_detalhada }}</span></h4>
+                        <h4 class="titulo6"><b>Tempo de Matrícula:</b><span class="espaco-direita">{{ cadastro.matricula_detalhada }}</span></h4>
+                        <h4 class="titulo6"><b>Tempo de Admissão:</b><span class="espaco-direita">{{ cadastro.admissao_detalhada }}</span></h4>
+                        <h4 class="titulo6"><b>Inativa em:</b><span class="espaco-direita">{{ cadastro.previsao_de_inatividade_detalhada}}</span></h4>
+                        <h4 class="titulo6"><b>Tempo no  Cargo Atual:</b><span class="espaco-direita">{{ promocao.ultima_promocao_detalhada }}</span></h4>
+                     </div>
+                   
+  
+               </div>
+        </div>
+        </div>
+        <div class="row row-bg">
+            <div id="06" class="col-lg-6 col-md-12 order-1 highlighted-div">
+                <div class="col-md-6">    
+                    <h2 class="titulo2">Direitos</h2>  
+               </div>
+               <br>
+               <hr>
+               <div class="row">
+                   <div class="col-md-12">
+                       <br>
+                       <h4 class="titulo6"><b>Tempo Inss:</b><span class="espaco-direita">{{cadastro.tempo_para_averbar_inss_inteiro}}</span></h4>
+                       <h4 class="titulo6"><b>Tempo militar:</b><span class="espaco-direita" >{{cadastro.tempo_para_averbar_militar_inteiro}}</span></h4>
+                       <h4 class="titulo6"><b>Pode Inativar:</b><span class="espaco-direita">{{cadastro.inativa_status}}</span></h4>
+                       <h4 class="titulo6"><b>Próxima Licença Prêmio:</b><span class="espaco-direita">{{cadastro}}</span></h4>
+                       <h4 class="titulo6"><b>Próximo Adicional:</b><span class="espaco-direita">{{cadastro}}</span></h4>
+                       <br>
+                       <br>
+                       <br>
+                           </div>
+               </div>
+            </div>
+            <div id="07" class="col-lg-6 col-md-12 order-1 highlighted-div">
+                <div class="col-md-12">
+                    <h2 class="titulo2">Rpt Interno - Destino</h2>
+                        <a href="{% url 'historico_movimentacoes' cadastro.id %}"     id="link_hist"  class="sub-fonte">Histórico da RPT</a>
+                        <div class="col-md-12">
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-12">
+                        <br>
+                        <h4 class="titulo6"><b>Status:</b><span class="espaco-direita">{{cadastro.cadastro_rpt.last.status_badge}}</span></h4>
+                        <h4 class="titulo6"><b>Data do pedido:</b><span class="espaco-direita">{{cadastro.cadastro_rpt.last.data_pedido}}</span></h4>
+                        <h4 class="titulo6"><b>Espera:</b><span class="espaco-direita">{{cadastro.cadastro_rpt.last.pedido_status}}</span></h4>
+                        <h4 class="titulo6"><b>Sgb:</b><span class="espaco-direita" >{{cadastro.cadastro_rpt.last.sgb_destino}}</span></h4>
+                        <h4 class="titulo6"><b>Posto-Seção:</b><span class="espaco-direita">{{cadastro.cadastro_rpt.last.posto_secao_destino}}</span></h4>
+                        <h4 class="titulo6"><b>Documento:</b><span class="espaco-direita">{{cadastro.cadastro_rpt.last.doc_solicitacao}}</span></h4>
+                        <h4 class="titulo6"><b>Tempo de Espera:</b><span class="espaco-direita">{{cadastro.cadastro_rpt.last.tempo_pedido_detalhada}}</span></h4>
+                        <br>
+                        <br>
+                        <br>
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>
+           
+        </legend>
+            <div id="01" class="row">
+                <div class="col-12 highlighted-div bg-lightblue">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="container1">
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <br>
+                                                <div class="d-flex justify-content-start">
+                                                    
+                                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                        Excluir
+                                                    </button>
+                                                </div>
+                        
+                                                <!-- Modal -->
+                                                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h1 class="modal-title fs-5" id="exampleModalLabel">Excluir</h1>
+                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                Você tem certeza que deseja excluir o cadastro?
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                                                                <a href="{% url 'excluir_militar' cadastro.id %}" class="btn btn-danger">Excluir</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br><br><br>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="container1">
+                                        <div class="row">
+                                            <div class="col-md-12 text-end">
+                                                <br>
+                                                <a class="btn btn-primary" href="{% url 'listar_militar' %}" role="button">Voltar</a>
+                                                <br><br><br>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                </div>
+            </div>
+                                                            
+            <br>
+            <br>
+        </div>     
+    </fieldset>
+</div>
+<script src="{% static 'efetivo/js/ver_militar.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+
+
+{% endblock  %}

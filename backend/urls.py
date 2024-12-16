@@ -5,5 +5,6 @@ urlpatterns = [
     path('', include('backend.core.urls', namespace='core')),  # noqa E501
     path('admin/', admin.site.urls),  # noqa E501
     path('crm/', include('backend.crm.urls', namespace='crm')),  # noqa E501
+     path('efetivo/', include('backend.efetivo.urls', namespace='efetivo')),  # noqa E501
     path('accounts/', include('backend.accounts.urls')),  # noqa E501
 ]

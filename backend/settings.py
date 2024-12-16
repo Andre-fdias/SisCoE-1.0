@@ -15,11 +15,13 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default=[], cast=Csv())
 AUTH_USER_MODEL = 'accounts.User'
 
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
 # Application definition
 
 INSTALLED_APPS = [
     'backend.accounts',  # <<<
-   'django.contrib.admin',
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -28,10 +30,12 @@ INSTALLED_APPS = [
     # apps de terceiros
     'django_extensions',
     'widget_tweaks',
-     'compressor', 
+    'compressor',
+    'django_seed',
     # minhas apps
     'backend.core',
     'backend.crm',
+    'backend.efetivo',
 ]
 
 MIDDLEWARE = [
@@ -148,4 +152,3 @@ RUN_SERVER_PORT = 8090  # Escolha uma porta diferente (por exemplo, 8081, 8090)
 
 
 LOGIN_REDIRECT_URL = 'core:index'
-

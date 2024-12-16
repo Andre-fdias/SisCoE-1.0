@@ -7,13 +7,10 @@ def capa(request):
     return render(request, template_name)
 
 
-
 @login_required
 def index(request):
     template_name = 'index.html'
     return render(request, template_name)
-
-
 
 
 @login_required
