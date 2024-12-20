@@ -330,6 +330,7 @@ class DetalhesSituacao(models.Model):
     apresentacao_na_unidade = models.DateField(blank=False, null=False)
     saida_da_unidade = models.DateField(blank=True, null=True)
     create_at = models.DateTimeField(auto_now_add=True)
+    usuario_alteracao = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     
     
 
@@ -410,7 +411,8 @@ class Promocao(models.Model):
     grupo = models.CharField(max_length=100, choices=grupo_choices)
     ultima_promocao = models.DateField(blank=False, null=False)
     data_alteracao = models.DateTimeField(auto_now_add=True)
-
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    
     class Meta:
         ordering = ('-pk',)
         verbose_name = 'promocao'
@@ -467,8 +469,9 @@ class Promocao(models.Model):
 # coleta a imagem do cadastro de cada usuario
 class Imagem(models.Model):
     cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE, related_name='imagens', null=True, blank=True)
-    image = models.ImageField(upload_to='img/fotos_perfil')
+    image = models.ImageField(upload_to='backend/core/static/img/fotos_perfil')
     create_at = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         ordering = ('-pk',)
@@ -491,7 +494,8 @@ class HistoricoPromocao(models.Model):
     quadro = models.CharField(max_length=100)
     grupo = models.CharField(max_length=100)
     ultima_promocao = models.DateField()
-    data_alteracao = models.DateTimeField(auto_now_add=True)
+    data_alteracao = models.DateTimeField(auto_now_add=True) 
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         ordering = ('-pk',)
@@ -519,6 +523,7 @@ class HistoricoDetalhesSituacao(models.Model):
     apresentacao_na_unidade = models.DateField()
     saida_da_unidade = models.DateField(null=True, blank=True)
     data_alteracao = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         ordering = ('-pk',)

@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-
+from django.contrib.messages import constants
 from decouple import Csv, config
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -152,3 +152,12 @@ RUN_SERVER_PORT = 8090  # Escolha uma porta diferente (por exemplo, 8081, 8090)
 
 
 LOGIN_REDIRECT_URL = 'core:index'
+
+MESSAGE_TAGS = {
+ constants.DEBUG: 'alert-primary',
+ constants.ERROR: 'alert-danger',
+ constants.SUCCESS: 'alert-success',
+ constants.INFO: 'alert-info',
+ constants.WARNING: 'alert-warning',
+}
+

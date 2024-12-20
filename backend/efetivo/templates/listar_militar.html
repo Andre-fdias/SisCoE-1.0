@@ -3,59 +3,54 @@
 {% block 'title' %} Consultar Efetivo{% endblock %}
 
 {% block 'head' %}
-<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
-<link rel="stylesheet" href="{% static 'efetivo\css\listar_militar.css' %}">
+<link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
+<link href="{% static 'flowbite.min.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet">
 {% endblock 'head' %}
 
 {% block 'body' %}
 
-
-</head>
 <body>
-<br>
-<br>
-<div class="container-fluid" id="lista_cad">
-    <fieldset>
-        <legend>
-            {% if messages %}
-            {% for message in messages %}
-                <section class="alert {{ message.tags }}">
-                    {{ message }}
-                </section>
-            {% endfor %}
-             {% endif %}
-        </legend>
-        <div id="01" class="row">
-            <div class="col-12 highlighted-div bg-lightblue">
-                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between">
-                    <div class="col-md-6 mb-2 mb-md-0">
-                        <div><h2>Consulta de Efetivo</h2></div>
-                    </div>
-                    <div class="col-md-3 text-end">
-                        <a class="btn btn-success" href="{% url 'efetivo:cadastrar_militar' %}" role="button"><span class="text">Cadastrar Militar</span></a>
-                        <a class="btn btn-primary" href="" role="button">Voltar</a>
-                    </div>
-                </div>      
-            </div>                                          
-            <br>
-            <br>
-        </div>     
-    </fieldset>
-  
 
-    <fieldset>  
-        <div class="row row-bg ">
+<div class="container mx-auto p-4 mt-30" id="cad_efetivo">
+
+    <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+        <fieldset class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">
+            <div id="01" class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="col-12 md:w-auto">
+                            <h1 class="text-3xl text-gray-200">Relação de Efetivo</h1>
+                            <p class="text-gray-400" >Consulte abaixo o efetivo da unidade.</p>
+                        </div>
+                        <div class="w-full md:w-auto text-right">
+                            <a href="{% url 'efetivo:cadastrar_militar' %}" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Cadastrar Militar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <legend>
+                {% if messages %}
+                {% for message in messages %}
+                    <section class="alert {{ message.tags }}">
+                        {{ message }}
+                    </section>
+                {% endfor %}
+                {% endif %}
+            </legend>
+        </fieldset>
+        
+        <div class="row row-bg bg-gray-200 p-4 border-gray-300 rounded-md">
             <div class="col-12">
                 <p class="name">Escolha um dos filtros abaixo para filtrar a tabela.</p>
             </div>  
-           
-           
+            <br>
             <!-- Dropdowns para filtros na mesma linha -->
             <div class="container" id="filtros"> 
-                <div class="row mb-3">
-                    <div class="col-md-3">
-                        <label for="situacaoFilter" class="form-label">Situação:</label>
-                        <select id="situacaoFilter" class="form-select">
+                <div class="flex flex-wrap mb-3">
+                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                        <label for="situacaoFilter" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Situação</label>
+                        <select id="situacaoFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option value="">Todos</option>
                             <option value="Efetivo">Efetivo</option>
                             <option value="Exonerado a Pedido">Exonerado a Pedido</option>
@@ -63,11 +58,10 @@
                             <option value="Reserva a Pedido">Reserva a Pedido</option>
                             <option value="Transferido">Transferido</option>
                         </select>
-                    </div>
-
-                    <div class="col-md-3">
-                        <label for="sgbFilter" class="form-label">Sgb:</label>
-                        <select id="sgbFilter" class="form-select">
+                    </form>
+                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                        <label for="sgbFilter" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sgb</label>
+                        <select id="sgbFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option value="">Todos</option>
                             <option value="EM">EM</option>
                             <option value="1ºSGB">1ºSGB</option>
@@ -76,256 +70,222 @@
                             <option value="4ºSGB">4ºSGB</option>
                             <option value="5ºSGB">5ºSGB</option>
                         </select>
-                    </div>
-                        
-                    <div class="col-md-3">
-                        <label for="postoSecaoFilter" class="form-label">Posto/Seção:</label>
-                        <select id="postoSecaoFilter" class="form-select">
+                    </form>
+                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                        <label for="postoSecaoFilter" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Posto ou Seção</label>
+                        <select id="postoSecaoFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                             <option value="">Todos</option>
                         </select>
-                    </div>
-                    <div class="col-md-3">
-                        <button id="clearFilters" class="btn btn-secondary mt-4">Limpar Filtros</button>
+                    </form>
+
+                    <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0 flex items-end">
+                        <button id="clearFilters" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar Filtros</button>
                     </div>
                 </div>
             </div>
         </div>
-    </fieldset>
-    <fieldset>  
-        <div class="row row-bg ">
-            <div class="container-fluid" id="table">
-                <div class="table-responsive">
-                    <table id="dataTable" class="table table-striped table-bordered display" style="width:100%">
-                        <thead>
-                            <tr>
-                                <th  style="text-align: center;"></th>
-                                <th  style="text-align: center;">Posto/Grad</th>
-                                <th  style="text-align: center;">Re</th>
-                                <th  style="text-align: center;">Dig</th>
-                                <th  style="text-align: center;">Nome Guerra</th>
-                                <th  style="text-align: center;">Sgb</th>
-                                <th  style="text-align: center;">Posto/Seção</th>
-                                <th  style="text-align: center;">Situação</th>
-                                <th  style="text-align: center;">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for cadastro in cadastros %}
-                            <tr>
-                                <td  style="text-align: center;"> 
-                                    {% if cadastro.imagens.exists %}
-                                        <img src="{{ cadastro.imagens.last.image.url }}" class="foto-perfil" alt="Imagem" style="max-width: 50px; max-height: 50px;">
-                                    {% else %}
-                                        Sem imagem
-                                    {% endif %}
-                                </td>
-                                <td  style="text-align: center;">
-                                    {% if cadastro.promocoes.exists %}
-                                    {{ cadastro.promocoes.last.grad|safe }}
-                                {% else %}
-                                    Sem detalhes
-                                {% endif %}
-                                </td>
-                     
-                                <td  style="text-align: center;">{{ cadastro.re }}</td>
-                                <td  style="text-align: center;">{{ cadastro.dig }}</td>
-                                <td  style="text-align: center;">{{ cadastro.nome_de_guerra }}</td>
-                                <td  style="text-align: center;">
-                                    {% if cadastro.detalhes_situacao.exists %}
-                                        {{ cadastro.detalhes_situacao.last.sgb }}
-                                    {% else %}
-                                        Sem detalhes
-                                    {% endif %}
-                                </td>
-                                <td  style="text-align: center;">
-                                    {% if cadastro.detalhes_situacao.exists %}
-                                        {{ cadastro.detalhes_situacao.last.posto_secao }}
-                                    {% else %}
-                                        Sem detalhes
-                                    {% endif %}
-                                </td>
-                                <td  style="text-align: center;">
-                                    {% if cadastro.detalhes_situacao.exists %}
-                                        {{ cadastro.detalhes_situacao.last.status }}
-                                    {% else %}
-                                        Sem detalhes
-                                    {% endif %}
-                                </td>
-                                <td  style="text-align: center;">
-                                  
-                                    <a class="btn btn-warning" href="{% url 'ver_militar' cadastro.id %}"><i class="bi bi-folder2-open"></i></a>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                    <br>
-                    <div class="d-flex justify-content-end mb-3">
-                        <button id="printButton" class="btn btn-secondary">Imprimir</button>
-                    </div>
-                </div>
+         <br>
+
+         <div class="row row-bg bg-gray-200 p-4 border-gray-300 rounded-md">
+            <table id="example" class="min-w-full bg-white">
+                <thead>
+                    <tr>
+                        <th class="border px-4 py-2 text-center"></th>
+                        <th class="border px-4 py-2 text-center">Posto/Grad</th>
+                        <th class="border px-4 py-2 text-center">Re</th>
+                        <th class="border px-4 py-2 text-center">Dig</th>
+                        <th class="border px-4 py-2 text-center">Nome Guerra</th>
+                        <th class="border px-4 py-2 text-center">Sgb</th>
+                        <th class="border px-4 py-2 text-center">Posto/Seção</th>
+                        <th class="border px-4 py-2 text-center">Situação</th>
+                        <th class="border px-4 py-2 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cadastro in cadastros %}
+                    <tr>
+                        <td class="border px-4 py-2 text-center">
+                            {% if cadastro.imagens.exists %}
+                                <img src="{{ cadastro.imagens.last.image.url }}" class="foto-perfil" alt="Imagem" style="max-width: 50px; max-height: 50px;">
+                            {% else %}
+                                Sem imagem
+                            {% endif %}
+                        </td>
+                        <td class="border px-4 py-2 text-center">
+                            {% if cadastro.promocoes.exists %}
+                                {{ cadastro.promocoes.last.grad|safe }}
+                            {% else %}
+                                Sem detalhes
+                            {% endif %}
+                        </td>
+                        <td class="border px-4 py-2 text-center">{{ cadastro.re }}</td>
+                        <td class="border px-4 py-2 text-center">{{ cadastro.dig }}</td>
+                        <td class="border px-4 py-2 text-center">{{ cadastro.nome_de_guerra }}</td>
+                      
+                        <td class="border px-4 py-2 text-center">
+                            {% if cadastro.detalhes_situacao.exists %}
+                                {{ cadastro.detalhes_situacao.last.sgb }}
+                            {% else %}
+                                Sem detalhes
+                            {% endif %}
+                        </td>
+                        <td class="border px-4 py-2 text-center">
+                            {% if cadastro.detalhes_situacao.exists %}
+                                {{ cadastro.detalhes_situacao.last.posto_secao }}
+                            {% else %}
+                                Sem detalhes
+                            {% endif %}
+                        </td>
+                        <td class="border px-4 py-2 text-center">
+                            {% if cadastro.detalhes_situacao.exists %}
+                                {{ cadastro.detalhes_situacao.last.status }}
+                            {% else %}
+                                Sem detalhes
+                            {% endif %}
+                        </td>
+                        <td class="border px-4 py-2 text-center">
+                            <a  class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{% url 'efetivo:ver_militar' cadastro.id %}">Editar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="flex justify-end mb-3">
+                <button id="printButton" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Imprimir</button>
             </div>
-            <br>  
-            <br>  
-            <br>
-            <br>
         </div>
-    </fieldset>
-    {% block 'script' %}
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <script src="https://cdn.datatables.net/2.1.8/js/dataTables.js"></script>
-    <script>
-        $(document).ready(function() {
-            if (!$.fn.DataTable.isDataTable('#dataTable')) {
-                var table = $('#dataTable').DataTable({
-                    "paging": true,
-                    "searching": true,
-                    "lengthChange": true,
-                    "pageLength": 10,
-                    "language": {
-                        "lengthMenu": "Mostrar _MENU_ registros por página",
-                        "zeroRecords": "Nada encontrado",
-                        "info": "Mostrando página _PAGE_ de _PAGES_",
-                        "infoEmpty": "Nenhum registro disponível",
-                        "infoFiltered": "(filtrado de _MAX_ registros no total)",
-                        "search": "Pesquisar:",
-                        "paginate": {
-                            "first": "Primeiro",
-                            "last": "Último",
-                            "next": "Próximo",
-                            "previous": "Anterior"
-                        }
-                    }
-                });
-                
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+        <script>
+            const dataTable = new simpleDatatables.DataTable("#example");
+        </script>
+        <script>
 
-                // Filtros personalizados
-                $('#sgbFilter').on('change', function() {
-                    var searchTerm = $(this).val();
-                    table.column(5).search(searchTerm).draw();
-                    updatePostoSecaoOptions(searchTerm);
-                });
-
-                $('#postoSecaoFilter').on('change', function() {
-                    var searchTerm = $(this).val();
-                    table.column(6).search(searchTerm).draw();
-                });
-
-                $('#situacaoFilter').on('change', function() {
-                    var searchTerm = $(this).val();
-                    table.column(7).search(searchTerm).draw();
-                });
-
-                // Limpar filtros
-                $('#clearFilters').on('click', function() {
-                    $('#sgbFilter').val('');
-                    $('#postoSecaoFilter').val('');
-                    $('#situacaoFilter').val('');
-                    table.columns().search('').draw();
-                });
-                function updatePostoSecaoOptions(sgbChoice) {
-                    const postoSecaoChoices = {
-                        "EM": [
-                            { value: "", text: " " },
-                            { value: "703150000 - CMT", text: "CMT" },
-                            { value: "703159000 - SUB CMT", text: "SUB CMT" },
-                            { value: "703159100 - SEC ADM", text: "SEC ADM" },
-                            { value: "703159110 - B/1 E B/5", text: "B/1 E B/5" },
-                            { value: "703159110-1 - B/5", text: "B/5" },
-                            { value: "703159120 - AA", text: "AA" },
-                            { value: "703159130 - B/3 E MOTOMEC", text: "B/3 E MOTOMEC" },
-                            { value: "703159130-1 - MOTOMEC", text: "MOTOMEC" },
-                            { value: "703159131 - COBOM", text: "COBOM" },
-                            { value: "703159140 - B/4", text: "B/4" },
-                            { value: "703159150 - ST UGE", text: "ST UGE" },
-                            { value: "703159160 - ST PJMD", text: "ST PJMD" },
-                            { value: "703159200 - SEC ATIV TEC", text: "SEC ATIV TEC" }
-                        ],
-                        "1ºSGB": [
-                            { value: "", text: " " },
-                            { value: "703151000 - CMT 1º SGB", text: "CMT 1º SGB" },
-                            { value: "703151100 - ADM PB CERRADO", text: "ADM PB CERRADO" },
-                            { value: "703151101 - EB CERRADO", text: "EB CERRADO" },
-                            { value: "703151102 - EB ZONA NORTE", text: "EB ZONA NORTE" },
-                            { value: "703151200 - ADM PB SANTA ROSÁLIA", text: "ADM PB SANTA ROSÁLIA" },
-                            { value: "703151201 - EB SANTA ROSÁLIA", text: "EB SANTA ROSÁLIA" },
-                            { value: "703151202 - EB ÉDEM", text: "EB ÉDEM" },
-                            { value: "703151300 - ADM PB VOTORANTIM", text: "ADM PB VOTORANTIM" },
-                            { value: "703151301 - EB VOTORANTIM", text: "EB VOTORANTIM" },
-                            { value: "703151302 - EB PIEDADE", text: "EB PIEDADE" },
-                            { value: "703151800 - ADM 1º SGB", text: "ADM 1º SGB" }
-                        ],
-                        "2ºSGB": [
-                            { value: "", text: " " },
-                            { value: "703152000 - CMT 2º SGB", text: "CMT 2º SGB" },
-                            { value: "703152100 - ADM PB ITU", text: "ADM PB ITU" },
-                            { value: "703152101 - EB ITU", text: "EB ITU" },
-                            { value: "703152102 - EB PORTO FELIZ", text: "EB PORTO FELIZ" },
-                            { value: "703152200 - ADM PB SALTO", text: "ADM PB SALTO" },
-                            { value: "703152201 - EB SALTO", text: "EB SALTO" },
-                            { value: "703152300 - ADM PB SÃO ROQUE", text: "ADM PB SÃO ROQUE" },
-                            { value: "703152301 - EB SÃO ROQUE", text: "EB SÃO ROQUE" },
-                            { value: "703152302 - EB IBIÚNA", text: "EB IBIÚNA" },
-                            { value: "703152800 - ADM 2º SGB", text: "ADM 2º SGB" },
-                            { value: "703152900 - NUCL ATIV TEC 2º SGB", text: "NUCL ATIV TEC 2º SGB" }
-                        ],
-                        "3ºSGB": [
-                            { value: "", text: " " },
-                            { value: "703153000 - CMT 3º SGB", text: "CMT 3º SGB" },
-                            { value: "703153100 - ADM PB ITAPEVA", text: "ADM PB ITAPEVA" },
-                            { value: "703153101 - EB ITAPEVA", text: "EB ITAPEVA" },
-                            { value: "703153102 - EB APIAÍ", text: "EB APIAÍ" },
-                            { value: "703153103 - EB ITARARÉ", text: "EB ITARARÉ" },
-                            { value: "703153104 - EB CAPÃO BONITO", text: "EB CAPÃO BONITO" },
-                            { value: "703153800 - ADM 3º SGB", text: "ADM 3º SGB" },
-                            { value: "703153900 - NUCL ATIV TEC 3º SGB", text: "NUCL ATIV TEC 3º SGB" }
-                        ],
-                        "4ºSGB": [
-                            { value: "", text: " " },
-                            { value: "703154000 - CMT 4º SGB", text: "CMT 4º SGB" },
-                            { value: "703154100 - ADM PB ITAPETININGA", text: "ADM PB ITAPETININGA" },
-                            { value: "703154101 - EB ITAPETININGA", text: "EB ITAPETININGA" },
-                            { value: "703154102 - EB BOITUVA", text: "EB BOITUVA" },
-                            { value: "703154103 - EB ANGATUBA", text: "EB ANGATUBA" },
-                            { value: "703154200 - ADM PB TATUÍ", text: "ADM PB TATUÍ" },
-                            { value: "703154201 - EB TATUÍ", text: "EB TATUÍ" },
-                            { value: "703154202 - EB TIETÊ", text: "EB TIETÊ" },
-                            { value: "703154203 - EB LARANJAL PAULISTA", text: "EB LARANJAL PAULISTA" },
-                            { value: "703154800 - ADM 4º SGB", text: "ADM 4º SGB" },
-                            { value: "703154900 - NUCL ATIV TEC 4º SGB", text: "NUCL ATIV TEC 4º SGB" }
-                        ],
-                        "5ºSGB": [
-                            { value: "", text: " " },
-                            { value: "703155000 - CMT 5º SGB", text: "CMT 5º SGB" },
-                            { value: "703155100 - ADM PB BOTUCATU", text: "ADM PB BOTUCATU" },
-                            { value: "703155101 - EB BOTUCATU", text: "EB BOTUCATU" },
-                            { value: "703155102 - EB ITATINGA", text: "EB ITATINGA" },
-                            { value: "703155200 - ADM PB AVARÉ", text: "ADM PB AVARÉ" },
-                            { value: "703155201 - EB AVARÉ", text: "EB AVARÉ" },
-                            { value: "703155202 - EB PIRAJU", text: "EB PIRAJU" },
-                            { value: "703155203 - EB ITAÍ", text: "EB ITAÍ" },
-                            { value: "703155800 - ADM 5º SGB", text: "ADM 5º SGB" },
-                            { value: "703155900 - NUCL ATIV TEC 5º SGB", text: "NUCL ATIV TEC 5º SGB" }
-                        ]
-                    };
-
-                    const postoSecaoFilter = $('#postoSecaoFilter');
-                    postoSecaoFilter.empty();
-
-                    if (postoSecaoChoices[sgbChoice]) {
-                        postoSecaoChoices[sgbChoice].forEach(function(choice) {
-                            postoSecaoFilter.append(new Option(choice.text, choice.value));
+                        // Filtros personalizados
+                        $('#sgbFilter').on('change', function() {
+                            var searchTerm = $(this).val();
+                            table.column(5).search(searchTerm).draw();
+                            updatePostoSecaoOptions(searchTerm);
                         });
-                    } else {
-                        postoSecaoFilter.append(new Option("Todos", ""));
-                    }
-                }
-            }
-        });
-    </script>
-{% endblock %}
+
+                        $('#postoSecaoFilter').on('change', function() {
+                            var searchTerm = $(this).val();
+                            table.column(6).search(searchTerm).draw();
+                        });
+
+                        $('#situacaoFilter').on('change', function() {
+                            var searchTerm = $(this).val();
+                            table.column(7).search(searchTerm).draw();
+                        });
+
+                        // Limpar filtros
+                        $('#clearFilters').on('click', function() {
+                            $('#sgbFilter').val('');
+                            $('#postoSecaoFilter').val('');
+                            $('#situacaoFilter').val('');
+                            table.columns().search('').draw();
+                        });
+                        function updatePostoSecaoOptions(sgbChoice) {
+                            const postoSecaoChoices = {
+                                "EM": [
+                                    { value: "", text: " " },
+                                    { value: "703150000 - CMT", text: "CMT" },
+                                    { value: "703159000 - SUB CMT", text: "SUB CMT" },
+                                    { value: "703159100 - SEC ADM", text: "SEC ADM" },
+                                    { value: "703159110 - B/1 E B/5", text: "B/1 E B/5" },
+                                    { value: "703159110-1 - B/5", text: "B/5" },
+                                    { value: "703159120 - AA", text: "AA" },
+                                    { value: "703159130 - B/3 E MOTOMEC", text: "B/3 E MOTOMEC" },
+                                    { value: "703159130-1 - MOTOMEC", text: "MOTOMEC" },
+                                    { value: "703159131 - COBOM", text: "COBOM" },
+                                    { value: "703159140 - B/4", text: "B/4" },
+                                    { value: "703159150 - ST UGE", text: "ST UGE" },
+                                    { value: "703159160 - ST PJMD", text: "ST PJMD" },
+                                    { value: "703159200 - SEC ATIV TEC", text: "SEC ATIV TEC" }
+                                ],
+                                "1ºSGB": [
+                                    { value: "", text: " " },
+                                    { value: "703151000 - CMT 1º SGB", text: "CMT 1º SGB" },
+                                    { value: "703151100 - ADM PB CERRADO", text: "ADM PB CERRADO" },
+                                    { value: "703151101 - EB CERRADO", text: "EB CERRADO" },
+                                    { value: "703151102 - EB ZONA NORTE", text: "EB ZONA NORTE" },
+                                    { value: "703151200 - ADM PB SANTA ROSÁLIA", text: "ADM PB SANTA ROSÁLIA" },
+                                    { value: "703151201 - EB SANTA ROSÁLIA", text: "EB SANTA ROSÁLIA" },
+                                    { value: "703151202 - EB ÉDEM", text: "EB ÉDEM" },
+                                    { value: "703151300 - ADM PB VOTORANTIM", text: "ADM PB VOTORANTIM" },
+                                    { value: "703151301 - EB VOTORANTIM", text: "EB VOTORANTIM" },
+                                    { value: "703151302 - EB PIEDADE", text: "EB PIEDADE" },
+                                    { value: "703151800 - ADM 1º SGB", text: "ADM 1º SGB" }
+                                ],
+                                "2ºSGB": [
+                                    { value: "", text: " " },
+                                    { value: "703152000 - CMT 2º SGB", text: "CMT 2º SGB" },
+                                    { value: "703152100 - ADM PB ITU", text: "ADM PB ITU" },
+                                    { value: "703152101 - EB ITU", text: "EB ITU" },
+                                    { value: "703152102 - EB PORTO FELIZ", text: "EB PORTO FELIZ" },
+                                    { value: "703152200 - ADM PB SALTO", text: "ADM PB SALTO" },
+                                    { value: "703152201 - EB SALTO", text: "EB SALTO" },
+                                    { value: "703152300 - ADM PB SÃO ROQUE", text: "ADM PB SÃO ROQUE" },
+                                    { value: "703152301 - EB SÃO ROQUE", text: "EB SÃO ROQUE" },
+                                    { value: "703152302 - EB IBIÚNA", text: "EB IBIÚNA" },
+                                    { value: "703152800 - ADM 2º SGB", text: "ADM 2º SGB" },
+                                    { value: "703152900 - NUCL ATIV TEC 2º SGB", text: "NUCL ATIV TEC 2º SGB" }
+                                ],
+                                "3ºSGB": [
+                                    { value: "", text: " " },
+                                    { value: "703153000 - CMT 3º SGB", text: "CMT 3º SGB" },
+                                    { value: "703153100 - ADM PB ITAPEVA", text: "ADM PB ITAPEVA" },
+                                    { value: "703153101 - EB ITAPEVA", text: "EB ITAPEVA" },
+                                    { value: "703153102 - EB APIAÍ", text: "EB APIAÍ" },
+                                    { value: "703153103 - EB ITARARÉ", text: "EB ITARARÉ" },
+                                    { value: "703153104 - EB CAPÃO BONITO", text: "EB CAPÃO BONITO" },
+                                    { value: "703153800 - ADM 3º SGB", text: "ADM 3º SGB" },
+                                    { value: "703153900 - NUCL ATIV TEC 3º SGB", text: "NUCL ATIV TEC 3º SGB" }
+                                ],
+                                "4ºSGB": [
+                                    { value: "", text: " " },
+                                    { value: "703154000 - CMT 4º SGB", text: "CMT 4º SGB" },
+                                    { value: "703154100 - ADM PB ITAPETININGA", text: "ADM PB ITAPETININGA" },
+                                    { value: "703154101 - EB ITAPETININGA", text: "EB ITAPETININGA" },
+                                    { value: "703154102 - EB BOITUVA", text: "EB BOITUVA" },
+                                    { value: "703154103 - EB ANGATUBA", text: "EB ANGATUBA" },
+                                    { value: "703154200 - ADM PB TATUÍ", text: "ADM PB TATUÍ" },
+                                    { value: "703154201 - EB TATUÍ", text: "EB TATUÍ" },
+                                    { value: "703154202 - EB TIETÊ", text: "EB TIETÊ" },
+                                    { value: "703154203 - EB LARANJAL PAULISTA", text: "EB LARANJAL PAULISTA" },
+                                    { value: "703154800 - ADM 4º SGB", text: "ADM 4º SGB" },
+                                    { value: "703154900 - NUCL ATIV TEC 4º SGB", text: "NUCL ATIV TEC 4º SGB" }
+                                ],
+                                "5ºSGB": [
+                                    { value: "", text: " " },
+                                    { value: "703155000 - CMT 5º SGB", text: "CMT 5º SGB" },
+                                    { value: "703155100 - ADM PB BOTUCATU", text: "ADM PB BOTUCATU" },
+                                    { value: "703155101 - EB BOTUCATU", text: "EB BOTUCATU" },
+                                    { value: "703155102 - EB ITATINGA", text: "EB ITATINGA" },
+                                    { value: "703155200 - ADM PB AVARÉ", text: "ADM PB AVARÉ" },
+                                    { value: "703155201 - EB AVARÉ", text: "EB AVARÉ" },
+                                    { value: "703155202 - EB PIRAJU", text: "EB PIRAJU" },
+                                    { value: "703155203 - EB ITAÍ", text: "EB ITAÍ" },
+                                    { value: "703155800 - ADM 5º SGB", text: "ADM 5º SGB" },
+                                    { value: "703155900 - NUCL ATIV TEC 5º SGB", text: "NUCL ATIV TEC 5º SGB" }
+                                ]
+                            };
+
+                            const postoSecaoFilter = $('#postoSecaoFilter');
+                            postoSecaoFilter.empty();
+
+                            if (postoSecaoChoices[sgbChoice]) {
+                                postoSecaoChoices[sgbChoice].forEach(function(choice) {
+                                    postoSecaoFilter.append(new Option(choice.text, choice.value));
+                                });
+                            } else {
+                                postoSecaoFilter.append(new Option("Todos", ""));
+                            }
+                        }
+
+        </script>
+
+
 </div>
 </body>
 </html>
 {% endblock %}
-

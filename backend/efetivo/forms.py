@@ -104,3 +104,6 @@ class FuncionarioFilterForm(forms.Form):
         required=False,
         label='posto_secao'
     )
+
+
+    

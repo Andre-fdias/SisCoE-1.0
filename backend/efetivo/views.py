@@ -10,7 +10,6 @@ from django.db import IntegrityError
 
 
 # responsavel pelo cadastro  de militares, feito atraves da página cadastrar_militar.html
-
 def cadastrar_militar(request):
     if request.method == "GET":
         context = {
@@ -24,7 +23,7 @@ def cadastrar_militar(request):
             'op_adm': DetalhesSituacao.op_adm_choices,
             'genero': Cadastro.genero_choices,
             'situacao': DetalhesSituacao.situacao_choices,
-            'cat_efetivo': DetalhesSituacao.cat_efetivo_choices,
+            'cad_efetivo': DetalhesSituacao.cat_efetivo_choices,
         }
         return render(request, 'cadastrar_militar.html', context)
 
@@ -54,67 +53,60 @@ def cadastrar_militar(request):
                 tempo_para_averbar_militar=request.POST.get('tempo_para_averbar_militar'),
                 email=request.POST.get('email_funcional'),
                 telefone=request.POST.get('telefone'),
-                alteracao=request.POST.get('alteracao'),
                 user=request.user
             )
-            try:
-                cadastro.save()
-                print("Cadastro salvo com sucesso")
+            cadastro.save()
+            print("Cadastro salvo com sucesso")
 
-                if request.FILES.get('image'):
-                    imagem = Imagem(
-                        cadastro=cadastro,
-                        image=request.FILES.get('image'),
-                        user=request.user
-                    )
-                    imagem.save()
-                    print("Imagem salva com sucesso")
-
-                detalhes = DetalhesSituacao(
+            if request.FILES.get('image'):
+                imagem = Imagem(
                     cadastro=cadastro,
-                    situacao=request.POST.get('situacao'),
-                    cat_efetivo=request.POST.get('cat_efetivo'),
-                    sgb=request.POST.get('sgb'),
-                    posto_secao=request.POST.get('posto_secao'),
-                    esta_adido=request.POST.get('esta_adido'),
-                    funcao=request.POST.get('funcao'),
-                    op_adm=request.POST.get('op_adm'),
-                    apresentacao_na_unidade=request.POST.get('apresentacao_na_unidade'),
-                    saida_da_unidade=request.POST.get('saida_da_unidade'),
-                    usuario_alteracao=request.user
+                    image=request.FILES.get('image')
                 )
-                detalhes.save()
-                print("Detalhes da situação salvos com sucesso")
+                imagem.save()
+                print("Imagem salva com sucesso")
 
-                promocao = Promocao(
-                    cadastro=cadastro,
-                    posto_grad=request.POST.get('posto_grad'),
-                    quadro=request.POST.get('quadro'),
-                    grupo=request.POST.get('grupo'),
-                    ultima_promocao=request.POST.get('ultima_promocao'),
-                    usuario_alteracao=request.user
-                )
-                promocao.save()
-                print("Promoção salva com sucesso")
+            detalhes = DetalhesSituacao(
+                cadastro=cadastro,
+                situacao=request.POST.get('situacao'),
+                cat_efetivo=request.POST.get('cat_efetivo'),
+                sgb=request.POST.get('sgb'),
+                posto_secao=request.POST.get('posto_secao'),
+                esta_adido=request.POST.get('esta_adido'),
+                funcao=request.POST.get('funcao'),
+                op_adm=request.POST.get('op_adm'),
+                apresentacao_na_unidade=request.POST.get('apresentacao_na_unidade'),
+                saida_da_unidade=request.POST.get('saida_da_unidade')
+            )
+            detalhes.save()
+            print("Detalhes da situação salvos com sucesso")
 
-                messages.add_message(request, constants.SUCCESS, 'Militar cadastrado com sucesso')
-                return redirect('/efetivo/cadastrar_militar')
+            promocao = Promocao(
+                cadastro=cadastro,
+                posto_grad=request.POST.get('posto_grad'),
+                quadro=request.POST.get('quadro'),
+                grupo=request.POST.get('grupo'),
+                ultima_promocao=request.POST.get('ultima_promocao'),
+                usuario_alteracao=request.user
+            )
+            promocao.save()
+            print("Promoção salva com sucesso")
 
-            except IntegrityError as e:
-                if 'unique constraint' in str(e).lower():
-                    messages.add_message(request, constants.ERROR, 'Erro: CPF já cadastrado.')
-                else:
-                    messages.add_message(request, constants.ERROR, 'Erro ao cadastrar militar. Por favor, tente novamente.')
-                return redirect('/efetivo/cadastrar_militar')
+            messages.add_message(request, constants.SUCCESS, 'Militar cadastrado com sucesso')
+            return redirect('/efetivo/cadastrar_militar')
+
+        except IntegrityError as e:
+            if 'unique constraint' in str(e).lower():
+                messages.add_message(request, constants.ERROR, 'Erro: CPF já cadastrado.')
+            else:
+                messages.add_message(request, constants.ERROR, f'Erro ao cadastrar militar: {e}')
+            return redirect('/efetivo/cadastrar_militar')
 
         except Exception as e:
             print(f"Erro ao salvar os dados: {e}")
-            messages.add_message(request, constants.ERROR, 'Erro ao cadastrar militar. Por favor, tente novamente.')
+            messages.add_message(request, constants.ERROR, f'Erro ao cadastrar militar: {e}')
             return redirect('/efetivo/cadastrar_militar')
-    
-
-
-# responsável por listar todos cadastros de militares
+        
 def listar_militar(request):
     if request.method == "GET":
       # Subconsulta para obter o último posto_grad de cada Cadastro

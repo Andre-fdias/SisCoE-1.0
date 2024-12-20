@@ -11,31 +11,31 @@
 <body class="w-4/5 mt-30 mx-auto">
 
     <div class="container mx-auto p-4 mt-30" id="cad_efetivo">
-    <fieldset class="  bg-blue-500  p-4 mb-8 rounded-md">
-        <legend>
-            {% if messages %}
-            {% for message in messages %}
-                <section class="alert {{ message.tags }}">
-                    {{ message }}
-                </section>
-            {% endfor %}
-            {% endif %}
-        </legend>
-        <div id="01" class="mb-4">
-            <div class="bg-blue-400 p-4 rounded-md">
-                <div class="flex flex-wrap items-center justify-between py-3">
-                    <div class="w-full md:w-9/12">
-                        <h1 class="text-3xl font-bold">Cadastrar Militar</h1>
-                    </div>
-                    <div class="w-full md:w-3/12 text-right">
-                        <button type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</button>
-                        
-                        <a href="{% url 'efetivo:listar_militar' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+        <fieldset class="  bg-gray-800  p-4 mb-8 rounded-md">
+            <legend>
+                {% if messages %}
+                {% for message in messages %}
+                    <section class="alert {{ message.tags }} p-4 mb-4 rounded-md">
+                        {{ message }}
+                    </section>
+                {% endfor %}
+                {% endif %}
+            </legend>
+            <div id="01" class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="w-full md:w-9/12">
+                            <h1 class="text-3xl text-gray-200">Cadastrar Militar</h1>
+                        </div>
+                        <div class="w-full md:w-3/12 text-right">
+                            <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
+                            
+                            <a href="{% url 'efetivo:listar_militar' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </fieldset>
+        </fieldset>
     <form class="needs-validation" novalidate action="{% url 'efetivo:cadastrar_militar' %}" method="POST" enctype="multipart/form-data">
         {% csrf_token %}
         <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
@@ -50,7 +50,7 @@
                         <option value="{{ i.0 }}">{{ i.1 }}</option>
                         {% endfor %}
                     </select>
-                    <div class="text-red-500 text-sm mt-1">Por favor, selecione um posto/graduação.</div>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="posto_grad_error">Por favor, selecione um posto/graduação.</div>
                 </div>
                 <div>
                     <label for="quadro" class="block text-sm font-medium text-gray-700">Quadro</label>
@@ -59,7 +59,7 @@
                         <option value="{{ i.0 }}">{{ i.1 }}</option>
                         {% endfor %}
                     </select>
-                    <div class="text-red-500 text-sm mt-1">Por favor, selecione um quadro.</div>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="quadro_error">Por favor, selecione um quadro.</div>
                 </div>
                 <div>
                     <label for="grupo" class="block text-sm font-medium text-gray-700">Grupo</label>
@@ -68,17 +68,17 @@
                         <option value="{{ i.0 }}">{{ i.1 }}</option>
                         {% endfor %}
                     </select>
-                    <div class="text-red-500 text-sm mt-1">Por favor, selecione um grupo.</div>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="grupo_error">Por favor, selecione um grupo.</div>
                 </div>
                 <div>
                     <label for="re" class="block text-sm font-medium text-gray-700">RE</label>
-                    <input type="number" name="re" id="re" placeholder="Digite o RE ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                    <div class="text-red-500 text-sm mt-1">Por favor, insira o RE.</div>
+                    <input type="text" name="re" id="re" placeholder="Digite o RE ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="re_error">Por favor, insira o RE.</div>
                 </div>
                 <div>
                     <label for="dig" class="block text-sm font-medium text-gray-700">Dig</label>
                     <input type="text" name="dig" id="dig" placeholder="Digite o Dígito ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                    <div class="text-red-500 text-sm mt-1">Por favor, insira o dígito.</div>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="dig_error">Por favor, insira o dígito.</div>
                 </div>
                 <div>
                     <label for="genero" class="block text-sm font-medium text-gray-700">Gênero</label>
@@ -87,24 +87,23 @@
                         <option value="{{ i.0 }}">{{ i.1 }}</option>
                         {% endfor %}
                     </select>
-                    <div class="text-red-500 text-sm mt-1">Por favor, selecione um gênero.</div>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="genero_error">Por favor, selecione um gênero.</div>
                 </div>
                 <div class="col-span-2">
                     <label for="nome" class="block text-sm font-medium text-gray-700">Nome</label>
                     <input type="text" name="nome" id="nome" placeholder="Digite o nome do militar ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                    <div class="text-red-500 text-sm mt-1">Por favor, insira o nome.</div>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="nome_error">Por favor, insira o nome.</div>
                 </div>
                 <div>
                     <label for="nome_de_guerra" class="block text-sm font-medium text-gray-700">Nome de Guerra</label>
                     <input type="text" name="nome_de_guerra" id="nome_de_guerra" placeholder="Digite o nome de Guerra ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                    <div class="text-red-500 text-sm mt-1">Por favor, insira o nome de guerra.</div>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="nome_de_guerra_error">Por favor, insira o nome de guerra.</div>
                 </div>
             </div>
         </fieldset>
-    </form>
 
 
-    <fieldset class="border  bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+    <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
         <div class="mb-4">
             <p class="text-lg font-bold">Situação Funcional</p>
         </div>
@@ -116,7 +115,7 @@
                     <option value="{{ i.0 }}" {% if i.1 == "Efetivo" %}selected{% endif %}>{{ i.1 }}</option>
                     {% endfor %}
                 </select>
-                <div class="text-red-500 text-sm mt-1">Por favor, selecione uma situação.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="situacao_error">Por favor, selecione uma situação.</div>
             </div>
             <div>
                 <label for="cad_efetivo" class="block text-sm font-medium text-gray-700">Detalhamento</label>
@@ -125,7 +124,7 @@
                     <option value="{{ i.0 }}" {% if i.1 == "Ativo" %}selected{% endif %}>{{ i.1 }}</option>
                     {% endfor %}
                 </select>
-                <div class="text-red-500 text-sm mt-1">Por favor, selecione um Detalhamento.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="cad_efetivo_error">Por favor, selecione um Detalhamento.</div>
             </div>
             <div>
                 <label for="sgb" class="block text-sm font-medium text-gray-700">SGB</label>
@@ -134,7 +133,7 @@
                     <option value="{{ i.0 }}">{{ i.1 }}</option>
                     {% endfor %}
                 </select>
-                <div class="text-red-500 text-sm mt-1">Por favor, selecione um SGB.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="sgb_error">Por favor, selecione um SGB.</div>
             </div>
             <div>
                 <label for="posto_secao" class="block text-sm font-medium text-gray-700">Posto ou Seção</label>
@@ -143,7 +142,7 @@
                     <option value="{{ i.0 }}">{{ i.1 }}</option>
                     {% endfor %}
                 </select>
-                <div class="text-red-500 text-sm mt-1">Por favor, selecione um posto ou seção.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="posto_secao_error">Por favor, selecione um posto ou seção.</div>
             </div>
             <div>
                 <label for="esta_adido" class="block text-sm font-medium text-gray-700">Está Adido a outro Posto ou Seção?</label>
@@ -152,7 +151,7 @@
                     <option value="{{ i.0 }}">{{ i.1 }}</option>
                     {% endfor %}
                 </select>
-                <div class="text-red-500 text-sm mt-1">Por favor, selecione se está adido a outro posto ou seção.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="esta_adido_error">Por favor, selecione se está adido a outro posto ou seção.</div>
             </div>
             <div>
                 <label for="funcao" class="block text-sm font-medium text-gray-700">Função que exerce</label>
@@ -161,7 +160,7 @@
                     <option value="{{ i.0 }}">{{ i.1 }}</option>
                     {% endfor %}
                 </select>
-                <div class="text-red-500 text-sm mt-1">Por favor, selecione uma função.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="funcao_error">Por favor, selecione uma função.</div>
             </div>
             <div>
                 <label for="op_adm" class="block text-sm font-medium text-gray-700">É Operacional ou Administrativo</label>
@@ -170,17 +169,17 @@
                     <option value="{{ i.0 }}">{{ i.1 }}</option>
                     {% endfor %}
                 </select>
-                <div class="text-red-500 text-sm mt-1">Por favor, selecione se é operacional ou administrativo.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="op_adm_error">Por favor, selecione se é operacional ou administrativo.</div>
             </div>
             <div>
                 <label for="apresentacao_na_unidade" class="block text-sm font-medium text-gray-700">Data da Apresentação na Unidade</label>
                 <input type="date" name="apresentacao_na_unidade" id="apresentacao_na_unidade" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira a data da apresentação na unidade.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="apresentacao_na_unidade_error">Por favor, insira a data da apresentação na unidade.</div>
             </div>
         </div>
     </fieldset>
 
-    <fieldset class="border bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+    <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
         <div class="mb-4">
             <p class="text-lg font-bold">Datas</p>
         </div>
@@ -188,32 +187,31 @@
             <div>
                 <label for="nasc" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
                 <input type="date" name="nasc" id="nasc" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira a data de nascimento.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="nasc_error">Por favor, insira a data de nascimento.</div>
             </div>
             <div>
                 <label for="matricula" class="block text-sm font-medium text-gray-700">Data de Matrícula</label>
                 <input type="date" name="matricula" id="matricula" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira a data de matrícula.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="matricula_error">Por favor, insira a data de matrícula.</div>
             </div>
             <div>
                 <label for="admissao" class="block text-sm font-medium text-gray-700">Data de Admissão</label>
                 <input type="date" name="admissao" id="admissao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira a data de admissão.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="admissao_error">Por favor, insira a data de admissão.</div>
             </div>
             <div>
                 <label for="previsao_de_inatividade" class="block text-sm font-medium text-gray-700">Data de Previsão de Inatividade</label>
                 <input type="date" name="previsao_de_inatividade" id="previsao_de_inatividade" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira a data de previsão de inatividade.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="previsao_de_inatividade_error">Por favor, insira a data de previsão de inatividade.</div>
             </div>
             <div>
                 <label for="ultima_promocao" class="block text-sm font-medium text-gray-700">Data da Última Promoção</label>
                 <input type="date" name="ultima_promocao" id="ultima_promocao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira a data da última promoção.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="ultima_promocao_error">Por favor, insira a data da última promoção.</div>
             </div>
         </div>
     </fieldset>
-
-    <fieldset class="border bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+    <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
         <div class="mb-4">
             <p class="text-lg font-bold">Documentos e Contatos</p>
         </div>
@@ -221,45 +219,45 @@
             <div>
                 <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
                 <input type="text" name="cpf" id="cpf" placeholder="xxx.xxx.xxx-xx" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira o CPF.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="cpf_error">Por favor, insira o CPF.</div>
             </div>
             <div>
                 <label for="rg" class="block text-sm font-medium text-gray-700">RG</label>
                 <input type="text" name="rg" id="rg" placeholder="xx.xxxx.xxx-x" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira o RG.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="rg_error">Por favor, insira o RG.</div>
             </div>
             <div>
                 <label for="email_funcional" class="block text-sm font-medium text-gray-700">Email</label>
                 <input type="email" name="email_funcional" id="email_funcional" placeholder=".......@policiamilitar.sp.gov.br" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira um email válido.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="email_funcional_error">Por favor, insira um email válido.</div>
             </div>
             <div>
                 <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
                 <input type="tel" name="telefone" id="telefone" placeholder="(xx) xxxxx-xxxx" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
-                <div class="text-red-500 text-sm mt-1">Por favor, insira um telefone válido.</div>
+                <div class="text-red-500 text-sm mt-1 hidden" id="telefone_error">Por favor, insira um telefone válido.</div>
             </div>
         </div>
     </fieldset>
 
-    <fieldset class="border bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+    <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
         <div class="mb-4">
             <p class="text-lg font-bold">Averbação</p>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
                 <label for="tempo_para_averbar_inss" class="block text-sm font-medium text-gray-700">INSS</label>
-                <input type="text" name="tempo_para_averbar_inss" id="tempo_para_averbar_inss" placeholder="Se não possuir lançar 0 ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                <div class="text-red-500 text-sm mt-1">Por favor, insira o tempo para averbar INSS.</div>
+                <input type="text" name="tempo_para_averbar_inss" id="tempo_para_averbar_inss" placeholder="Se não possuir lançar 0 ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1 hidden" id="tempo_para_averbar_inss_error">Por favor, insira o tempo para averbar INSS.</div>
             </div>
             <div>
                 <label for="tempo_para_averbar_militar" class="block text-sm font-medium text-gray-700">Militar</label>
-                <input type="text" name="tempo_para_averbar_militar" id="tempo_para_averbar_militar" placeholder="Se não possuir lançar 0 ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
-                <div class="text-red-500 text-sm mt-1">Por favor, insira o tempo para averbar militar.</div>
+                <input type="text" name="tempo_para_averbar_militar" id="tempo_para_averbar_militar" placeholder="Se não possuir lançar 0 ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1 hidden" id="tempo_para_averbar_militar_error">Por favor, insira o tempo para averbar militar.</div>
             </div>
         </div>
     </fieldset>
 
-    <fieldset class="border bg-gray-200  border-gray-300 p-4 mb-8 rounded-md">
+    <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
         <div class="mb-4">
             <p class="text-lg font-bold">Imagem de Perfil</p>
         </div>
@@ -268,25 +266,118 @@
             <br><br>
             <img id="preview" src="#" alt="Pré-visualização da imagem" style="display: none; max-width: 200px;">
             <br><br>
-            <input class="mt-1 block w-full text-base border-gray-300  border-blue-400   focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)">
-            <div class="text-red-500 text-sm mt-1">Por favor, envie uma imagem de perfil.</div>
+            <input class="mt-1 block w-full text-base border-gray-300 border-blue-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)" required>
+            <div class="text-red-500 text-sm mt-1 hidden" id="image_error">Por favor, envie uma imagem de perfil.</div>
+        </div>
+    </fieldset>
+    <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+        <div class="mb-4">
+            <p class="text-lg font-bold">Motivo do Cadastro</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label for="alteracao" class="block text-sm font-medium text-gray-700">Escolha abaixo o motivo do cadastro</label>
+                <select name="alteracao" id="alteracao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    {% for i in alteracao %}
+                    <option value="{{ i.0 }}">{{ i.1 }}</option>
+                    {% endfor %}
+                </select>
+           </div>
+       
         </div>
     </fieldset>
 
-    <fieldset class="border bg-blue-400 border-blue-400 p-4 mb-8 rounded-md">
+    <fieldset class="bg-gray-800  p-4 mb-8 rounded-md">
         <div class="mb-4">
             <div class="flex items-center justify-between py-3">
                 <div class="w-full md:w-auto">
-                    <input type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" value="Cadastrar">
+                   <input type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" value="Cadastrar">
                 </div>
                 <div class="flex space-x-2">
-                    <button type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</button>
+                    <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
                             
                     <a href="{% url 'efetivo:listar_militar' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
                 </div>
             </div>
         </div>
     </fieldset>
-    </div>
+   </form>
+  </div>
 </body>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Previne o submit do formulário ao pressionar Enter em qualquer campo de entrada
+    document.querySelectorAll('input, select').forEach(function(element) {
+        element.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+            }
+        });
+    });
+
+    // Validação do formulário e submit apenas com o botão "Cadastrar"
+    document.querySelector('form').addEventListener('submit', function(event) {
+        let isValid = true;
+
+        const fields = [
+            { id: 'posto_grad', errorId: 'posto_grad_error' },
+            { id: 'quadro', errorId: 'quadro_error' },
+            { id: 'grupo', errorId: 'grupo_error' },
+            { id: 're', errorId: 're_error' },
+            { id: 'dig', errorId: 'dig_error' },
+            { id: 'genero', errorId: 'genero_error' },
+            { id: 'nome', errorId: 'nome_error' },
+            { id: 'nome_de_guerra', errorId: 'nome_de_guerra_error' },
+            { id: 'situacao', errorId: 'situacao_error' },
+            { id: 'cad_efetivo', errorId: 'cad_efetivo_error' },
+            { id: 'sgb', errorId: 'sgb_error' },
+            { id: 'posto_secao', errorId: 'posto_secao_error' },
+            { id: 'esta_adido', errorId: 'esta_adido_error' },
+            { id: 'funcao', errorId: 'funcao_error' },
+            { id: 'op_adm', errorId: 'op_adm_error' },
+            { id: 'apresentacao_na_unidade', errorId: 'apresentacao_na_unidade_error' },
+            { id: 'nasc', errorId: 'nasc_error' },
+            { id: 'matricula', errorId: 'matricula_error' },
+            { id: 'admissao', errorId: 'admissao_error' },
+            { id: 'previsao_de_inatividade', errorId: 'previsao_de_inatividade_error' },
+            { id: 'ultima_promocao', errorId: 'ultima_promocao_error' },
+            { id: 'cpf', errorId: 'cpf_error' },
+            { id: 'rg', errorId: 'rg_error' },
+            { id: 'email_funcional', errorId: 'email_funcional_error' },
+            { id: 'telefone', errorId: 'telefone_error' },
+            { id: 'tempo_para_averbar_inss', errorId: 'tempo_para_averbar_inss_error' },
+            { id: 'tempo_para_averbar_militar', errorId: 'tempo_para_averbar_militar_error' },
+            { id: 'image', errorId: 'image_error' }
+        ];
+
+        fields.forEach(field => {
+            const input = document.getElementById(field.id);
+            if (!input.value) {
+                document.getElementById(field.errorId).classList.remove('hidden');
+                isValid = false;
+            } else {
+                document.getElementById(field.errorId).classList.add('hidden');
+            }
+        });
+
+        if (!isValid) {
+            event.preventDefault();
+        }
+    });
+
+    // Função para pré-visualizar a imagem
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const preview = document.getElementById('preview');
+            preview.src = reader.result;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    document.getElementById('image').addEventListener('change', previewImage);
+});
+</script>
 {% endblock 'body' %}
