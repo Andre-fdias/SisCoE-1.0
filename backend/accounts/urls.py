@@ -12,4 +12,5 @@ urlpatterns = [
     path('reset/done/', v.MyPasswordResetComplete.as_view(), name='password_reset_complete'),  # noqa E501
     path('password_reset/', v.MyPasswordReset.as_view(), name='password_reset'),  # noqa E501
     path('password_reset/done/', v.MyPasswordResetDone.as_view(), name='password_reset_done'),  # noqa E501
+   path('verificar_cpf/', v.verificar_cpf, name='verificar_cpf'),  # Adiciona a URL para verificação de CPF
 ]

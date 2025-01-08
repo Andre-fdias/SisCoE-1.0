@@ -20,9 +20,13 @@
                 <div class=" bg-gray-800 rounded-xl shadow-2xl  w-full p-8 transition-all duration-300 animate-fade-in">
                     <div class="flex flex-col md:flex-row">
                         <div class="md:w-1/3 text-center mb-8 md:mb-0">
-                            <img src="https://i.pravatar.cc/300" alt="Profile Picture" class="rounded-full w-60 h-60 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105">
-                            <h1 class="text-2xl font-bold text-gray-300  mb-2">{{ cadastro.nome_de_guerra }}</h1>
-                            <p class="text-gray-300 ">{{ promocao.posto_grad }}</p><br>
+                            {% if cadastro.imagens.exists %}
+                            <img src="{{ cadastro.imagens.last.image.url }}" alt="Profile Picture" class="rounded-full w-60 h-60 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 object-cover">
+                        {% else %}
+                            Sem imagem
+                        {% endif %}
+                            
+                            <p class="text-gray-300 "> {{ cadastro.promocoes.last.grad|safe }}</p><br>
                                 <!-- Botão para abrir o modal de troca de foto --> 
                                 <button type="button" class=" mt-4  text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2" data-modal-target="#trocaFotoModal">
                                     Trocar Foto
@@ -49,7 +53,7 @@
                                                     <br><br>
                                                     <img id="preview" src="#" alt="Pré-visualização da imagem" class="hidden max-w-xs">
                                                     <br><br>
-                                                    <input class="block w-full text-sm text-gray-900  rounded-lg cursor-pointer bg-gray-200 focus:outline-none" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)">
+                                                    <input class="block w-full text-sm text-gray-900 rounded-lg cursor-pointer bg-gray-200 focus:outline-none" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)">
                                                     <div class="mt-1 text-sm text-gray-400">Por favor, envie uma imagem de perfil.</div>
                                                 </div>
                                                 <div class="flex items-center justify-end space-x-4">
@@ -261,7 +265,7 @@
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800 dark:text-blue-900" viewBox="0 0 20 20" fill="currentColor">
                                         <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
                                     </svg>
-                                    {{ cadastro.detalhessituacao.sgb }} -  {{cadastro.detalhessituacao.posto_secao }}
+                                    {{ cadastro.detalhes_situacao.last.sgb }}-     {{ cadastro.detalhes_situacao.last.posto_secao }}
 
                                 </li>
                             </ul>
@@ -292,7 +296,7 @@
                                 </button>
         
                             
-                                <!-- Primeiro Modal (Edição da Situação Atual) -->
+                             <!-- Primeiro Modal (Edição da Situação Atual) -->
                                 <div id="editSituacaoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
                                     <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
                                         <div class="flex justify-between bg-gray-800 p-4 ">
@@ -304,7 +308,7 @@
                                             <form id="editSituacaoForm" method="POST" action="{% url 'efetivo:editar_situacao_atual' cadastro.id %}">
                                                 {% csrf_token %}
                                                 <!-- Campos do formulário -->
-                                                 <br>
+                                                <br>
                                                 <div class="grid grid-cols-2 gap-4">
                                                     <div>
                                                         <label for="situacao_atual" class="block mb-2 text-sm font-medium text-gray-400 ">Situação Atual</label>
@@ -323,7 +327,6 @@
                                                 <div class="flex justify-end space-x-2">                                                  
                                                     <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"  data-modal-close="#editModal">Cancelar</button>
                                                     <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
-                                                    
                                                 </div>
                                             </form>
                                         </div>
@@ -331,25 +334,24 @@
                                 </div>
         
                             
-                                <!-- Segundo Modal (Cadastro da Nova Situação) -->
+                               <!-- Segundo Modal (Cadastro da Nova Situação) -->
                                 <div id="newSituacaoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
                                     <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
-                                        <div class="flex justify-between  bg-gray-800 items-center p-4 text-gray-300">
+                                        <div class="flex justify-between bg-gray-800 items-center p-4 text-gray-300">
                                             <h5 class="text-xl font-medium">Cadastrar Nova Situação</h5>
                                             <button type="button" class="text-gray-500 hover:text-gray-700 w-5 h-5" data-modal-close="#newSituacaoModal">&times;</button>
                                         </div>
                                         <div class="p-4">
-                                            
                                             <!-- Formulário de Cadastro -->
                                             <form id="newSituacaoForm" method="POST" action="{% url 'efetivo:cadastrar_nova_situacao' cadastro.id %}" class="row g-3 needs-validation" novalidate>
                                                 {% csrf_token %}
                                                 
                                                 <!-- Campos do formulário -->
-                                                <h2 class="text-lg  text-gray-200 mb-4">Nova Situação</h2>
+                                                <h2 class="text-lg text-gray-200 mb-4">Nova Situação</h2>
                                                 <br>
                                                 <div class="grid grid-cols-3 gap-4">
                                                     <div>
-                                                        <label for="situacao" class="block mb-2 text-sm font-medium text-gray-400 ">Situação</label>
+                                                        <label for="situacao" class="block mb-2 text-sm font-medium text-gray-400">Situação</label>
                                                         <select name="situacao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="situacao" required>
                                                             {% for i in situacao %}
                                                             <option value="{{ i.0 }}">{{ i.1 }}</option>
@@ -360,7 +362,18 @@
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <label for="sgb" class="block mb-2 text-sm font-medium text-gray-400 ">SGB</label>
+                                                        <label for="cat_efetivo" class="block mb-2 text-sm font-medium text-gray-400">Detalhamento</label>
+                                                        <select name="cat_efetivo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="situacao" required>
+                                                            {% for i in cat_efetivo %}
+                                                            <option value="{{ i.0 }}">{{ i.1 }}</option>
+                                                            {% endfor %}
+                                                        </select>
+                                                        <div class="text-red-500 text-sm mt-1 hidden">
+                                                            Por favor, selecione a nova situação.
+                                                        </div>
+                                                    </div>
+                                                    <div>
+                                                        <label for="sgb" class="block mb-2 text-sm font-medium text-gray-400">SGB</label>
                                                         <select name="sgb" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="sgb" required>
                                                             {% for i in sgb %}
                                                             <option value="{{ i.0 }}">{{ i.1 }}</option>
@@ -371,7 +384,7 @@
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <label for="posto_secao" class="block mb-2 text-sm font-medium text-gray-400 ">Posto ou Seção</label>
+                                                        <label for="posto_secao" class="block mb-2 text-sm font-medium text-gray-400">Posto ou Seção</label>
                                                         <select name="posto_secao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="posto_secao" required>
                                                             {% for i in posto_secao %}
                                                             <option value="{{ i.0 }}">{{ i.1 }}</option>
@@ -382,7 +395,7 @@
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <label for="esta_adido" class="block mb-2 text-sm font-medium text-gray-400 ">Está Adido?</label>
+                                                        <label for="esta_adido" class="block mb-2 text-sm font-medium text-gray-400">Está Adido?</label>
                                                         <select name="esta_adido" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="esta_adido" required>
                                                             {% for i in esta_adido %}
                                                             <option value="{{ i.0 }}">{{ i.1 }}</option>
@@ -393,7 +406,7 @@
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <label for="funcao" class="block mb-2 text-sm font-medium text-gray-400 ">Função que exerce</label>
+                                                        <label for="funcao" class="block mb-2 text-sm font-medium text-gray-400">Função que exerce</label>
                                                         <select name="funcao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="funcao" required>
                                                             {% for i in funcao %}
                                                             <option value="{{ i.0 }}">{{ i.1 }}</option>
@@ -404,7 +417,7 @@
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <label for="op_adm" class="block mb-2 text-sm font-medium text-gray-400 ">Operacional ou Adm</label>
+                                                        <label for="op_adm" class="block mb-2 text-sm font-medium text-gray-400">Operacional ou Adm</label>
                                                         <select name="op_adm" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="op_adm" required>
                                                             {% for i in op_adm %}
                                                             <option value="{{ i.0 }}">{{ i.1 }}</option>
@@ -415,25 +428,22 @@
                                                         </div>
                                                     </div>
                                                     <div>
-                                                        <label for="apresentacao_na_unidade" class="block mb-2 text-sm font-medium text-gray-400 ">Data da Apresentação </label>
+                                                        <label for="apresentacao_na_unidade" class="block mb-2 text-sm font-medium text-gray-400">Data da Apresentação</label>
                                                         <input type="date" name="apresentacao_na_unidade" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="apresentacao_na_unidade" required>
                                                         <div class="text-red-500 text-sm mt-1 hidden">
                                                             Por favor, insira a data da apresentação na unidade.
                                                         </div>
                                                     </div>
-                                                    <br>
-                                                    <br>
-                                                </div> <div class="flex justify-end space-x-2">
-
-                                                    <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"  data-modal-close="#editModal">Cancelar</button>
+                                                </div>
+                                                <br>
+                                                <div class="flex justify-end space-x-2">
+                                                    <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#newSituacaoModal">Cancelar</button>
                                                     <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
-                                                  
                                                 </div>
                                             </form>
                                         </div>
                                     </div>
                                 </div>
-        
                                 <!-- Modal de Confirmação -->
                                 <div id="confirmationModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
                                     <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-md">
@@ -511,7 +521,7 @@
                             <hr class="my-4">
                             <h4 class="text-1xl text-gray-700  mb-4"><b>CPF:</b> <span>{{ cadastro.cpf }}</span></h4>
                             <h4 class="text-1xl text-gray-700  mb-4"><b>RG:</b> <span>{{ cadastro.rg }}</span></h4>
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>Email:</b> <span>{{ cadastro.email_funcional }}</span></h4>
+                            <h4 class="text-1xl text-gray-700  mb-4"><b>Email:</b> <span>{{ cadastro.email }}</span></h4>
                             <h4 class="text-1xl text-gray-700  mb-4"><b>Telefone:</b> <span>{{ cadastro.telefone }}</span></h4><br>
                             <br><br>
 
@@ -591,8 +601,8 @@
                                                                     <input type="text" name="tempo_para_averbar_militar" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="tempo_para_averbar_militar" value="{{ cadastro.tempo_para_averbar_militar }}">
                                                                 </div>
                                                                 <div>
-                                                                    <label for="email_funcional" class="block text-sm font-medium text-gray-400 dark:text-white">Email</label>
-                                                                    <input type="email" name="email_funcional" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="email_funcional" value="{{ cadastro.email_funcional }}" required>
+                                                                    <label for="email" class="block text-sm font-medium text-gray-400 dark:text-white">Email</label>
+                                                                    <input type="email" name="email" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="email" value="{{ cadastro.email}}" required>
                                                                 </div>
                                                                 <div>
                                                                     <label for="telefone" class="block text-sm font-medium text-gray-400 dark:text-white">Telefone</label>

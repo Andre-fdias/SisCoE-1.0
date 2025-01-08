@@ -5,7 +5,11 @@ from django.db import models
 from django.utils.safestring import mark_safe
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-
+import re
+from django.core.exceptions import ValidationError
+from PIL import Image, ImageDraw, ImageFont
+import os
+from django.contrib.auth import get_user_model
 
 
 
@@ -18,8 +22,21 @@ class Cadastro(models.Model):
         ("Feminino", "Feminino")
     )
 
+    alteracao_choices = (
+        ("", ""),
+        ("Movimentação", "Movimentação"),
+        ("Promoção", "Promoção"),
+        ("Foto", "Foto"),
+        ("Averbação", "Averbação"),
+        ("Correção", "Correção"),
+        ("Documento", "Documento"),
+        ("Contato", "Contato"),
+        ("Inclusão", "Inclusão"),
+    )
+    n_choices = [(i, f'{i:02d}') for i in range(1, 9)]
+    
     id = models.AutoField(primary_key=True)
-    re = models.IntegerField(blank=False, null=False, unique=True)
+    re = models.CharField(max_length=6,  blank=False, null=False, unique=True)
     dig = models.CharField(max_length=1, blank=False, null=False)
     nome = models.CharField(max_length=50, blank=False, null=False)
     nome_de_guerra = models.CharField(max_length=20, blank=False, null=False)
@@ -32,17 +49,21 @@ class Cadastro(models.Model):
     rg = models.CharField(max_length=14, blank=False, null=False)
     tempo_para_averbar_inss = models.IntegerField(blank=True, null=True)
     tempo_para_averbar_militar = models.IntegerField(blank=True, null=True)
-    email= models.EmailField(max_length=100, unique=True, blank=False, null=False)
+    email = models.EmailField(max_length=100, unique=True, blank=False, null=False)
     telefone = models.CharField(max_length=14, blank=False, null=False)
+    numero_adicional = models.IntegerField(choices=n_choices, blank=False, null=False)
+    data_ultimo_adicional = models.DateField(blank=False, null=False)
+    numero_lp = models.IntegerField(choices=n_choices, blank=False, null=False)
+    data_ultimo_lp = models.DateField(blank=False, null=False)
+    alteracao = models.CharField(max_length=20, blank=False, null=False, choices=alteracao_choices)
     create_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='cadastros')
-    
-    @property
-    def full_name(self):
-        return f'  {self.pk}  {self.re} {self.dig} {self.nome_de_guerra or ""}'.strip()
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cadastros', default=1)  # 
 
+
+    
+  
     def __str__(self):
-        return self.full_name
+        return f'{self.re} {self.dig} {self.nome_de_guerra}'
 
     @property
     def idade_detalhada(self):
@@ -75,17 +96,18 @@ class Cadastro(models.Model):
         diferenca = hoje - self.previsao_de_inatividade
         return diferenca.days
 
+    
     @property
     def inativa_status(self):
         dias = self.previsao_de_inatividade_dias()
         if dias < 1:
-            return mark_safe('<span class="badge bg-success">Sim</span>')
+            return mark_safe('<span class="bg-green-500 text-white px-2 py-1 rounded">Sim</span>')
         if dias < 180:
-            return mark_safe('<span class="badge bg-warning">Falta menos de 06 meses</span>')
+            return mark_safe('<span class="bg-yellow-500 text-white px-2 py-1 rounded">Falta menos de 06 meses</span>')
         if dias < 367:
-            return mark_safe('<span class="badge bg-secondary">Falta menos de 1 ano</span>')
-        return mark_safe('<span class="badge bg-danger">Não</span>')
-
+            return mark_safe('<span class="bg-gray-500 text-white px-2 py-1 rounded">Falta menos de 1 ano</span>')
+        return mark_safe('<span class="bg-red-500 text-white px-2 py-1 rounded">Não</span>')
+    
     @property
     def tempo_para_averbar_inss_inteiro(self):
         return self.tempo_para_averbar_inss
@@ -93,37 +115,44 @@ class Cadastro(models.Model):
     @property
     def tempo_para_averbar_militar_inteiro(self):
         return self.tempo_para_averbar_militar
+    
 
     class Meta:
         ordering = ('re',)
-        verbose_name = 'cadastro'
-        verbose_name_plural = 'cadastros'
+
+
+class CPF(models.Model):
+    id = models.IntegerField(primary_key=True)
+    cpf = models.CharField(max_length=14)
+    re = models.CharField(max_length=6)
+
+@receiver(post_save, sender=Cadastro)
+def create_cpf_record(sender, instance, created, **kwargs):
+    if created:
+        CPF.objects.create(
+            id=instance.id,
+            cpf=instance.cpf,
+            re=instance.re
+        )
+
+
 
 
 # responsavel pelo cadastro sa situação funcional de militares
 class DetalhesSituacao(models.Model):
 
-    situacao_choices = (
+    situacao_choices=(
         ("", " "),
-        ("Efetivo", "Efetivo"),
+        ("Efetivo","Efetivo"),
         ("Exonerado a Pedido", "Exonerado a Pedido"),
-        ("Exonerado Ex-Ofício", "Exonerado Ex-Ofício"),
+        ("Exonerado Ex-Ofício","Exonerado Ex-Ofício"),
         ("Reserva a Pedido", "Reserva a Pedido"),
         ("Transferido", "Transferido"),
         ("Mov. Interna", "Mov. Interna"),
-    )
-    cat_efetivo_choices = (
-        ("", " "),
-        ("Ativo", " Ativo"),
-        ("LTS", "LTS"),
-        ("LSV", "LSV"),
-        ("CAO", "CAO"),
-        ("CFS", "CFS"),
-        ("ESB", "ESB")
-    )
-    sgb_choices = (
-        ("", " "),
-        ("EM", " EM"),
+       )
+    sgb_choices=( 
+        ("", " "),                                                
+        ("EM"," EM"),
         ("1ºSGB", "1ºSGB"),
         ("2ºSGB", "2ºSGB"),
         ("3ºSGB", "3ºSGB"),
@@ -131,56 +160,57 @@ class DetalhesSituacao(models.Model):
         ("5ºSGB", "5ºSGB")
     )
 
-    op_adm_choices = (
-        ("", " "),
-        ("Administrativo", " Administrativo"),
+    op_adm_choices=( 
+        ("", " "),                                                
+        ("Administrativo"," Administrativo"),
         ("Operacional", "Operacional"),
     )
 
-    funcao_choices = (
-        ("", " "),
-        ("AUX (ADM)", "AUX (ADM)"),
-        ("AUX B1", "AUX B1"),
-        ("AUX B2", "AUX B2"),
-        ("AUX B3", "AUX B3"),
-        ("AUX B4", "AUX B4"),
-        ("AUX B5", "AUX B5"),
-        ("AUXILIARES", "AUXILIARES"),
-        ("B.EDUCADOR", "B.EDUCADOR"),
-        ("CH DE SETOR", "CH DE SETOR"),
-        ("CH SAT", "CH SAT"),
-        ("CH SEC ADM", "CH SEC ADM"),
-        ("CH_SEÇÃO", "CH_SEÇÃO"),
-        ("CMT", "CMT"),
-        ("CMT 1ºSGB", "CMT 1ºSGB"),
-        ("AUX (MOTOMEC)", "AUX (MOTOMEC)"),
-        ("CMT 2ºSGB", "CMT 2ºSGB"),
-        ("CMT 3ºSGB", "CMT 3ºSGB"),
-        ("CMT 4ºSGB", "CMT 4ºSGB"),
-        ("CMT 5ºSGB", " CMT 5ºSGB"),
-        ("CMT PRONTIDÃO", "CMT PRONTIDÃO"),
-        ("CMT_BASE", "CMT_BASE"),
-        ("CMT_GB", "CMT_GB"),
-        ("CMT_SGB", "CMT_SGB"),
-        ("COBOM (ATENDENTE)", "COBOM (ATENDENTE)"),
-        ("COBOM (DESPACHADOR)", "COBOM (DESPACHADOR)"),
-        ("AUX (NAT)", "3 - AUX (NAT)"),
-        ("COBOM (SUPERVISOR)", "COBOM (SUPERVISOR)"),
-        ("ESB", "ESB"),
-        ("ESSGT", "ESSGT"),
-        ("LSV", "LSV"),
-        ("LTS", "LTS"),
-        ("MECÂNICO", "MECÂNICO"),
-        ("MOTORISTA", "MOTORISTA"),
-        ("OBRAS", "OBRAS"),
-        ("AUX (SAT)", "AUX (SAT)"),
-        ("S/FUNÇ_CAD", "S/FUNÇ_CAD"),
-        ("TELEFONISTA", "TELEFONISTA"),
-        ("TELEMÁTICA", "TELEMÁTICA"),
-        ("AUX (SJD)", "AUX (SJD)"),
-        ("SUBCMT", "SUBCMT"),
-        ("AUX (UGE)", "AUX (UGE)"),
 
+    funcao_choices=(
+        ("", " "),
+        ("AUX (ADM)" ,"AUX (ADM)" ),
+        ("AUX B1" ,"AUX B1" ),
+        ("AUX B2" ,"AUX B2" ),
+        ("AUX B3" ,"AUX B3" ),
+        ("AUX B4" ,"AUX B4" ),
+        ("AUX B5" ,"AUX B5" ),
+        ("AUXILIARES" ,"AUXILIARES" ),
+        ("B.EDUCADOR" ,"B.EDUCADOR" ),
+        ("CH DE SETOR" ,"CH DE SETOR" ),
+        ("CH SAT" ,"CH SAT" ),
+        ("CH SEC ADM" ,"CH SEC ADM" ),
+        ("CH_SEÇÃO" ,"CH_SEÇÃO" ),
+        ("CMT" ,"CMT" ),
+        ("CMT 1ºSGB" ,"CMT 1ºSGB" ),
+        ("AUX (MOTOMEC)" ,"AUX (MOTOMEC)" ),
+        ("CMT 2ºSGB" ,"CMT 2ºSGB" ),
+        ("CMT 3ºSGB" ,"CMT 3ºSGB" ),
+        ("CMT 4ºSGB" ,"CMT 4ºSGB" ),
+        ("CMT 5ºSGB" ," CMT 5ºSGB" ),
+        ("CMT PRONTIDÃO" ,"CMT PRONTIDÃO" ),
+        ("CMT_BASE" ,"CMT_BASE" ),
+        ("CMT_GB" ,"CMT_GB" ),
+        ("CMT_SGB" ,"CMT_SGB" ),
+        ("COBOM (ATENDENTE)" ,"COBOM (ATENDENTE)" ),
+        ("COBOM (DESPACHADOR)" ,"COBOM (DESPACHADOR)" ),
+        ("AUX (NAT)" ,"3 - AUX (NAT)" ),
+        ("COBOM (SUPERVISOR)" ,"COBOM (SUPERVISOR)" ),
+        ("ESB" ,"ESB" ),
+        ("ESSGT" ,"ESSGT" ),
+        ("LSV" ,"LSV" ),
+        ("LTS" ,"LTS" ),
+        ("MECÂNICO" ,"MECÂNICO" ),
+        ("MOTORISTA" ,"MOTORISTA" ),
+        ("OBRAS" ,"OBRAS" ),
+        ("AUX (SAT)" ,"AUX (SAT)" ),
+        ("S/FUNÇ_CAD" ,"S/FUNÇ_CAD" ),
+        ("TELEFONISTA" ,"TELEFONISTA" ),
+        ("TELEMÁTICA" ,"TELEMÁTICA" ),
+        ("AUX (SJD)" ,"AUX (SJD)" ),
+        ("SUBCMT" ,"SUBCMT" ),
+        ("AUX (UGE)" ,"AUX (UGE)" ),
+      
     )
     posto_secao_choices = (
         ("", " "),
@@ -318,10 +348,20 @@ class DetalhesSituacao(models.Model):
         ("703155900 - NUCL ATIV TEC 5º SGB", "NUCL ATIV TEC 5º SGB"),
     )
 
+    cat_efetivo_choices=( 
+        ("", " "),                                                
+        ("ATIVO","ATIVO"),
+        ("LSV", "LSV"),
+        ("LTS", "LTS"),
+        ("LTS FAMILIA", "LTS FAMILIA"),
+        ("CONVAL", "CONVAL"),
+        ("ELEIÇÃO", "ELEIÇAO")
+    )
+
     cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE,
-                                 related_name='detalhes_situacoes', null=True, blank=True)
-    cat_efetivo = models.CharField(max_length=30, blank=False, null=False, choices=cat_efetivo_choices,    default="Efetivo")
-    situacao = models.CharField(max_length=30, blank=False, null=False, choices=situacao_choices,    default="Ativo")
+                                 related_name='detalhes_situacao')
+    situacao = models.CharField(max_length=30, blank=False, null=False, choices=cat_efetivo_choices,    default="Efetivo")
+    cat_efetivo = models.CharField(max_length=30, blank=False, null=False, choices=situacao_choices,    default="Ativo")
     sgb = models.CharField(max_length=9, blank=False, null=False, choices=sgb_choices)
     posto_secao = models.CharField(max_length=100, blank=False, null=False, choices=posto_secao_choices)
     esta_adido = models.CharField(max_length=100, blank=True, null=True, choices=esta_adido_choices)
@@ -329,136 +369,117 @@ class DetalhesSituacao(models.Model):
     op_adm = models.CharField(max_length=18, blank=False, null=False, choices=op_adm_choices)
     apresentacao_na_unidade = models.DateField(blank=False, null=False)
     saida_da_unidade = models.DateField(blank=True, null=True)
-    create_at = models.DateTimeField(auto_now_add=True)
-    usuario_alteracao = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-    
-    
-
-    class Meta:
-        ordering = ('-pk',)
-        verbose_name = 'detalhe_situacao'
-        verbose_name_plural = 'detalhes_situacoes'
+    data_alteracao  = models.DateTimeField(auto_now_add=True)
+    usuario_alteracao = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        if self.cadastro:
-            return f'{str(self.pk).zfill(3)}-{self.cadastro}'
-
-        return f'{str(self.pk).zfill(3)}'
-
+      return f'{self.cadastro.re} - {self.situacao}'
+    
     @property
     def status(self):
         if self.situacao == 'Efetivo':
-            return mark_safe('<span class="badge text-bg-success">Efetivo</span>')
+            return mark_safe('<span class="bg-green-500 text-white px-2 py-1 rounded">Efetivo</span>')
         if self.situacao == 'Exonerado a Pedido':
-            return mark_safe('<span class="badge text-bg-secondary">Exonerado a Pedido</span>')
+            return mark_safe('<span class="bg-gray-500 text-white px-2 py-1 rounded">Exonerado a Pedido</span>')
         if self.situacao == 'Exonerado Ex-Ofício':
-            return mark_safe('<span class="badge text-bg-info">Exonerado Ex-Ofício</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">Exonerado Ex-Ofício</span>')
         if self.situacao == 'Reserva a Pedido':
-            return mark_safe('<span class="badge text-bg-primary">Reserva a Pedido</span>')
+            return mark_safe('<span class="bg-indigo-500 text-white px-2 py-1 rounded">Reserva a Pedido</span>')
         if self.situacao == 'Transferido':
-            return mark_safe('<span class="badge text-bg-warning">Transferido</span>')
+            return mark_safe('<span class="bg-yellow-500 text-white px-2 py-1 rounded">Transferido</span>')
         if self.situacao == 'Mov. Interna':
-            return mark_safe('<span class="badge text-bg-dark">Mov. Interna</span>')
-
+            return mark_safe('<span class="bg-black text-white px-2 py-1 rounded">Mov. Interna</span>')
+     
 
 # responsavel pelas promoções de militares
 
 class Promocao(models.Model):
+    posto_grad_choices =(
+      ("", " "),
+      ("Cel PM", "Cel PM"),
+      ("Ten Cel PM", "Ten Cel PM"),
+      ("Maj PM", "Maj PM"),
+      ("CAP PM", "Cap PM"),
+      ("1º Ten PM", "1º Ten PM"),
+      ("1º Ten QAPM", "1º Ten QAOPM"),
+      ("2º Ten PM", "2º Ten PM"),
+      ("2º Ten QAPM", "2º Ten QAOPM"),
+      ("Asp OF PM", "Asp OF PM"),
+      ("Subten PM", "Subten PM"),
+      ("1º Sgt PM", "1º Sgt PM"),
+      ("2º Sgt PM", "2º Sgt PM"),
+      ("3º Sgt PM", "3º Sgt PM"),
+      ("Cb PM", "Cb PM"),
+      ("Sd PM", "Sd PM"),
+      ("Sd PM 2ºCL", "Sd PM 2ºCL"),
+   )
 
-    posto_grad_choices = (
-        ("", " "),
-        ("Cel PM", "Cel PM"),
-        ("Ten Cel PM", "Ten Cel PM"),
-        ("Maj PM", "Maj PM"),
-        ("CAP PM", "Cap PM"),
-        ("1º Ten PM", "1º Ten PM"),
-        ("1º Ten QAPM", "1º Ten QAOPM"),
-        ("2º Ten PM", "2º Ten PM"),
-        ("2º Ten QAPM", "2º Ten QAOPM"),
-        ("Asp OF PM", "Asp OF PM"),
-        ("Subten PM", "Subten PM"),
-        ("1º Sgt PM", "1º Sgt PM"),
-        ("2º Sgt PM", "2º Sgt PM"),
-        ("3º Sgt PM", "3º Sgt PM"),
-        ("Cb PM", "Cb PM"),
-        ("Sd PM", "Sd PM"),
-        ("Sd 2ºCL PM", "Sd 2ºCL PM"),
-    )
 
-    quadro_choices = (
-        ("", " "),
-        ("Oficiais", "Oficiais"),
-        ("Praças Especiais", "Praças Especiais"),
-        ("Praças", "Praças")
-    )
+    quadro_choices=(
+      ("", " "),
+      ("Oficiais", "Oficiais"),
+      ("Praças Especiais" ,"Praças Especiais"),
+      ( "Praças", "Praças")
+   )
 
-    grupo_choices = (
-        ("", " "),
-        ("Cel", " Cel"),
-        ("Tc", "Tc"),
-        ("Maj", "Maj"),
-        ("Cap", "Cap"),
-        ("Ten", "Ten"),
-        ("Ten QAOPM", "Ten QAOPM"),
-        ("Praça Especiais", "Praça Especiais"),
-        ("St/Sgt", "St/Sgt"),
-        ("Cb/Sd", "Cb/Sd")
-    )
-
-    cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE, related_name='promocoes', null=True, blank=True)
+    grupo_choices=( 
+      ("", " "),                                                
+      ("Cel"," Cel"),
+      ("Tc", "Tc"),
+      ("Maj", "Maj"),
+      ("Cap", "Cap"),
+      ("Ten", "Ten"),
+      ("Ten QAOPM", "Ten QAOPM"),
+      ("Praça Especiais","Praça Especiais"),
+      ("St/Sgt", "St/Sgt"),
+      ("Cb/Sd", "Cb/Sd")
+    )  
+    cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE, related_name='promocoes')
     posto_grad = models.CharField(max_length=100, choices=posto_grad_choices)
     quadro = models.CharField(max_length=100, choices=quadro_choices)
     grupo = models.CharField(max_length=100, choices=grupo_choices)
     ultima_promocao = models.DateField(blank=False, null=False)
     data_alteracao = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    usuario_alteracao = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     
-    class Meta:
-        ordering = ('-pk',)
-        verbose_name = 'promocao'
-        verbose_name_plural = 'promocoes'
-
     def __str__(self):
-        if self.cadastro:
-            return f'{str(self.pk).zfill(3)}-{self.cadastro}'
-
-        return f'{str(self.pk).zfill(3)}'
+        return f'{self.cadastro} - {self.posto_grad}'
 
     @property
     def grad(self):
         if self.posto_grad == 'Cel PM':
-            return mark_safe('<span class="badge text-bg-primary">Cel PM</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">Cel PM</span>')
         if self.posto_grad == 'Ten Cel PM':
-            return mark_safe('<span class="badge text-bg-primary">Ten Cel PM</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">Ten Cel PM</span>')
         if self.posto_grad == 'Maj PM':
-            return mark_safe('<span class="badge text-bg-primary">Maj PM</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">Maj PM</span>')
         if self.posto_grad == 'CAP PM':
-            return mark_safe('<span class="badge text-bg-primary">CAP PM</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">CAP PM</span>')
         if self.posto_grad == '1º Ten PM':
-            return mark_safe('<span class="badge text-bg-primary"> 1º Ten PM</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">1º Ten PM</span>')
         if self.posto_grad == '1º Ten QAPM':
-            return mark_safe('<span class="badge text-bg-primary"> 1º Ten QAPM</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">1º Ten QAPM</span>')
         if self.posto_grad == '2º Ten PM':
-            return mark_safe('<span class="badge text-bg-primary"> 2º Ten PM</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">2º Ten PM</span>')
         if self.posto_grad == '2º Ten QAPM':
-            return mark_safe('<span class="badge text-bg-primary"> 2º Ten QAPM</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">2º Ten QAPM</span>')
         if self.posto_grad == 'Asp OF PM':
-            return mark_safe('<span class="badge text-bg-primary">Asp OF PM</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">Asp OF PM</span>')
         if self.posto_grad == 'Subten PM':
-            return mark_safe('<span class="badge text-bg-danger">Subten PM</span>')
+            return mark_safe('<span class="bg-red-500 text-white px-2 py-1 rounded">Subten PM</span>')
         if self.posto_grad == '1º Sgt PM':
-            return mark_safe('<span class="badge text-bg-danger">1º Sgt PM</span>')
+            return mark_safe('<span class="bg-red-500 text-white px-2 py-1 rounded">1º Sgt PM</span>')
         if self.posto_grad == '2º Sgt PM':
-            return mark_safe('<span class="badge text-bg-danger">2º Sgt PM</span>')
+            return mark_safe('<span class="bg-red-500 text-white px-2 py-1 rounded">2º Sgt PM</span>')
         if self.posto_grad == '3º Sgt PM':
-            return mark_safe('<span class="badge text-bg-danger">3º Sgt PM</span>')
+            return mark_safe('<span class="bg-red-500 text-white px-2 py-1 rounded">3º Sgt PM</span>')
         if self.posto_grad == 'Cb PM':
-            return mark_safe('<span class="badge text-bg-dark">Cb PM</span>')
+            return mark_safe('<span class="bg-black text-white px-2 py-1 rounded">Cb PM</span>')
         if self.posto_grad == 'Sd PM':
-            return mark_safe('<span class="badge text-bg-dark">Sd PM</span>')
-        if self.posto_grad == 'Sd 2ºCL PM':
-            return mark_safe('<span class="badge text-bg-dark">Sd 2ºCL PM</span>')
-
+            return mark_safe('<span class="bg-black text-white px-2 py-1 rounded">Sd PM</span>')
+        if self.posto_grad == 'Sd PM 2ºCL':
+            return mark_safe('<span class="bg-black text-white px-2 py-1 rounded">Sd PM 2ºCL</span>')
+   
     @property
     def ultima_promocao_detalhada(self):
         hoje = datetime.today()
@@ -466,72 +487,53 @@ class Promocao(models.Model):
         return f"{delta.years} anos, {delta.months} meses e {delta.days} dias"
 
 
+
+
 # coleta a imagem do cadastro de cada usuario
 class Imagem(models.Model):
-    cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE, related_name='imagens', null=True, blank=True)
-    image = models.ImageField(upload_to='backend/core/static/img/fotos_perfil')
+    cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE, related_name='imagens')
+    image = models.ImageField(upload_to='img/fotos_perfil')
     create_at = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
-    class Meta:
-        ordering = ('-pk',)
-        verbose_name = 'imagem'
-        verbose_name_plural = 'imagens'
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
-        if self.cadastro:
-            return f'{str(self.pk).zfill(3)}-{self.cadastro}'
-
-        return f'{str(self.pk).zfill(3)}'
+        return f'Imagem de {self.cadastro.nome_de_guerra}'
+    
 
 # modelo de dados para  gerar o historico de promoções  do militar
 
 
 class HistoricoPromocao(models.Model):
-    cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE,
-                                 related_name='historico_promocao', null=True, blank=True)
+    cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE)
     posto_grad = models.CharField(max_length=100)
     quadro = models.CharField(max_length=100)
     grupo = models.CharField(max_length=100)
     ultima_promocao = models.DateField()
     data_alteracao = models.DateTimeField(auto_now_add=True) 
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
-    class Meta:
-        ordering = ('-pk',)
-        verbose_name = 'historico_promocao'
-        verbose_name_plural = 'historico_promocoes'
+    usuario_alteracao = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        if self.cadastro:
-            return f'{str(self.pk).zfill(3)}-{self.cadastro}'
+        return f'{self.cadastro.re} - {self.posto_grad}'
 
-        return f'{str(self.pk).zfill(3)}'
 
 # modelo de dados para  gerar o historico de movimentações  do militar
 
 
 class HistoricoDetalhesSituacao(models.Model):
-    cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE,
-                                 related_name='historico_detalhes_situacao', null=True, blank=True)
+    cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE)
     situacao = models.CharField(max_length=50)
     sgb = models.CharField(max_length=50)
     posto_secao = models.CharField(max_length=50)
     esta_adido = models.CharField(max_length=50)
     funcao = models.CharField(max_length=50)
     op_adm = models.CharField(max_length=50)
+    cat_efetivo = models.CharField(max_length=30, blank=False, null=False,  default="Efetivo")
     apresentacao_na_unidade = models.DateField()
     saida_da_unidade = models.DateField(null=True, blank=True)
     data_alteracao = models.DateTimeField(auto_now_add=True)
-    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
-
-    class Meta:
-        ordering = ('-pk',)
-        verbose_name = 'historico_detalhes_situacao'
-        verbose_name_plural = 'historico_detalhes_situacoes'
-
+    usuario_alteracao = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    
+    
     def __str__(self):
-        if self.cadastro:
-            return f'{str(self.pk).zfill(3)}-{self.cadastro}'
+        return f' {self.situacao}'
 
-        return f'{str(self.pk).zfill(3)}'

@@ -10,6 +10,7 @@ from django.contrib.auth.views import (
 from django.shortcuts import redirect, render
 
 from backend.accounts.services import send_mail_to_user
+from backend.efetivo.models import Cadastro, DetalhesSituacao, Promocao, Imagem  # Ajuste a importaÃ§Ã£o conforme necessÃ¡rio
 
 from .forms import CustomUserForm
 
@@ -69,3 +70,33 @@ class MyPasswordResetDone(PasswordResetDoneView):
     registration/password_reset_done.html
     '''
     ...
+
+def verificar_cpf(request):
+    '''
+    Verifica se o CPF está cadastrado e se o usuário é ativo.
+    '''
+    template_name = 'registration/verificacao_cpf.html'
+    message = None
+
+    if request.method == 'POST':
+        cpf = request.POST.get('cpf')
+        try:
+            cadastro = Cadastro.objects.get(cpf=cpf)
+            print(f"Cadastro encontrado: {cadastro}")
+            detalhes_situacao = DetalhesSituacao.objects.get(cadastro=cadastro)
+            print(f"Detalhes da situação encontrados: {detalhes_situacao}")
+            print(f"Situação: {detalhes_situacao.situacao}")
+            if detalhes_situacao.situacao == 'ATIVO':  # Ajuste aqui para verificar "ATIVO"
+                print("Redirecionando para a página de cadastro...")
+                return redirect('signup')  # Redireciona para a página de cadastro
+            else:
+                message = 'Você não é um funcionário ativo. Por favor, procure o setor de RH.'
+        except Cadastro.DoesNotExist:
+            message = 'CPF não encontrado. Por favor, procure o setor de RH.'
+        except DetalhesSituacao.DoesNotExist:
+            message = 'Detalhes da situação não encontrados. Por favor, procure o setor de RH.'
+        except Exception as e:
+            message = f"Ocorreu um erro: {e}"
+            print(f"Erro: {e}")
+
+    return render(request, template_name, {'message': message})

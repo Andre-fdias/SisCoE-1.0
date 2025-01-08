@@ -29,7 +29,11 @@
                     </div>
                 </div>
             </div>
-            <legend>
+        
+        </fieldset>
+      
+        <fieldset class="bg-gray-100  mb-8 rounded-md w-full" id="first-fieldset">   
+            <legend  class=" mb-8 rounded-md w-full" >
                 {% if messages %}
                 {% for message in messages %}
                     <section class="alert {{ message.tags }}">
@@ -37,113 +41,128 @@
                     </section>
                 {% endfor %}
                 {% endif %}
-            </legend>
-        </fieldset>
-        
-        <div class="row row-bg bg-gray-200 p-4 border-gray-300 rounded-md">
-            <div class="col-12">
-                <p class="name">Escolha um dos filtros abaixo para filtrar a tabela.</p>
-            </div>  
-            <br>
-            <!-- Dropdowns para filtros na mesma linha -->
-            <div class="container" id="filtros"> 
-                <div class="flex flex-wrap mb-3">
-                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
-                        <label for="situacaoFilter" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Situação</label>
-                        <select id="situacaoFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="">Todos</option>
-                            <option value="Efetivo">Efetivo</option>
-                            <option value="Exonerado a Pedido">Exonerado a Pedido</option>
-                            <option value="Exonerado Ex-Ofício">Exonerado Ex-Ofício</option>
-                            <option value="Reserva a Pedido">Reserva a Pedido</option>
-                            <option value="Transferido">Transferido</option>
-                        </select>
-                    </form>
-                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
-                        <label for="sgbFilter" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Sgb</label>
-                        <select id="sgbFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="">Todos</option>
-                            <option value="EM">EM</option>
-                            <option value="1ºSGB">1ºSGB</option>
-                            <option value="2ºSGB">2ºSGB</option>
-                            <option value="3ºSGB">3ºSGB</option>
-                            <option value="4ºSGB">4ºSGB</option>
-                            <option value="5ºSGB">5ºSGB</option>
-                        </select>
-                    </form>
-                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
-                        <label for="postoSecaoFilter" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Posto ou Seção</label>
-                        <select id="postoSecaoFilter" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                            <option value="">Todos</option>
-                        </select>
-                    </form>
-
-                    <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0 flex items-end">
-                        <button id="clearFilters" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar Filtros</button>
+            </legend>  
+            <div class="flex items-center  p-4 bg-gray-700 space w-full md:w-auto">
+                <div class="container" id="filtros"> 
+                    <div class="flex flex-wrap mb-3">
+                        <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                            <label for="situacaoFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Situação</label>
+                            <select id="situacaoFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">Todos</option>
+                                <option value="Efetivo">Efetivo</option>
+                                <option value="Exonerado a Pedido">Exonerado a Pedido</option>
+                                <option value="Exonerado Ex-Ofício">Exonerado Ex-Ofício</option>
+                                <option value="Reserva a Pedido">Reserva a Pedido</option>
+                                <option value="Transferido">Transferido</option>
+                            </select>
+                        </form>
+                        <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                            <label for="sgbFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Sgb</label>
+                            <select id="sgbFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">Todos</option>
+                                <option value="EM">EM</option>
+                                <option value="1ºSGB">1ºSGB</option>
+                                <option value="2ºSGB">2ºSGB</option>
+                                <option value="3ºSGB">3ºSGB</option>
+                                <option value="4ºSGB">4ºSGB</option>
+                                <option value="5ºSGB">5ºSGB</option>
+                            </select>
+                        </form>
+                        <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                            <label for="postoSecaoFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Posto ou Seção</label>
+                            <select id="postoSecaoFilter" class="bg-gray-50 border border-gray-300 text-gray-00 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="">Todos</option>6
+                            </select>
+                        </form>
+    
+                        <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0 flex items-end">
+                            <button id="clearFilters" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar </button>
+                        </div>
                     </div>
                 </div>
+                <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                    <button type="button" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                    <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                    </svg>
+                    Export
+                </button>
+                </div>
             </div>
-        </div>
-         <br>
-
-         <div class="row row-bg bg-gray-200 p-4 border-gray-300 rounded-md">
-            <table id="example" class="min-w-full bg-white">
+            <div> 
+                <br>
+                <br>        
+            <table id="example" class=" text-gray-700 bg-white p-2">
                 <thead>
                     <tr>
-                        <th class="border px-4 py-2 text-center"></th>
-                        <th class="border px-4 py-2 text-center">Posto/Grad</th>
-                        <th class="border px-4 py-2 text-center">Re</th>
-                        <th class="border px-4 py-2 text-center">Dig</th>
-                        <th class="border px-4 py-2 text-center">Nome Guerra</th>
-                        <th class="border px-4 py-2 text-center">Sgb</th>
-                        <th class="border px-4 py-2 text-center">Posto/Seção</th>
-                        <th class="border px-4 py-2 text-center">Situação</th>
-                        <th class="border px-4 py-2 text-center">Ações</th>
+                        <th scope="col" class="p-4">
+                            <div class="flex items-center">
+                                <input id="checkbox-all" type="checkbox" class=" w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="checkbox-all" class="sr-only">checkbox</label>
+                            </div>
+                        </th>
+                        <th class=" px-4 py-2 text-center">Imagem</th>
+                        <th class=" px-4 py-2 text-center">Posto/Grad</th>
+                        <th class=" px-4 py-2 text-center">Re</th>
+                        <th class=" px-4 py-2 text-center">Dig</th>
+                        <th class=" px-4 py-2 text-center">Nome Guerra</th>
+                        <th class=" px-4 py-2 text-center">Sgb</th>
+                        <th class=" px-4 py-2 text-center">Posto/Seção</th>
+                        <th class=" px-4 py-2 text-center">Situação</th>
+                        <th class=" px-4 py-2 text-center">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for cadastro in cadastros %}
-                    <tr>
-                        <td class="border px-4 py-2 text-center">
+                    <tr >
+                        <td class="w-4 px-4 py-3">
+                            <div class="flex items-center">
+                                <input id="checkbox-table-search-1" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                            </div>
+                        </td>
+                        <td class="px-4 py-2">
+                            <div class="flex items-center">
                             {% if cadastro.imagens.exists %}
-                                <img src="{{ cadastro.imagens.last.image.url }}" class="foto-perfil" alt="Imagem" style="max-width: 50px; max-height: 50px;">
-                            {% else %}
+                                <img src="{{ cadastro.imagens.last.image.url }}" class="foto-perfil rounded-full w-10 h-10 object-cover object-center" alt="Imagem">
+                                {% else %}
                                 Sem imagem
                             {% endif %}
+                        </div>
                         </td>
-                        <td class="border px-4 py-2 text-center">
+                        <td class=" px-4 py-2 text-center">
                             {% if cadastro.promocoes.exists %}
                                 {{ cadastro.promocoes.last.grad|safe }}
                             {% else %}
                                 Sem detalhes
                             {% endif %}
                         </td>
-                        <td class="border px-4 py-2 text-center">{{ cadastro.re }}</td>
-                        <td class="border px-4 py-2 text-center">{{ cadastro.dig }}</td>
-                        <td class="border px-4 py-2 text-center">{{ cadastro.nome_de_guerra }}</td>
-                      
-                        <td class="border px-4 py-2 text-center">
+                        <td class=" px-4 py-2 text-center">{{ cadastro.re }}</td>
+                        <td class=" px-4 py-2 text-center">{{ cadastro.dig }}</td>
+                        <td class=" px-4 py-2 text-center">{{ cadastro.nome_de_guerra }}</td>
+                    
+                        <td class="px-4 py-2 text-center">
                             {% if cadastro.detalhes_situacao.exists %}
                                 {{ cadastro.detalhes_situacao.last.sgb }}
                             {% else %}
                                 Sem detalhes
                             {% endif %}
                         </td>
-                        <td class="border px-4 py-2 text-center">
+                        <td class=" px-4 py-2 text-center">
                             {% if cadastro.detalhes_situacao.exists %}
                                 {{ cadastro.detalhes_situacao.last.posto_secao }}
                             {% else %}
                                 Sem detalhes
                             {% endif %}
                         </td>
-                        <td class="border px-4 py-2 text-center">
+                        <td class="px-4 py-2 text-center">
                             {% if cadastro.detalhes_situacao.exists %}
                                 {{ cadastro.detalhes_situacao.last.status }}
                             {% else %}
                                 Sem detalhes
                             {% endif %}
                         </td>
-                        <td class="border px-4 py-2 text-center">
+                        <td class="px-4 py-2 text-center">
                             <a  class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{% url 'efetivo:ver_militar' cadastro.id %}">Editar</a>
                         </td>
                     </tr>
@@ -153,10 +172,31 @@
             <div class="flex justify-end mb-3">
                 <button id="printButton" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Imprimir</button>
             </div>
-        </div>
+       </fieldset>
+   
         <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
         <script>
             const dataTable = new simpleDatatables.DataTable("#example");
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const dataTable = new simpleDatatables.DataTable("#example", {
+                    labels: {
+                        placeholder: "Pesquisar...",
+                        perPage: "{select} resultados por página",
+                        noRows: "Nenhum registro encontrado",
+                        info: "Mostrando {start} até {end} de {rows} registros",
+                        noResults: "Nenhum resultado encontrado",
+                        loading: "Carregando...",
+                        infoFiltered: " (filtrado de {rowsTotal} registros)",
+                        previous: "Anterior",
+                        next: "Próximo",
+                        first: "Primeiro",
+                        last: "Último"
+                    }
+                });
+            });
         </script>
         <script>
 

@@ -1,0 +1,173 @@
+{% extends "base.html" %}
+{% load static %}
+{% block 'title' %} Consultar Efetivo{% endblock %}
+
+{% block 'head' %}
+<link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
+<link href="{% static 'flowbite.min.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'body' %}
+
+<div class="container mx-auto p-4 mt-30" id="cad_efetivo">
+
+  <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+      <nav class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">
+          <div id="01" class="mb-4">
+              <div class="bg-gray-800 p-4 rounded-md">
+                  <div class="flex flex-wrap items-center justify-between py-3">
+                      <div class="col-12 md:w-auto">
+                          <h1 class="text-3xl text-gray-200">Faísca <span class="text-yellow-700"><b>IA</b></span></h1>
+                          <p class="text-gray-400" >Tire suas dúvidas sobre Normas internas com o Faísca.</p>
+                      </div>
+                   
+                  </div>
+              </div>
+          </div>
+      
+        </nav>
+
+      <main class="bg-gray-200  mb-8 rounded-md w-full" id="first-fieldset">   
+        <fieldset class="bg-gray-700 p-4 mb-8 rounded-md w-full" id="first-fieldset">
+          <div class="container mx-auto flex justify-between items-center">
+            <div class="text-white text-3xl"> <h1 class="text-3xl text-gray-200">Faísca <span class="text-yellow-700"><b>IA</b></span></h1>
+            </div>
+            <div>
+                <button class="bg-blue-500 text-white p-2 rounded-lg mr-2">Nova Conversa</button>
+                <button class="bg-gray-500 text-white p-2 rounded-lg">Histórico</button>
+            </div>
+        </div>
+      
+       </fieldset>
+       <aside class="bg-gray-200 p-4 w-1/4">
+        <h2 class="text-xl font-bold mb-4">Histórico de Conversas</h2>
+        <ul>
+            {% for chat in chats %}
+            <li class="mb-2">
+                <div class="flex justify-between items-center">
+                    <span>{{ chat.message|truncatewords:5 }}</span>
+                    <button class="bg-red-500 text-white p-1 rounded-lg">Ocultar</button>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </aside>
+        <div class="flex flex-col ">
+          <div class="card flex-grow">
+           <div class="messages-box p-4 bg-gray-100">
+
+              <ul class="messages-list space-y-4">
+                {% for chat in chats %}
+                <li class="message sent flex justify-end">
+                  <div class="message-text bg-green-200 p-3 rounded-lg">
+                      <div class="font-bold">{{ request.user.first_name }}</div>
+                      <div>{{ chat.message }}</div>
+                      <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ request.user.username }}</span>
+                      <span class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ chat.created_at|date:"H:i" }}</span>
+                  </div>
+              </li>
+              <li class="message received flex justify-start">
+                <div class="message-text bg-gray-300 p-3 rounded-lg">
+                    <div class="font-bold">Faísca AI</div>
+                    <div class="markdown-content">{{ chat.response|safe }}</div>
+                    <span class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ chat.created_at|date:"H:i" }}</span>
+                </div>
+            </li>
+                {% endfor %}
+              </ul>
+
+            </div>
+          </div>
+          <form class="message-form flex p-4 bg-gray-200" action="{% url 'faisca:chatbot' %}" method="post">
+            {% csrf_token %}
+            <input type="text" class="message-input flex-grow p-2 border border-gray-300 rounded-l-lg" placeholder="No que posso ajudar?">
+            <button type="submit" class="btn-send bg-blue-500 text-white p-2 rounded-r-lg">Enviar</button>
+            <button type="button" class="btn-reset bg-red-500 text-white p-2 rounded-lg ml-2" onclick="resetChat()">Resetar Chat</button>
+        </form>
+        </div>
+        <footer class="bg-gray-800 p-4 fixed bottom-0 w-full">
+          <div class="container mx-auto flex justify-between items-center">
+              <form class="flex-grow flex" action="{% url 'faisca:chatbot' %}" method="post">
+                  {% csrf_token %}
+                  <input type="text" class="message-input flex-grow p-2 border border-gray-300 rounded-l-lg" placeholder="No que posso ajudar?">
+                  <button type="submit" class="btn-send bg-blue-500 text-white p-2 rounded-r-lg">Enviar</button>
+              </form>
+              <button type="button" class="btn-reset bg-red-500 text-white p-2 rounded-lg ml-2" onclick="resetChat()">Reiniciar Conversa</button>
+          </div>
+      </footer>
+      </main>
+
+      <script>
+        const messagesList = document.querySelector('.messages-list');
+        const messageForm = document.querySelector('.message-form');
+        const messageInput = document.querySelector('.message-input');
+
+        messageForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+
+          const message = messageInput.value.trim();
+          if (message.length === 0) {
+            return;
+          }
+
+          const messageItem = document.createElement('li');
+          messageItem.classList.add('message', 'sent', 'flex', 'justify-end');
+          messageItem.innerHTML = `
+              <div class="message-text bg-green-200 p-3 rounded-lg">
+                  <div class="font-bold">Você</div>
+                  <div>${message}</div>
+              </div>`;
+          messagesList.appendChild(messageItem);
+
+          messageInput.value = '';
+
+          fetch('', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              'message': message
+            })
+          })
+          
+            .then(response => response.json())
+            .then(data => {
+              const response = data.response;
+              const messageItem = document.createElement('li');
+              messageItem.classList.add('message', 'received', 'flex', 'justify-start');
+              messageItem.innerHTML = `
+              <div class="message-text bg-gray-300 p-3 rounded-lg">
+                  <div class="font-bold">Faísca AI</div>
+                  <div class="markdown-content">${response}</div>
+              </div>`;
+              messagesList.appendChild(messageItem);
+            });
+        });
+      </script>
+      <script>
+function resetChat() {
+    fetch('{% url 'faisca:reset_and_redirect' %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            const messagesList = document.querySelector('.messages-list');
+            messagesList.innerHTML = '';
+            window.location.href = '{% url 'faisca:chatbot' %}';
+        } else {
+            console.error('Erro ao resetar o chat');
+        }
+    })
+    .catch(error => {
+        console.error('Erro na requisição:', error);
+    });
+}
+  </fieldset>    
+</div>
+{% endblock %}

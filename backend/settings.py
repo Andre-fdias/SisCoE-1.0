@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'backend.core',
     'backend.crm',
     'backend.efetivo',
+    'backend.adicional',
+    'backend.faisca',
 ]
 
 MIDDLEWARE = [
@@ -47,6 +49,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -103,6 +106,10 @@ EMAIL_PORT = config('EMAIL_PORT', 1025, cast=int)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER', '')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', '')
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=False, cast=bool)
+
+
+
+
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
 
@@ -161,3 +168,7 @@ MESSAGE_TAGS = {
  constants.WARNING: 'alert-warning',
 }
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+GROQ_API_KEY = config('GROQ_API_KEY')

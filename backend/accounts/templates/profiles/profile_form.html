@@ -1,0 +1,42 @@
+{% extends "base_login.html" %}
+{% load static %}
+{% block content %}
+<main class="bg-gray-150">
+    <div class="mx-auto md:h-screen flex flex-col justify-center items-center px-6 pt-8 pt:mt-0">
+        <img src="{% static 'img/logo-siscoe-black2.png' %}" class="my-5" width="180" height="152" role="img" aria-label="people-circle" id="logo">
+        <div class="bg-gray-900 shadow rounded-lg md:mt-0 w-full sm:max-w-screen-sm xl:p-0">
+            <div class="p-6 sm:p-8 lg:p-16 space-y-8">
+                <h2 class="text-2xl lg:text-3xl font-bold text-white">Complete seu Perfil</h2>
+                <form class="mt-8 space-y-6" action="." method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div>
+                        <label for="user" class="text-sm font-medium text-white block mb-2">Nome</label>
+                        <input id="user" type="text" name="user" value="{{ request.user.first_name }}" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required>
+                    </div>
+                    <div>
+                        <label for="image" class="text-sm font-medium text-white block mb-2">Imagem</label>
+                        <input id="image" type="file" name="image" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+                    </div>
+                    <div>
+                        <label for="posto_grad" class="text-sm font-medium text-white block mb-2">Posto/Graduação</label>
+                        <select id="posto_grad" name="posto_grad" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+                            {% for value, label in profile.posto_grad_choices %}
+                                <option value="{{ value }}" {% if profile.posto_grad == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="re" class="text-sm font-medium text-white block mb-2">RE</label>
+                        <input id="re" type="text" name="re" value="{{ profile.re }}" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required>
+                    </div>
+                    <div>
+                        <label for="dig" class="text-sm font-medium text-white block mb-2">Dígito</label>
+                        <input id="dig" type="text" name="dig" value="{{ profile.dig }}" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required>
+                    </div>
+                    <button type="submit" class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-base px-5 py-3 w-full sm:w-auto text-center">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}

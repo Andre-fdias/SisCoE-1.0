@@ -1,7 +1,7 @@
 <!-- index.html -->
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -27,20 +27,74 @@
   <body class="bg-gray-800 ">
     <div class="container mx-auto p-5">
       <div class="md:flex md:flex-row md:justify-between text-center text-sm sm:text-base">
-        <div class="flex flex-row justify-center">
+        <div class="flex flex-row justify-center">      
+            <img src="{% static 'img/logo-siscoe-black2.png' %}" width="260" height="102" role="img" aria-label="people-circle" id="logo">
+       </div>   
+       <div class="container mx-auto m">
+            <div class="mt-2 flex justify-between items-center">
+              <div class="flex space-x-4 ml-32">
+                    <a href="{% url 'core:dashboard' %}" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Secretaria</a>
+                    <a href="#contato" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Calculadora de tempo</a>
+                    <a href="" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Faísca</a>
+              </div>
+              <div class="flex items-center space-x-4">
+                <div class="flex items-center">
+                  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
+                  <div class=" bg-gray-900 flex justify-center items-center dark:bg-gray-500">
+                    <div x-data="{ open: false }" class="bg-gray-900 dark:bg-gray-800 w-64  flex justify-center items-center z-50">
+                      <div @click="open = !open" class="relative border-b-4 border-transparent py-3" :class="{'border-indigo-700 transform transition duration-300 ': open}" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100">
+                        <div class="flex justify-center items-center space-x-3 cursor-pointer">
+                            <div class="flex flex-col items-end ">
+                                  <!-- Nome -->
+                                <div class="text-md font-medium text-gray-500 mr-5"> Olá </div>
+                                  <!-- Título -->
+                                  <div class="text-sm font-regular text-gray-500 mr-5">{{ request.user.posto_grad}}  {{ request.user.last_name}}</div>
+                            </div>
+                            <div class="w-14 h-14 rounded-full overflow-hidden border-2 dark:border-white border-gray-900">
+                              <img src="{{request.user.image.url}}" alt="Profile Image" class="w-full h-full object-cover" >
+                            </div>
+                            <div class="font-semibold dark:text-white text-gray-900 text-lg">
+                                      <div class="cursor-pointer">
+            
+                                      </div>
+                          </div>
+                          </div>
+                          <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute w-90 px-5 py-3 dark:bg-gray-700 bg-white rounded-lg shadow border dark:border-transparent mt-5 z-50">
+                            <ul class="space-y-3 dark:text-white">
+                              <li class="flex items-center w-full p-2 text-gray-400 transition duration-75  group hover:bg-gray-800 hover:rounded-lg" >
+                                  <a href="#" class="flex justify-start items-center  transform transition-colors duration-200 border-transparent hover:border-indigo-700">
+                                  <div class="mr-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-person-workspace" viewBox="0 0 16 16">
+                                        <path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                                        <path d="M2 1a2 2 0 0 0-2 2v9.5A1.5 1.5 0 0 0 1.5 14h.653a5.4 5.4 0 0 1 1.066-2H1V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9h-2.219c.554.654.89 1.373 1.066 2h.653a1.5 1.5 0 0 0 1.5-1.5V3a2 2 0 0 0-2-2z"/>
+                                    </svg>
+                                </div>
+                                  Dados Usuário
+                                </a>
+                              </li>
+
+                              <hr class="dark:border-gray-700">
+                              <li class="flex items-center w-full p-2 text-red-500 transition duration-75  group hover:bg-red-300  hover:rounded-lg">
+                                    <a href="{% url 'logout' %}" class="flex justify-start items-center transform transition-colors duration-200  border-transparent hover:border-red-600">
+                                      <div class="mr-3 text-red-600">
+                                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                                      </div>
+                                      Sair
+                                    </a>
+                                </li>
+                          </ul>
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="flex items-center ms-3">
+                  </div>
+                </div>   
+            </div>
+          </div>
+       </div>
+           
           
-            <img src="{% static 'img/logo-siscoe-black2.png' %}" width="120" height="102 role="img" aria-label="people-circle" id="logo">
-          
-      
-          </div> 
-         
-        <div class="mt-2">
-          <a href="{% url 'core:dashboard' %}" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Secretaria</a>
-          <a href="#contato" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Calculdora de tempo</a>
-          <a href="" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Faísca</a>
-          <a href="" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Olá {{ request.user.first_name }}</a>
-          <a href="{% url 'logout' %}"  class="text-white bg-gradient-to-r from-cyan-400 via-cyan-500 to-cyan-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Sair </a>
-        </div>
       </div><!-- Main Navigation -->
 
       <div class="md:flex md:flex-row mt-20">

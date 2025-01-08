@@ -17,3 +17,6 @@ python-dateutil==2.9.0.post0
 pillow==11.0.0
 django-seed==0.3.1
 jupyter==1.1.1
+Markdown==3.7
+langchain-groq==0.2.2
+
