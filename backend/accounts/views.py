@@ -1,5 +1,4 @@
 # accounts/views.py
-from django.contrib.auth import login as auth_login
 from django.contrib.auth.views import (
     LoginView,
     PasswordResetCompleteView,
@@ -7,17 +6,19 @@ from django.contrib.auth.views import (
     PasswordResetDoneView,
     PasswordResetView
 )
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
+from django.contrib.auth import get_user_model
 from backend.accounts.services import send_mail_to_user
 from backend.efetivo.models import Cadastro, DetalhesSituacao, Promocao, Imagem  # Ajuste a importaÃ§Ã£o conforme necessÃ¡rio
 
+from .models import User
 from .forms import CustomUserForm
-
 
 def my_logout(request):
     # ... logout logic
     return redirect('core:capa')
+
 
 
 def signup(request):
@@ -71,6 +72,8 @@ class MyPasswordResetDone(PasswordResetDoneView):
     '''
     ...
 
+User = get_user_model()
+
 def verificar_cpf(request):
     '''
     Verifica se o CPF está cadastrado e se o usuário é ativo.
@@ -81,14 +84,22 @@ def verificar_cpf(request):
     if request.method == 'POST':
         cpf = request.POST.get('cpf')
         try:
+            # Verifica se o CPF está cadastrado na model Cadastro
             cadastro = Cadastro.objects.get(cpf=cpf)
             print(f"Cadastro encontrado: {cadastro}")
+            
+            # Verifica se o usuário é ativo na model DetalhesSituacao
             detalhes_situacao = DetalhesSituacao.objects.get(cadastro=cadastro)
             print(f"Detalhes da situação encontrados: {detalhes_situacao}")
             print(f"Situação: {detalhes_situacao.situacao}")
-            if detalhes_situacao.situacao == 'ATIVO':  # Ajuste aqui para verificar "ATIVO"
-                print("Redirecionando para a página de cadastro...")
-                return redirect('signup')  # Redireciona para a página de cadastro
+            
+            if detalhes_situacao.situacao == 'ATIVO':
+                # Verifica se o usuário já está cadastrado na model User
+                if User.objects.filter(email=cadastro.email).exists():
+                    message = 'Usuário já cadastrado. Por favor, faça login.'
+                else:
+                    print("Redirecionando para a página de cadastro...")
+                    return redirect('signup')  # Redireciona para a página de cadastro
             else:
                 message = 'Você não é um funcionário ativo. Por favor, procure o setor de RH.'
         except Cadastro.DoesNotExist:
@@ -100,3 +111,42 @@ def verificar_cpf(request):
             print(f"Erro: {e}")
 
     return render(request, template_name, {'message': message})
+
+
+
+
+def user_list(request):
+    template_name = 'accounts/user_list.html'
+    object_list = User.objects.exclude(email='admin@email.com')
+    context = {'object_list': object_list}
+    return render(request, template_name, context)
+
+
+def user_detail(request, pk):
+    template_name = 'accounts/user_detail.html'
+    instance = get_object_or_404(User, pk=pk)
+
+    context = {'object': instance}
+    return render(request, template_name, context)
+
+
+def user_create(request):
+    template_name = 'accounts/user_form.html'
+    form = CustomUserForm(request.POST or None)
+
+    context = {'form': form}
+    return render(request, template_name, context)
+
+
+def user_update(request, pk):
+    template_name = 'accounts/user_form.html'
+    instance = get_object_or_404(User, pk=pk)
+    form = CustomUserForm(request.POST or None, instance=instance)
+
+    context = {
+        'object': instance,
+        'form': form,
+    }
+    return render(request, template_name, context)
+
+

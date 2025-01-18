@@ -439,4 +439,46 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('image').addEventListener('change', previewImage);
 });
 </script>
+<script>
+document.getElementById('cadastroForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Impede o envio do formulário
+
+    // Limpa mensagens de erro anteriores
+    document.getElementById('formErrors').classList.add('hidden');
+    document.querySelectorAll('.text-red-500').forEach(function(el) {
+        el.classList.add('hidden');
+    });
+
+    // Coleta os dados do formulário
+    const formData = new FormData(this);
+
+    // Envia os dados via AJAX
+    fetch(this.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Redireciona ou exibe mensagem de sucesso
+            window.location.href = data.redirect_url;
+        } else {
+            // Exibe mensagens de erro
+            document.getElementById('formErrors').innerText = data.error_message;
+            document.getElementById('formErrors').classList.remove('hidden');
+            for (const [field, message] of Object.entries(data.field_errors)) {
+                document.getElementById(`${field}_error`).innerText = message;
+                document.getElementById(`${field}_error`).classList.remove('hidden');
+            }
+        }
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+    });
+});
+</script>
+
 {% endblock 'body' %}

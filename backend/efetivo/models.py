@@ -11,8 +11,6 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 from django.contrib.auth import get_user_model
 
-
-
 # responsavel pelo cadastro básico de dados de militares
 
 class Cadastro(models.Model):
@@ -47,20 +45,14 @@ class Cadastro(models.Model):
     previsao_de_inatividade = models.DateField(blank=False, null=False)
     cpf = models.CharField(max_length=14, blank=False, null=False, unique=True)
     rg = models.CharField(max_length=14, blank=False, null=False)
-    tempo_para_averbar_inss = models.IntegerField(blank=True, null=True)
-    tempo_para_averbar_militar = models.IntegerField(blank=True, null=True)
+    tempo_para_averbar_inss = models.IntegerField(blank=False, null=False, default=1)
+    tempo_para_averbar_militar = models.IntegerField(blank=False, null=False, default=1)
     email = models.EmailField(max_length=100, unique=True, blank=False, null=False)
     telefone = models.CharField(max_length=14, blank=False, null=False)
-    numero_adicional = models.IntegerField(choices=n_choices, blank=False, null=False)
-    data_ultimo_adicional = models.DateField(blank=False, null=False)
-    numero_lp = models.IntegerField(choices=n_choices, blank=False, null=False)
-    data_ultimo_lp = models.DateField(blank=False, null=False)
     alteracao = models.CharField(max_length=20, blank=False, null=False, choices=alteracao_choices)
     create_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='cadastros', default=1)  # 
-
-
-    
+   
   
     def __str__(self):
         return f'{self.re} {self.dig} {self.nome_de_guerra}'
@@ -374,6 +366,14 @@ class DetalhesSituacao(models.Model):
 
     def __str__(self):
       return f'{self.cadastro.re} - {self.situacao}'
+    
+    @property
+    def tempo_na_unidade(self):
+        hoje = datetime.today()
+        delta = relativedelta(hoje, self.apresentacao_na_unidade)
+        return f"{delta.years} anos, {delta.months} meses e {delta.days} dias"
+
+    
     
     @property
     def status(self):

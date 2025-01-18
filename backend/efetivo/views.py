@@ -6,6 +6,9 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import OuterRef, Subquery
 from django.utils import timezone
 from django.db import IntegrityError
+from backend.adicional.models import Cadastro_adicional
+from backend.rpt.models import Cadastro_rpt
+from django.http import HttpResponseForbidden
 
 @login_required
 def cadastrar_militar(request):
@@ -34,7 +37,7 @@ def cadastrar_militar(request):
 
         cpf = request.POST.get('cpf')
         if Cadastro.objects.filter(cpf=cpf).exists():
-            messages.add_message(request, constants.ERROR, 'Erro: CPF já cadastrado.', extra_tags='bg-green-500 text-white p-4 rounded')
+            messages.add_message(request, constants.ERROR, 'Erro: CPF já cadastrado.', extra_tags='bg-red-500 text-white p-4 rounded')
             return redirect('/efetivo/cadastrar_militar')
 
         try:
@@ -56,11 +59,7 @@ def cadastrar_militar(request):
                 telefone=request.POST.get('telefone'),
                 alteracao=request.POST.get('alteracao'),
                 user=request.user,
-                numero_adicional=request.POST.get('numero_adicional'),
-                data_ultimo_adicional=request.POST.get('data_ultimo_adicional'),
-                numero_lp=request.POST.get('numero_lp'),
-                data_ultimo_lp=request.POST.get('data_ultimo_lp'),
-            )
+       )
             cadastro.save()
             print("Cadastro salvo com sucesso")
 
@@ -90,7 +89,8 @@ def cadastrar_militar(request):
                 print("Detalhes da situação salvos com sucesso")
             except Exception as e:
                 print(f"Erro ao salvar detalhes da situação: {e}")
-                messages.add_message(request, constants.ERROR, 'Erro ao salvar detalhes da situação.', extra_tags='bg-green-500 text-white p-4 rounded')
+                messages.add_message(request, constants.ERROR, 'Erro ao salvar detalhes da situação.', extra_tags='bg-red-500 text-white p-4 rounded')
+
 
             try:
                 promocao = Promocao(
@@ -105,22 +105,43 @@ def cadastrar_militar(request):
                 print("Promoção salva com sucesso")
             except Exception as e:
                 print(f"Erro ao salvar promoção: {e}")
-                messages.add_message(request, constants.ERROR, 'Erro ao salvar promoção.', extra_tags='bg-green-500 text-white p-4 rounded')
+                messages.add_message(request, constants.ERROR, 'Erro ao salvar promoção.', extra_tags='bg-red-500 text-white p-4 rounded')
+
+            
+            try:
+                cadastro_adicional = Cadastro_adicional(
+                    cadastro=cadastro,
+                    numero_adicional=request.POST.get('numero_adicional'),
+                    data_ultimo_adicional=request.POST.get('data_ultimo_adicional'),
+                    numero_lp=request.POST.get('numero_lp'),
+                    data_ultimo_lp=request.POST.get('data_ultimo_lp'),
+                )
+                cadastro_adicional.save()
+                print("Cadastro adicional salvo com sucesso")
+            except Exception as e:
+                print(f"Erro ao salvar cadastro adicional: {e}")
+                messages.add_message(request, constants.ERROR, 'Erro ao salvar cadastro adicional.', extra_tags='bg-green-500 text-white p-4 rounded')
+                return render(request, 'cadastrar_militar.html', {'form_data': request.POST})
 
             messages.add_message(request, constants.SUCCESS, 'Militar cadastrado com sucesso', extra_tags='bg-green-500 text-white p-4 rounded')
             return redirect('/efetivo/cadastrar_militar')
+
 
         except IntegrityError as e:
             if 'unique constraint' in str(e).lower():
                 messages.add_message(request, constants.ERROR, 'Erro: CPF já cadastrado.')
             else:
-                messages.add_message(request, constants.ERROR, 'Erro ao cadastrar militar. Por favor, tente novamente.', extra_tags='bg-green-500 text-white p-4 rounded')
+                messages.add_message(request, constants.ERROR, 'Erro ao cadastrar militar. Por favor, tente novamente.', extra_tags='bg-red-500 text-white p-4 rounded')
             return redirect('/efetivo/cadastrar_militar')
 
         except Exception as e:
             print(f"Erro ao salvar os dados: {e}")
-            messages.add_message(request, constants.ERROR, 'Erro ao cadastrar militar. Por favor, tente novamente.', extra_tags='bg-green-500 text-white p-4 rounded')
+            messages.add_message(request, constants.ERROR, 'Erro ao cadastrar militar. Por favor, tente novamente.', extra_tags='bg-red-500 text-white p-4 rounded')
             return redirect('/efetivo/cadastrar_militar')
+
+
+
+
         
 @login_required        
 def listar_militar(request):
@@ -153,13 +174,30 @@ def ver_militar(request, id):
         messages.add_message(request, constants.ERROR, 'Militar não encontrado', extra_tags='bg-red-500 text-white p-4 rounded')
         return redirect('/efetivo/listar_militar')
 
+
+# responsável pelo detalhamento de cada ID de militares
+@login_required
+def ver_militar(request, id):
+    if id is None:
+        messages.add_message(request, constants.ERROR, 'ID inválido', extra_tags='bg-red-500 text-white p-4 rounded')
+        return redirect('/efetivo/listar_militar')
+
+    try:
+        cadastro = Cadastro.objects.get(id=id)
+    except Cadastro.DoesNotExist:
+        messages.add_message(request, constants.ERROR, 'Militar não encontrado', extra_tags='bg-red-500 text-white p-4 rounded')
+        return redirect('/efetivo/listar_militar')
+
     if request.method == "GET":
         detalhes = DetalhesSituacao.objects.filter(cadastro=cadastro).last()
         promocao = Promocao.objects.filter(cadastro=cadastro).last()
+        cadastro_rpt = Cadastro_rpt.objects.filter(cadastro=cadastro).last()
+       
         return render(request, 'ver_militar.html', {
             'cadastro': cadastro,
             'detalhes': detalhes,
             'promocao': promocao,
+            'cadastro_rpt': cadastro_rpt,
             'situacao': DetalhesSituacao.situacao_choices,
             'sgb': DetalhesSituacao.sgb_choices,
             'posto_secao': DetalhesSituacao.posto_secao_choices,

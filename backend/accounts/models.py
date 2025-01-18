@@ -5,6 +5,7 @@ from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
 from django.core.mail import send_mail
 from django.db import models
+from django.urls import reverse_lazy
 from django.utils.translation import gettext_lazy as _
 
 from .managers import UserManager
@@ -20,8 +21,8 @@ class User(AbstractBaseUser, PermissionsMixin):
         _('admin status'),
         default=False,
         help_text=_(
-            'Designates whether the user can log into this admin site.'),
-    )
+            'Designates whether the user can log into this admin site.'),)
+    is_profile_complete = models.BooleanField(default=False)  # Adicione este campo)
 
     objects = UserManager()
 
@@ -64,8 +65,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         '''
         send_mail(subject, message, from_email, [self.email], **kwargs)
 
+
     @property
     def is_staff(self):
         "Is the user a member of staff?"
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+    def get_absolute_url(self):
+        return reverse_lazy('user_detail', kwargs={'pk': self.pk})

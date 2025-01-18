@@ -1,6 +1,8 @@
 # accounts/forms.py
 from django import forms
 
+from django.utils.translation import gettext_lazy as _
+
 from backend.accounts.models import User
 
 

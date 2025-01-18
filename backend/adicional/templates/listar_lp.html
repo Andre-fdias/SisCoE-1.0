@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block 'title' %} Consultar Adicional  e LP{% endblock %}
+{% block title %} Consultar Adicional  e LP{% endblock %}
 
 {% block 'head' %}
 <link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
@@ -128,42 +128,72 @@
                         <th class="px-4 py-2 text-center">Posto/Grad</th>
                         <th class="px-4 py-2 text-center">RE</th>
                         <th class="px-4 py-2 text-center">Nome Guerra</th>
-                        <th class="px-4 py-2 text-center">Sgb Origem</th>
-                        <th class="px-4 py-2 text-center">Posto Origem</th>
-                        <th class="px-4 py-2 text-center">Próximo Adicional</th>
-                        <th class="px-4 py-2 text-center">Ano</th>
+                        <th class="px-4 py-2 text-center">Sgb </th>
+                        <th class="px-4 py-2 text-center">Prox Bloco</th>
+                        <th class="px-4 py-2 text-center">Prox Adicional</th>
                         <th class="px-4 py-2 text-center">Mês</th>
+                        <th class="px-4 py-2 text-center">Ano</th>
                         <th class="px-4 py-2 text-center">Status</th>
                         <th class="px-4 py-2 text-center">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for cadastro in registros_adicional %}
-                    <tr data-id="{{ cadastro.id }}">
+                    <tr  data-id="{{ cadastro.id }}">
                         <td class="px-4 py-2 text-center">
                             {% if cadastro.ultima_imagem %}
-                                <img src="{{ cadastro.ultima_imagem.image.url }}" class="foto-perfil rounded-full w-10 h-10 object-cover object-center" alt="Imagem">
+                                <img src="{{ cadastro.ultima_imagem.image.url }}" class="foto-perfil rounded-full w-12 h-12 object-cover object-center" alt="Imagem">
                             {% else %}
                                 Sem imagem
                             {% endif %}
                         </td>
                         <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.promocoes.last.grad|safe }}</td>
-                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.re }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.re }}-{{ cadastro.cadastro.dig}}</td>
                         <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.nome_de_guerra }}</td>
-                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.detalhes_situacao.last.sgb }}</td>
-                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.detalhes_situacao.last.posto_secao }}</td>
-                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.data_5_anos_adicional|date:"d/m/Y" }}</td>
-                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.ano_adicional }}</td>
-                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.mes_adicional_abrev }}</td>
-                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.ats_status|safe }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">  <div class="ps-3">
+                            <div class="text-gray-700  bg-yellow-300 rounded-lg">    {{ cadastro.cadastro.detalhes_situacao.last.sgb }}</div>
+                            <div class="font-normal text-gray-500 ">{{ cadastro.cadastro.detalhes_situacao.last.posto_secao }}</div>
+                        </div>  
+                        </td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">
+                            {% if cadastro.numero_prox_adicional == 4 %}
+
+                            <div class="flex items-center">
+                                <div class="h-2.5 w-2.5 rounded-full bg-red-800 mr-2"></div><span>
+                                    <div class="ps-3">
+                                        <div class="text-gray-700 ">   {{ cadastro.numero_prox_adicional }}</div>
+                                        <div class="font-normal px-2 bg-yellow-700  text-gray-200 rounded-lg ">6ª parte</div>
+                                    </div>  </span>
+                            </div>
+                            {% else %}
+                            {{ cadastro.numero_prox_adicional }}
+                        {% endif %}
+                        </td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.proximo_adicional|date:"d/m/Y" }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.mes_abreviado_proximo_adicional }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.ano_proximo_adicional}}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.status_adicional}}</td>
                         <td class="px-4 py-2 text-center">
-                            <button class="edit-btn">Editar</button>
-                            <button class="save-btn" style="display:none;">Salvar</button>
+                     
+                            <a href="{% url 'adicional:ver_lp' cadastro.id %}"> <button class="text-white bg-gradient-to-r from-yellow-300 via-yellow-300 to-yellow-400 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                                  </svg>
+                            </button></a>
+                            
+                            <button class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-gray-200" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                                  </svg>
+                            </button>
+                          
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            
         </fieldset>
         <script>
                         document.querySelectorAll('.edit-btn').forEach(button => {
@@ -303,54 +333,40 @@
                         <th class="px-4 py-2 text-center">Posto/Grad</th>
                         <th class="px-4 py-2 text-center">RE</th>
                         <th class="px-4 py-2 text-center">Nome Guerra</th>
-                        <th class="px-4 py-2 text-center">Sgb Origem</th>
-                        <th class="px-4 py-2 text-center">Posto Origem</th>
-                        <th class="px-4 py-2 text-center">Última LP</th>
-                        <th class="px-4 py-2 text-center">Ano</th>
+                        <th class="px-4 py-2 text-center">Sgb </th>
+                        <th class="px-4 py-2 text-center">Prox Bloco</th>
+                        <th class="px-4 py-2 text-center">Prox LP</th>
                         <th class="px-4 py-2 text-center">Mês</th>
+                        <th class="px-4 py-2 text-center">Ano</th>
                         <th class="px-4 py-2 text-center">Status</th>
                         <th class="px-4 py-2 text-center">Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for cadastro in registros_lp %}
-                    <tr>
+                    <tr  data-id="{{ cadastro.id }}">
                         <td class="px-4 py-2 text-center">
                             {% if cadastro.ultima_imagem %}
-                                <img src="{{ cadastro.ultima_imagem.image.url }}" class="foto-perfil rounded-full w-10 h-10 object-cover object-center" alt="Imagem">
+                                <img src="{{ cadastro.ultima_imagem.image.url }}" class="foto-perfil rounded-full w-12 h-12 object-cover object-center" alt="Imagem">
                             {% else %}
                                 Sem imagem
                             {% endif %}
                         </td>
-                        <td class="px-4 py-2 text-center">
-                            {% if cadastro.cadastro.promocoes %}
-                                {{ cadastro.cadastro.promocoes.last.grad|safe }}
-                            {% else %}
-                                Sem detalhes
-                            {% endif %}
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.promocoes.last.grad|safe }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.re }}-{{ cadastro.cadastro.dig}}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.nome_de_guerra }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">  <div class="ps-3">
+                            <div class="text-gray-700  bg-yellow-300 rounded-lg">    {{ cadastro.cadastro.detalhes_situacao.last.sgb }}</div>
+                            <div class="font-normal text-gray-500 ">{{ cadastro.cadastro.detalhes_situacao.last.posto_secao }}</div>
+                        </div>  
                         </td>
-                        <td class="px-4 py-2 text-center">{{ cadastro.cadastro.re }}</td>
-                        <td class="px-4 py-2 text-center">{{ cadastro.cadastro.nome_de_guerra }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.numero_prox_lp }}</td> 
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.proximo_lp|date:"d/m/Y" }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.mes_abreviado_proximo_lp }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.ano_proximo_lp}}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.status_lp}}</td>
                         <td class="px-4 py-2 text-center">
-                            {% if cadastro.cadastro.detalhes_situacao %}
-                                {{ cadastro.cadastro.detalhes_situacao.last.sgb }}
-                            {% else %}
-                                Sem detalhes
-                            {% endif %}
-                        </td>
-                        <td class="px-4 py-2 text-center">
-                            {% if cadastro.cadastro.detalhes_situacao %}
-                                {{ cadastro.cadastro.detalhes_situacao.last.posto_secao }}
-                            {% else %}
-                                Sem detalhes
-                            {% endif %}
-                        </td>
-                        <td class="px-4 py-2 text-center">{{ cadastro.data_ultimo_lp|date:"d/m/Y" }}</td>
-                        <td class="px-4 py-2 text-center">{{ cadastro.ano_lp }}</td>
-                        <td class="px-4 py-2 text-center">{{ cadastro.mes_lp_abrev }}</td>
-                        <td class="px-4 py-2 text-center">{{ cadastro.lp_status|safe }}</td>
-                        <td class="px-4 py-2 text-center">
-                            <a class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{% url 'adicional:ver_lp' cadastro.id %}">Editar</a>
+                            <a class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="">Editar</a>
                         </td>
                     </tr>
                     {% endfor %}

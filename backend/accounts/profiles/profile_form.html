@@ -13,10 +13,7 @@
                         <label for="user" class="text-sm font-medium text-white block mb-2">Nome</label>
                         <input id="user" type="text" name="user" value="{{ request.user.first_name }}" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required>
                     </div>
-                    <div>
-                        <label for="image" class="text-sm font-medium text-white block mb-2">Imagem</label>
-                        <input id="image" type="file" name="image" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
-                    </div>
+              
                     <div>
                         <label for="posto_grad" class="text-sm font-medium text-white block mb-2">Posto/Graduação</label>
                         <select id="posto_grad" name="posto_grad" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
@@ -33,6 +30,23 @@
                         <label for="dig" class="text-sm font-medium text-white block mb-2">Dígito</label>
                         <input id="dig" type="text" name="dig" value="{{ profile.dig }}" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required>
                     </div>
+                    <div>
+                        <label for="image" class="text-sm font-medium text-white block mb-2">Imagem</label>
+                        <input id="image" type="file" name="image" class="bg-gray-300 border border-gray-300 text-white sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+                    </div>
+                    <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                        <div class="mb-4">
+                            <p class="text-lg font-bold">Imagem de Perfil</p>
+                        </div>
+                        <div class="mb-3">
+                            <label for="image" class="block text-sm font-medium text-gray-700">Envie a foto para o perfil</label>
+                            <br><br>
+                            <img id="preview" src="#" alt="Pré-visualização da imagem" style="display: none; max-width: 200px;">
+                            <br><br>
+                            <input class="mt-1 block w-full text-base border-gray-300 border-blue-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="image_error">Por favor, envie uma imagem de perfil.</div>
+                        </div>
+                    </fieldset>
                     <button type="submit" class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-base px-5 py-3 w-full sm:w-auto text-center">Salvar</button>
                 </form>
             </div>

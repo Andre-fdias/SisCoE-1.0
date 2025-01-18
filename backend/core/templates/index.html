@@ -48,10 +48,14 @@
                                   <!-- Nome -->
                                 <div class="text-md font-medium text-gray-500 mr-5"> Olá </div>
                                   <!-- Título -->
-                                  <div class="text-sm font-regular text-gray-500 mr-5">{{ request.user.posto_grad}}  {{ request.user.last_name}}</div>
+                                  <div class="text-sm font-regular text-gray-500 mr-5">{{ request.user.profile.posto_grad}}  {{ request.user.last_name}}</div>
                             </div>
                             <div class="w-14 h-14 rounded-full overflow-hidden border-2 dark:border-white border-gray-900">
-                              <img src="{{request.user.image.url}}" alt="Profile Image" class="w-full h-full object-cover" >
+                              {% if request.user.profile.image %}
+                              <img src="{{ request.user.profile.image.url }}" alt="Profile Image" class="w-full h-full object-cover">
+                                {% else %}
+                              <p>No profile image uploaded.</p>
+                              {% endif %}
                             </div>
                             <div class="font-semibold dark:text-white text-gray-900 text-lg">
                                       <div class="cursor-pointer">
@@ -61,15 +65,16 @@
                           </div>
                           <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute w-90 px-5 py-3 dark:bg-gray-700 bg-white rounded-lg shadow border dark:border-transparent mt-5 z-50">
                             <ul class="space-y-3 dark:text-white">
+                        
                               <li class="flex items-center w-full p-2 text-gray-400 transition duration-75  group hover:bg-gray-800 hover:rounded-lg" >
-                                  <a href="#" class="flex justify-start items-center  transform transition-colors duration-200 border-transparent hover:border-indigo-700">
+                                  <a href=""  class="flex justify-start items-center  transform transition-colors duration-200 border-transparent hover:border-indigo-700">
                                   <div class="mr-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-person-workspace" viewBox="0 0 16 16">
                                         <path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
                                         <path d="M2 1a2 2 0 0 0-2 2v9.5A1.5 1.5 0 0 0 1.5 14h.653a5.4 5.4 0 0 1 1.066-2H1V3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v9h-2.219c.554.654.89 1.373 1.066 2h.653a1.5 1.5 0 0 0 1.5-1.5V3a2 2 0 0 0-2-2z"/>
                                     </svg>
                                 </div>
-                                  Dados Usuário
+                                  Perfil - Usuário
                                 </a>
                               </li>
 
@@ -179,7 +184,13 @@
                 </p>
               </div>
               <div class="flex flex-row text-gray-400 my-3">
-                  <a href="">Saiba Mais <i class="fas fa-chevron-right"></i></a>
+                
+
+                {% if cadastro.id %}
+                <a href="{% url 'efetivo:ver_militar' id=cadastro.id %}">Ver Militar (ID: {{ cadastro.id }})</a>
+                {% else %}
+                <p>Não há cadastro para exibir.</p>
+                {% endif %}
               </div>
             
               <div class="flex flex-col xl:flex-row justify-between">
