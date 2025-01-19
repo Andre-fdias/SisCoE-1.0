@@ -12,6 +12,9 @@ urlpatterns = [
     path('accounts/', include('backend.accounts.urls')),  # noqa E501
     path('faisca/', include('backend.faisca.urls', namespace='faisca')),  # noqa E501
     path('rpt/', include('backend.rpt.urls', namespace='rpt')),  # noqa E501
+    path('bm/', include('backend.bm.urls', namespace='bm')),  # noqa E501
+
+
     
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

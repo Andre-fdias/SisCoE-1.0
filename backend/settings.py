@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'backend.efetivo',
     'backend.adicional',
     'backend.faisca',
-     'backend.rpt',
+    'backend.rpt',
+    'backend.bm',
 ]
 
 MIDDLEWARE = [

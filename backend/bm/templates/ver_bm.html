@@ -1,12 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %} Consultar Efetivo{% endblock %}
-{% block 'head' %}
-
-<link rel="stylesheet" href="{% static 'efetivo\css\ver_militar.css' %}">
-
-
-{% endblock 'head' %}
 
 {% block 'body' %}
 
@@ -22,10 +16,10 @@
                         <div class="md:w-1/3 text-center mb-8 md:mb-0">
                             {% if cadastro.imagens.exists %}
                             <img src="{{ cadastro.imagens.last.image.url }}" alt="Profile Picture" class="rounded-full w-60 h-60 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 object-cover">
-                        {% else %}
-                            Sem imagem
-                        {% endif %}
-                            
+                                {% else %}
+                                    Sem imagem
+                                {% endif %}
+                                    
                             <p class="text-gray-300 "> {{ cadastro.promocoes.last.grad|safe }}</p><br>
                                 <!-- Botão para abrir o modal de troca de foto --> 
                                 <button type="button" class=" mt-4  text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2" data-modal-target="#trocaFotoModal">
@@ -106,134 +100,7 @@
                                     });
                                 </script>
                                             
-                                <!-- Botão para abrir o modal de Posto e Graduação -->
-                                <button type="button" class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-target="#editModal">
-                                    Editar Posto/Grad
-                                </button>
-
-                                <!-- Modal de Edição de Posto e Graduação -->
-                                <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                                    <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
-                                        <div class="flex justify-between items-center p-4 bg-gray-800 ">
-                                            <h5 class="text-xl font-semibold text-gray-300 ">Editar Posto e Graduação</h5>
-                                            <button type="button" class="text-gray-500 hover:text-gray-700 w-5 h-5"data-modal-close="#editModal">&times;</button>
-                                        </div>
-                                        <div class="p-4">
-                                            <!-- Formulário de Edição -->
-                                            <form id="editForm" method="POST" action="{% url 'efetivo:editar_posto_graduacao' cadastro.id %}" novalidate>
-                                                {% csrf_token %}
-                                                <br>
-                                                <div class="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label for="posto_grad" class="block mb-2 text-sm font-medium text-gray-400">Posto/Grad</label>
-                                                        <select name="posto_grad" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="posto_grad" required>
-                                                            {% for i in posto_grad %}
-                                                            <option value="{{ i.0 }}" {% if promocao and promocao.posto_grad == i.0 %}selected{% endif %}>{{ i.1 }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, selecione um posto/graduação.
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label for="quadro" class="block mb-2 text-sm font-medium text-gray-400">Quadro</label>
-                                                        <select name="quadro" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="quadro" required>
-                                                            {% for i in quadro %}
-                                                            <option value="{{ i.0 }}" {% if promocao and promocao.quadro == i.0 %}selected{% endif %}>{{ i.1 }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, selecione um quadro.
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label for="grupo" class="block mb-2 text-sm font-medium text-gray-400">Grupo</label>
-                                                        <select name="grupo" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="grupo" required>
-                                                            {% for i in grupo %}
-                                                            <option value="{{ i.0 }}" {% if promocao and promocao.grupo == i.0 %}selected{% endif %}>{{ i.1 }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, selecione um grupo.
-                                                        </div>
-                                                    </div>
-                                                    <div>
-                                                        <label for="ultima_promocao" class="block mb-2 text-sm font-medium text-gray-400">Data da Última Promoção</label>
-                                                        <input type="date" name="ultima_promocao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="ultima_promocao" value="{% if promocao %}{{ promocao.ultima_promocao|date:'Y-m-d' }}{% endif %}" required>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, insira a data da última promoção.
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <br>
-                                                <div class="flex justify-end space-x-2">
-                                                    <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"  data-modal-close="#editModal">Cancelar</button>
-                                               
-                                                    <button type="button" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"data-modal-target="#confirmModal">Salvar</button>
-                                               </div>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Modal de Confirmação -->
-                                <div id="confirmModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                                    <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-md">
-                                        <div class="flex bg-gray-800 justify-between items-center p-4 ">
-                                            <h5 class="text-xl text-gray-200">Confirmar Alterações</h5>
-                                            <button type="button" class="text-gray-400 hover:text-gray-300" data-modal-close="#confirmModal">&times;</button>
-                                        </div>
-                                        <br>
-                                        <br>
-                                        <div class="p-4 text-gray-400">
-                                            Tem certeza de que deseja salvar as alterações?
-                                        </div>
-                                        <br>
-                                        <div class="flex justify-end space-x-2 p-4">
-
-                                            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#confirmModal">Cancelar</button>
-                                            <button type="button" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"  id="confirmSave">Salvar</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <script>
-                                    document.addEventListener('DOMContentLoaded', () => {
-                                        const openModalButtons = document.querySelectorAll('[data-modal-target]');
-                                        const closeModalButtons = document.querySelectorAll('[data-modal-close]');
-
-                                        openModalButtons.forEach(button => {
-                                            button.addEventListener('click', () => {
-                                                const modal = document.querySelector(button.dataset.modalTarget);
-                                                openModal(modal);
-                                            });
-                                        });
-
-                                        closeModalButtons.forEach(button => {
-                                            button.addEventListener('click', () => {
-                                                const modal = button.closest('.fixed');
-                                                closeModal(modal);
-                                            });
-                                        });
-
-                                        function openModal(modal) {
-                                            if (modal == null) return;
-                                            modal.classList.remove('hidden');
-                                        }
-
-                                        function closeModal(modal) {
-                                            if (modal == null) return;
-                                            modal.classList.add('hidden');
-                                        }
-
-                                        const confirmSave = document.getElementById('confirmSave');
-                                        confirmSave.addEventListener('click', () => {
-                                            document.getElementById('editForm').submit();
-                                            const modal = document.getElementById('confirmModal');
-                                            closeModal(modal);
-                                        });
-                                    });
-                                </script>
+                          
                         </div>
                         <div class="md:w-2/3 md:pl-8">
                             <h1 class="text-3xl font-semibold text-gray-300 mb-4">{{ cadastro.nome}}</h1>
@@ -711,7 +578,7 @@
                             <h2 class="text-xl font-semibold text-indigo-800mb-4">Tempo Total </h2>
                             <hr class="my-4 border-b-1 border-gray-500">
                             <h4 class="text-1xl text-gray-700  mb-4"><b>Idade Detalhada:</b> <span>{{ cadastro.idade_detalhada }}</span></h4>
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>Tempo de Matrícula:</b> <span>{{ cadastro.matricula_detalhada }}</span></h4>
+                            <h4 class="text-1xl text-gray-700  mb-4"><b>Tempo de Matrícula:</b> <span></span></h4>
                             <h4 class="text-1xl text-gray-700  mb-4"><b>Tempo de Admissão:</b> <span>{{ cadastro.admissao_detalhada }}</span></h4>
                             <h4 class="text-1xl text-gray-700  mb-4"><b>Inativa em:</b> <span>{{ cadastro.previsao_de_inatividade_detalhada }}</span></h4>
                             <h4 class="text-1xl text-gray-700  mb-4"><b>Tempo no Cargo Atual:</b> <span>{{ promocao.ultima_promocao_detalhada }}</span></h4>
