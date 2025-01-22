@@ -20,4 +20,4 @@ jupyter==1.1.1
 Markdown==3.7
 langchain-groq==0.2.2
 fontawesome==5.10.1.post1
-
+pytz==2024.2

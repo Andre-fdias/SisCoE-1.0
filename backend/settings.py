@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'backend.faisca',
     'backend.rpt',
     'backend.bm',
+ 
+  
 ]
 
 MIDDLEWARE = [
@@ -73,7 +75,6 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'backend.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
@@ -174,3 +175,4 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 GROQ_API_KEY = config('GROQ_API_KEY')
+

@@ -1,5 +1,8 @@
 from django.db import models
 from backend.accounts.models import User
+import locale
+locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
+
 
 
 class Chat(models.Model):
