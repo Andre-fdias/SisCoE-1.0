@@ -1,13 +1,10 @@
 from django.urls import path
-
-from backend.core import views as v
+from . import views
 
 app_name = 'core'
 
-
 urlpatterns = [
-    path('home', v.index, name='index'),  # noqa E501
-    path('', v.capa, name='capa'),  # noqa E501
-    path('profile/', v.profile, name='profile'),  # Adicione a URL para a página de perfil
-    path('dashboard/', v.dashboard, name='dashboard'),
+    path('home', views.index, name='index'),
+    path('', views.capa, name='capa'),
+    path('dashboard/', views.dashboard, name='dashboard'),
 ]

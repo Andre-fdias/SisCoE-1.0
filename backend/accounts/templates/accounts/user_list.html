@@ -84,6 +84,7 @@
                 <label for="checkbox-all" class="sr-only">checkbox</label>
               </div>
             </th>
+            <th class="px-4 py-2 text-center">Imagem</th>
             <th class="px-4 py-2 text-center">Nome</th>
             <th class="px-4 py-2 text-center">Email</th>
             <th class="px-4 py-2 text-center">Criado em</th>
@@ -101,8 +102,18 @@
             <label for="checkbox-1" class="sr-only">checkbox</label>
           </div>
         </td>
+
+        <td class="px-4 py-2 ">
+         
+            {% if object.profile.image %}
+              <img src="{{ object.profile.image.url }}"  class="foto-perfil rounded-full w-12 h-12 object-cover object-center" alt="Imagem">
+            {% else %}
+              Sem imagem
+            {% endif %}
+          
+        </td>
+
         <td class="px-4 py-2 text-center p-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
-      
           <div class="text-sm font-normal text-gray-500">
             <div class="text-base font-normal text-gray-900">
               <a href="{{ object.get_absolute_url }}" class="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg">{{ object.last_name}}</a>
@@ -124,7 +135,7 @@
               {% endif %}
         </td>  
         <td class="p-4 whitespace-nowrap text-base font-medium text-gray-600">
-            <a href="{% url 'user_update' object.pk %}" class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm inline-flex items-center px-3 py-2 text-center">
+          <a href="{{ object.get_absolute_url }}" class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm inline-flex items-center px-3 py-2 text-center">
             <svg class="mr-2 h-5 w-5 " fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
           ver
           </a>

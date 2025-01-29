@@ -35,13 +35,13 @@
               <div class="flex space-x-4 ml-32">
                     <a href="{% url 'core:dashboard' %}" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Secretaria</a>
                     <a href="#contato" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Calculadora de tempo</a>
-                    <a href="" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Faísca</a>
+                    <a href="{% url 'faisca:chatbot' %}" class="text-gray-300 hover:text-purple-600 p-4 px-3 sm:px-4">Faísca</a>
               </div>
               <div class="flex items-center space-x-4">
                 <div class="flex items-center">
                   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js"></script>
-                  <div class=" bg-gray-900 flex justify-center items-center dark:bg-gray-500">
-                    <div x-data="{ open: false }" class="bg-gray-900 dark:bg-gray-800 w-64  flex justify-center items-center z-50">
+                  <div class=" bg-gray-800 flex justify-center items-center dark:bg-gray-500">
+                    <div x-data="{ open: false }" class="bg-gray-800 dark:bg-gray-800 w-64  flex justify-center items-center z-50">
                       <div @click="open = !open" class="relative border-b-4 border-transparent py-3" :class="{'border-indigo-700 transform transition duration-300 ': open}" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100">
                         <div class="flex justify-center items-center space-x-3 cursor-pointer">
                             <div class="flex flex-col items-end ">
@@ -66,8 +66,8 @@
                           <div x-show="open" x-transition:enter="transition ease-out duration-100" x-transition:enter-start="transform opacity-0 scale-95" x-transition:enter-end="transform opacity-100 scale-100" x-transition:leave="transition ease-in duration-75" x-transition:leave-start="transform opacity-100 scale-100" x-transition:leave-end="transform opacity-0 scale-95" class="absolute w-90 px-5 py-3 dark:bg-gray-700 bg-white rounded-lg shadow border dark:border-transparent mt-5 z-50">
                             <ul class="space-y-3 dark:text-white">
                         
-                              <li class="flex items-center w-full p-2 text-gray-400 transition duration-75  group hover:bg-gray-800 hover:rounded-lg" >
-                                  <a href=""  class="flex justify-start items-center  transform transition-colors duration-200 border-transparent hover:border-indigo-700">
+                              <li class="flex items-center w-full p-2 text-gray-400 transition duration-75  group hover:bg-gray-700 hover:rounded-lg" >
+                                <a href="{% url 'user_detail' user.pk %}"   class="flex justify-start items-center  transform transition-colors duration-200 border-transparent hover:border-indigo-700">
                                   <div class="mr-3">
                                     <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-person-workspace" viewBox="0 0 16 16">
                                         <path d="M4 16s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-5.95a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>

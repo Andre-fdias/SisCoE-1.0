@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_login.html" %}
 {% load static %}
 {% block 'title' %} Consultar Usuários{% endblock %}
 
@@ -10,50 +10,30 @@
 <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet">
 {% endblock 'head' %}
 
-{% block 'body' %}
+{% block content %}
 
 <body>
 
-<div class="container mx-auto p-4 mt-30" id="usuarios">
+  <div class="bg-gray-100 shadow p-6 rounded-lg md:mt-24 max-w-400p xl:p-0 w-7/12 mx-auto"> 
 
     <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
-        <fieldset class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">
-            <div id="01" class="mb-4">
-                <div class="bg-gray-800 p-4 rounded-md">
-                    <div class="flex flex-wrap items-center justify-between py-3">
-                        <div class="col-12 md:w-auto">
-                            <h1 class="text-3xl text-gray-200">
-                              {% if object.pk %}
-                              Editar 
-                            {% else %}
-                              Adicionar
-                            {% endif %}
-                            Usuário                              
-                              </h1>
-                            <p class="text-gray-400" >Após preencher os dados e salvar, será encaminhado para o email cadastrado a senha!.</p>
-                        </div>
-                       
-                    </div>
-                </div>
-            </div>
-        
-        </fieldset>
-        <fieldset>
-          <legend  class=" mb-8 rounded-md w-full" >
-              {% if messages %}
-              {% for message in messages %}
-                  <section class="alert {{ message.tags }}">
-                      {{ message }}
-                  </section>
-              {% endfor %}
-              {% endif %}
-          </legend>  
-        </fieldset>
+
+
+    
+        <legend  class=" mb-8 rounded-md w-full" >
+            {% if messages %}
+            {% for message in messages %}
+                <section class="alert {{ message.tags }} p-4 mb-4 rounded-md">
+                    {{ message }}
+                </section>
+            {% endfor %}
+            {% endif %}
+        </legend>
         <fieldset class="bg-gray-100 mb-8 rounded-md w-full" id="adicionalTempoTable">
-        <div class="mx-auto  flex flex-col px-6 pt-8 pt:mt-0">
+           <div class="mx-auto  flex flex-col px-6 pt-8 pt:mt-0">
           <!-- Card -->
 
-            <div class="p-6 sm:p-8 lg:p-16 space-y-8">
+            <div class="p-2 sm:p-2 lg:p-8 space-y-8">
               <h2 class="text-2xl lg:text-3xl font-bold text-gray-900">
                 {% if object.pk %}
                   Editar
@@ -68,6 +48,9 @@
                   <p class="text-red-500">{{ error }}</p>
                 {% endfor %}
               {% endif %}
+              <p class="text-gray-500" >Após preencher os dados e salvar, será encaminhado para o email cadastrado a senha!.</p>
+                    <br>
+                    
 
               <form class="mt-8 space-y-6" action="." method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
@@ -92,7 +75,7 @@
                   </div> -->
                 <div class="flex flex-col sm:flex-row">
                   <button type="submit" class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-base px-5 py-3 w-full sm:w-auto text-center">Salvar</button>
-                  <a href="{% url 'user_list' %}" class="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm px-5 py-3 mt-2 sm:mt-0 sm:ml-2 w-full sm:w-auto text-center">
+                  <a href="{{ object.get_absolute_url }}" class="text-gray-900 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm px-5 py-3 mt-2 sm:mt-0 sm:ml-2 w-full sm:w-auto text-center">
                     Cancelar
                   </a>
                 </div>

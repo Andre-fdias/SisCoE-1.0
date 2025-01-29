@@ -1,3 +1,5 @@
+# views.py
+from django.shortcuts import get_object_or_404
 import os
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -5,7 +7,7 @@ from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from langchain_groq import ChatGroq
 from markdown import markdown
-from backend.faisca.models import Chat
+from backend.faisca.models import Chat, Conversation
 from datetime import datetime
 import pytz
 
@@ -35,7 +37,7 @@ def ask_ai(context, message):
          ' Sua função é fornecer informações precisas e claras, sempre em formato markdown.'
          ' Além disso, você deve manter o contexto das conversas para oferecer respostas mais relevantes.'
          ' Se necessário, consulte documentos específicos internos para fornecer a melhor resposta possível.'
-         ' Lembre-se de sempre chamar o usuario de Sr. sendo sempre educado e profissional em suas respostas.'
+         ' Lembre-se de sempre chamar o usuario de Senhor ,sendo sempre educado e profissional em suas respostas.'
          ),
 (
       'human',
@@ -57,17 +59,21 @@ def ask_ai(context, message):
 
 @login_required
 def chatbot(request):
-    chats = Chat.objects.filter(user=request.user)
+    conversation = Conversation.objects.filter(user=request.user).last()
     
     if request.method == 'POST':
-        context = get_chat_history(chats=chats)
+        if not conversation:
+            conversation = Conversation.objects.create(user=request.user)
+        
         message = request.POST.get('message')
+        context = get_chat_history(chats=conversation.chats.all())
         response = ask_ai(context=context, message=message)
+        
         chat = Chat(
-            user=request.user,
+            conversation=conversation,
             message=message,
             response=response,
-            created_at=get_local_time()  # Usar o horário local para o campo created_at
+            created_at=get_local_time()
         )
         chat.save()
 
@@ -75,9 +81,9 @@ def chatbot(request):
             'message': message,
             'response': response,
         })
+    
+    chats = conversation.chats.all() if conversation else []
     return render(request, 'chatbot.html', {'chats': chats})
-
-
 
 
 # Função para obter o horário local
@@ -100,8 +106,14 @@ def format_chat_history(chats):
     return formatted_history
 
 
+
 @login_required
 def chat_history(request):
-    chats = Chat.objects.filter(user=request.user).order_by('-created_at')
-    history = format_chat_history(chats)
+    conversations = Conversation.objects.filter(user=request.user).order_by('-created_at')
+    history = [{'id': conv.id, 'first_message': conv.chats.first().message, 'created_at': conv.created_at} for conv in conversations]
     return JsonResponse({'history': history})
+
+@login_required
+def reset_chat(request):
+    Conversation.objects.filter(user=request.user).delete()
+    return JsonResponse({'status': 'reset'})

@@ -5,15 +5,17 @@ from django.urls import path, include
 from backend.accounts import views as v
 
 
+
 # A ordem das urls é importante por causa do slug, quando existir.
 user_patterns = [
     path('', v.user_list, name='user_list'),  # noqa E501
     path('create/', v.user_create, name='user_create'),  # noqa E501
     path('<int:pk>/', v.user_detail, name='user_detail'),  # noqa E501
     path('<int:pk>/update/', v.user_update, name='user_update'),  # noqa E501
+    path('profile/', v.profile, name='profile'),
+    path('profile/edit/<int:pk>/', v.edit_profile, name='user_update'),  # Certifique-se de que esta linha está correta
+    
 ]
-
-
 
 urlpatterns = [
     path('login/', LoginView.as_view(), name='login'),  # noqa E501

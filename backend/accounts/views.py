@@ -1,4 +1,5 @@
-# accounts/views.py
+ #accounts/views.py
+from django.contrib.auth import login as auth_login
 from django.contrib.auth.views import (
     LoginView,
     PasswordResetCompleteView,
@@ -6,14 +7,22 @@ from django.contrib.auth.views import (
     PasswordResetDoneView,
     PasswordResetView
 )
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 
 from django.contrib.auth import get_user_model
-from backend.accounts.services import send_mail_to_user
-from backend.efetivo.models import Cadastro, DetalhesSituacao, Promocao, Imagem  # Ajuste a importaÃ§Ã£o conforme necessÃ¡rio
 
-from .models import User
+from backend.accounts.services import send_mail_to_user
 from .forms import CustomUserForm
+from .models import AuditEntry, User
+from .services import send_mail_to_user_reset_password
+from .signals import user_login_password_failed
+
+from backend.efetivo.models import Cadastro, DetalhesSituacao, Promocao, Imagem  # Ajuste a importaÃ§Ã£o conforme necessÃ¡rio
+from django.contrib.auth.decorators import login_required
+
+
+
 
 def my_logout(request):
     # ... logout logic
@@ -150,3 +159,30 @@ def user_update(request, pk):
     return render(request, template_name, context)
 
 
+
+
+@login_required
+def profile(request):
+    profile = request.user.profile
+    return render(request, 'profiles/profile.html', {'profile': profile})
+
+
+
+@login_required
+def edit_profile(request, pk):
+    profile = get_object_or_404(Profile, pk=pk)
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+            return redirect('core:profile')
+    else:
+        form = ProfileForm(instance=profile)
+    return render(request, 'profiles/profile_form.html', {'form': form})
+
+
+@login_required
+def user_detail(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    profile = user.profile
+    return render(request, 'accounts/user_detail.html', {'object': user, 'profile': profile})
