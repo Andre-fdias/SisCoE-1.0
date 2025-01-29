@@ -13,7 +13,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth import get_user_model
 
 from backend.accounts.services import send_mail_to_user
-from .forms import CustomUserForm
+from .forms import CustomUserForm,  MyAuthenticationForm
 from .models import AuditEntry, User
 from .services import send_mail_to_user_reset_password
 from .signals import user_login_password_failed
@@ -21,6 +21,48 @@ from .signals import user_login_password_failed
 from backend.efetivo.models import Cadastro, DetalhesSituacao, Promocao, Imagem  # Ajuste a importaÃ§Ã£o conforme necessÃ¡rio
 from django.contrib.auth.decorators import login_required
 
+
+class MyLoginView(LoginView):
+    template_name = 'registration/login.html'
+    form_class = MyAuthenticationForm
+
+    def form_invalid(self, form):
+        email = form.data.get('username')
+
+        if email:
+            try:
+                user = User.objects.get(email=email)
+
+                for error in form.errors.as_data()['__all__']:
+                    if error.code == 'max_attempt':
+                        # Envia email para o usuário resetar a senha.
+                        send_mail_to_user_reset_password(self.request, user)
+
+            except User.DoesNotExist:
+                pass
+            else:
+                # Dispara o signal quando o usuário existe, mas a senha está errada.
+                user_login_password_failed.send(
+                    sender=__name__,
+                    request=self.request,
+                    user=user
+                )
+
+        return self.render_to_response(self.get_context_data(form=form))
+
+    def form_valid(self, form):
+        user = form.get_user()
+
+        # Autentica usuário
+        auth_login(self.request, user)
+
+        # Zera o AuditEntry
+        AuditEntry.objects.filter(
+            email=user.email,
+            action='user_login_password_failed'
+        ).delete()
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
 
