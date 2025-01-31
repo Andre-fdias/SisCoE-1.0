@@ -176,3 +176,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 GROQ_API_KEY = config('GROQ_API_KEY')
 
+AUTH_USER_MODEL = 'accounts.User'
+
+
+

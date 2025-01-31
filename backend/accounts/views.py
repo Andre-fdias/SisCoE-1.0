@@ -1,5 +1,4 @@
- #accounts/views.py
-from django.contrib.auth import login as auth_login
+# accounts/views.py
 from django.contrib.auth.views import (
     LoginView,
     PasswordResetCompleteView,
@@ -7,64 +6,14 @@ from django.contrib.auth.views import (
     PasswordResetDoneView,
     PasswordResetView
 )
-from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
-
-from django.contrib.auth import get_user_model
-
-from backend.accounts.services import send_mail_to_user
-from .forms import CustomUserForm,  MyAuthenticationForm
-from .models import AuditEntry, User
-from .services import send_mail_to_user_reset_password
-from .signals import user_login_password_failed
-
-from backend.efetivo.models import Cadastro, DetalhesSituacao, Promocao, Imagem  # Ajuste a importaÃ§Ã£o conforme necessÃ¡rio
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import get_user_model
+from backend.accounts.services import send_mail_to_user
+from backend.efetivo.models import Cadastro, DetalhesSituacao, Promocao, Imagem  # Ajuste a importaÃ§Ã£o conforme necessÃ¡rio
 
-
-class MyLoginView(LoginView):
-    template_name = 'registration/login.html'
-    form_class = MyAuthenticationForm
-
-    def form_invalid(self, form):
-        email = form.data.get('username')
-
-        if email:
-            try:
-                user = User.objects.get(email=email)
-
-                for error in form.errors.as_data()['__all__']:
-                    if error.code == 'max_attempt':
-                        # Envia email para o usuário resetar a senha.
-                        send_mail_to_user_reset_password(self.request, user)
-
-            except User.DoesNotExist:
-                pass
-            else:
-                # Dispara o signal quando o usuário existe, mas a senha está errada.
-                user_login_password_failed.send(
-                    sender=__name__,
-                    request=self.request,
-                    user=user
-                )
-
-        return self.render_to_response(self.get_context_data(form=form))
-
-    def form_valid(self, form):
-        user = form.get_user()
-
-        # Autentica usuário
-        auth_login(self.request, user)
-
-        # Zera o AuditEntry
-        AuditEntry.objects.filter(
-            email=user.email,
-            action='user_login_password_failed'
-        ).delete()
-
-        return HttpResponseRedirect(self.get_success_url())
-
-
+from .models import User
+from .forms import CustomUserForm
 
 def my_logout(request):
     # ... logout logic
@@ -165,14 +114,14 @@ def verificar_cpf(request):
 
 
 
-
+@login_required
 def user_list(request):
     template_name = 'accounts/user_list.html'
     object_list = User.objects.exclude(email='admin@email.com')
     context = {'object_list': object_list}
     return render(request, template_name, context)
 
-
+@login_required
 def user_detail(request, pk):
     template_name = 'accounts/user_detail.html'
     instance = get_object_or_404(User, pk=pk)
@@ -189,42 +138,20 @@ def user_create(request):
     return render(request, template_name, context)
 
 
+@login_required
 def user_update(request, pk):
     template_name = 'accounts/user_form.html'
     instance = get_object_or_404(User, pk=pk)
-    form = CustomUserForm(request.POST or None, instance=instance)
+    if request.method == 'POST':
+        form = CustomUserForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            return redirect('user_detail', pk=pk)  # Redireciona para a página de detalhes do usuário após a atualização
+    else:
+        form = CustomUserForm(instance=instance)
 
     context = {
         'object': instance,
         'form': form,
     }
     return render(request, template_name, context)
-
-
-
-
-@login_required
-def profile(request):
-    profile = request.user.profile
-    return render(request, 'profiles/profile.html', {'profile': profile})
-
-
-
-@login_required
-def edit_profile(request, pk):
-    profile = get_object_or_404(Profile, pk=pk)
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-            form.save()
-            return redirect('core:profile')
-    else:
-        form = ProfileForm(instance=profile)
-    return render(request, 'profiles/profile_form.html', {'form': form})
-
-
-@login_required
-def user_detail(request, pk):
-    user = get_object_or_404(User, pk=pk)
-    profile = user.profile
-    return render(request, 'accounts/user_detail.html', {'object': user, 'profile': profile})

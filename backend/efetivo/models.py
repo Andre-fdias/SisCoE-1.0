@@ -1,5 +1,5 @@
 from datetime import date, datetime
-
+from backend.accounts.models import User
 from dateutil.relativedelta import relativedelta
 from django.db import models
 from django.utils.safestring import mark_safe
@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 from PIL import Image, ImageDraw, ImageFont
 import os
 from django.contrib.auth import get_user_model
-from backend.accounts.models import User
+
 # responsavel pelo cadastro básico de dados de militares
 
 class Cadastro(models.Model):
