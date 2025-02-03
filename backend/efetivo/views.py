@@ -493,3 +493,4 @@ def editar_situacao_funcional(request, id):
         'cat_efetivo': DetalhesSituacao._meta.get_field('cat_efetivo').choices,
         'detalhes': cadastro.detalhes_situacao.last()
     })
+

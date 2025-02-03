@@ -23,7 +23,7 @@ from django.contrib.auth.decorators import login_required
 
 from datetime import datetime
 from django.utils.timezone import make_naive, is_aware
-
+from .utils import get_client_ip, get_computer_name  # Atualize esta linha
 
 
 def my_logout(request):
@@ -31,6 +31,7 @@ def my_logout(request):
     user.update_login_history(None, None, logout_time=timezone.now())
     user.is_online = False
     user.save()
+    log_user_action(user, "User logged out", request)
     logout(request)
     return redirect('core:capa')
 
@@ -145,10 +146,15 @@ def user_detail(request, pk):
     return render(request, template_name, context)
 
 
+
 def user_create(request):
     template_name = 'accounts/user_form.html'
     form = CustomUserForm(request.POST or None)
-
+    if request.method == 'POST':
+        if form.is_valid():
+            user = form.save()
+            log_user_action(request.user, f"Created user {user.email}", request)
+            return redirect('user_detail', pk=user.pk)
     context = {'form': form}
     return render(request, template_name, context)
 
@@ -172,20 +178,8 @@ def user_update(request, pk):
     return render(request, template_name, context)
 
 
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
 
-def get_computer_name(ip):
-    try:
-        return socket.gethostbyaddr(ip)[0]
-    except socket.herror:
-        return 'Unknown'
-    
+from .services import log_user_action
 
 def login_view(request):
     form = AuthenticationForm(request, data=request.POST or None)
@@ -196,10 +190,34 @@ def login_view(request):
             user_computer_name = get_computer_name(user_ip)
             user.update_login_history(user_ip, user_computer_name, login_time=timezone.now())
             user.is_online = True
+            user.last_login_ip = user_ip
+            user.last_login_computer_name = user_computer_name
+            user.last_login = timezone.now()
             user.save()
             login(request, user)
+            log_user_action(user, "User logged in", request)
             return redirect('core:index')
     return render(request, 'registration/login.html', {'form': form})
+
+
+@login_required
+def user_update(request, pk):
+    template_name = 'accounts/user_form.html'
+    instance = get_object_or_404(User, pk=pk)
+    if request.method == 'POST':
+        form = CustomUserForm(request.POST, instance=instance)
+        if form.is_valid():
+            form.save()
+            log_user_action(request.user, f"Updated user {instance.email}", request)
+            return redirect('user_detail', pk=pk)
+    else:
+        form = CustomUserForm(instance=instance)
+
+    context = {
+        'object': instance,
+        'form': form,
+    }
+    return render(request, template_name, context)
 
 
 @login_required
@@ -224,49 +242,53 @@ def access_history(request):
 
 
 
+
+from django.db.models import Q
+from django.utils.dateparse import parse_datetime
+
+
 @login_required
-def all_users_list(request):
+def all_user_action_history(request):
     users = User.objects.all()
     selected_user = request.GET.get('user')
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
-    all_login_history = []
-    for user in users:
-        if selected_user and user.email != selected_user:
-            continue
-        for entry in user.login_history:
-            login_time = entry.get('login_time')
-            logout_time = entry.get('logout_time')
-            
-            # Convert to naive datetime if aware
-            if login_time and is_aware(datetime.fromisoformat(login_time)):
-                login_time = make_naive(datetime.fromisoformat(login_time))
-            if logout_time and is_aware(datetime.fromisoformat(logout_time)):
-                logout_time = make_naive(datetime.fromisoformat(logout_time))
-            
-            if start_date and login_time:
-                if datetime.fromisoformat(start_date) > login_time:
-                    continue
-            if end_date and logout_time:
-                if datetime.fromisoformat(end_date) < logout_time:
-                    continue
-            duration = user.get_login_duration(login_time.isoformat() if login_time else None, logout_time.isoformat() if logout_time else None)
-            formatted_login_time = user.format_datetime(login_time.isoformat() if login_time else None)
-            formatted_logout_time = user.format_datetime(logout_time.isoformat() if logout_time else None)
-            all_login_history.append({
-                'email': user.email,
-                'login_time': formatted_login_time,
-                'ip': entry.get('ip'),
-                'computer_name': entry.get('computer_name'),
-                'logout_time': formatted_logout_time,
-                'duration': duration,
-                'is_online': user.is_online,
-            })
-    return render(request, 'accounts/all_list.html', {
-        'all_login_history': all_login_history,
+    action_logs = UserActionLog.objects.all()
+
+    if selected_user:
+        action_logs = action_logs.filter(user__email=selected_user)
+
+    if start_date:
+        start_date = parse_datetime(start_date)
+        action_logs = action_logs.filter(timestamp__gte=start_date)
+
+    if end_date:
+        end_date = parse_datetime(end_date)
+        action_logs = action_logs.filter(timestamp__lte=end_date)
+
+    action_logs = action_logs.order_by('-timestamp')
+
+    return render(request, 'accounts/all_user_action_history.html', {
+        'action_logs': action_logs,
         'users': users,
         'selected_user': selected_user,
         'start_date': start_date,
         'end_date': end_date,
     })
+
+
+
+from .models import UserActionLog
+
+@login_required
+def user_action_history(request, pk):
+    user = get_object_or_404(User, pk=pk)
+    action_logs = UserActionLog.objects.filter(user=user).order_by('-timestamp')
+    return render(request, 'accounts/user_action_history.html', {'action_logs': action_logs, 'user': user})
+
+
+@login_required
+def all_users_list(request):
+    users = User.objects.all()
+    return render(request, 'accounts/all_list.html', {'users': users})

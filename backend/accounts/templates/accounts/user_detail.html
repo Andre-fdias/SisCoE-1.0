@@ -122,19 +122,24 @@
                             <h4 class="text-1xl text-gray-700  mb-4"><b>CPF:</b> <span>{{ object.profile.cpf|default:"---" }}</span></h4>
                             <h4 class="text-1xl text-gray-700  mb-4"><b>Email:</b> <span>{{object.email }}</span></h4>
                             <h4 class="text-1xl text-gray-700  mb-4"><b>Telefone:</b> <span>{{ object.cadastro.telefone }}</span></h4><br>
+
                             <h2 class="text-xl font-semibold text-indigo-800mb-4">Dados de Acesso</h2>
+                            <a href="{% url 'user_action_history' object.pk %}" class="text-gray-900 bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm inline-flex items-center px-3 py-2 text-center">
+                                Ver Histórico de Ações
+                            </a>
                             <hr class="my-4 border-b-1 border-gray-500">
                         
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>IP Logado:</b> <span>{{object.last_login_ip }}</span></h4>
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>Nome do PC:</b> <span>{{ object.last_login_computer_name  }}</span>
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>Horário de Acesso:</b> <span>{{object.last_login_ip }}</span></h4>
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>Está Online:</b> <span>
-                                {% if object.entry.is_online %}
+                            <h4 class="text-1xl text-gray-700 mb-4"><b>IP Logado:</b> <span>{{ object.last_login_ip }}</span></h4>
+                            <h4 class="text-1xl text-gray-700 mb-4"><b>Nome do PC:</b> <span>{{ object.last_login_computer_name }}</span></h4>
+                            <h4 class="text-1xl text-gray-700 mb-4"><b>Horário de Acesso:</b> <span>{{ object.last_login|date:"d/m/Y H:i:s" }}</span></h4>
+                            <h4 class="text-1xl text-gray-700 mb-4"><b>Está Online:</b> <span>
+                                {% if object.is_online %}
                                 <span class="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
                                 {% else %}
                                 <span class="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
                                 {% endif %}
                             </span></h4>
+
                                                      
 
                   

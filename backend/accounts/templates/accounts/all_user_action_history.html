@@ -1,0 +1,51 @@
+<!-- accounts/all_user_action_history.html -->
+{% extends "base.html" %}
+{% block 'body' %}
+<h2>Histórico de Ações de Todos os Usuários</h2>
+
+<form method="GET" class="mb-4">
+    <div class="flex flex-wrap -mx-2">
+        <div class="w-full md:w-1/3 px-2 mb-4">
+            <label for="user" class="block text-gray-700">Usuário</label>
+            <select id="user" name="user" class="block w-full mt-1">
+                <option value="">Todos</option>
+                {% for user in users %}
+                <option value="{{ user.email }}" {% if user.email == selected_user %}selected{% endif %}>{{ user.email }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="w-full md:w-1/3 px-2 mb-4">
+            <label for="start_date" class="block text-gray-700">Data de Início</label>
+            <input type="datetime-local" id="start_date" name="start_date" value="{{ start_date|date:"Y-m-d\TH:i" }}" class="block w-full mt-1">
+        </div>
+        <div class="w-full md:w-1/3 px-2 mb-4">
+            <label for="end_date" class="block text-gray-700">Data de Fim</label>
+            <input type="datetime-local" id="end_date" name="end_date" value="{{ end_date|date:"Y-m-d\TH:i" }}" class="block w-full mt-1">
+        </div>
+    </div>
+    <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Filtrar</button>
+</form>
+
+<table class="min-w-full bg-white">
+    <thead>
+        <tr>
+            <th class="py-2 px-4 border-b">Usuário</th>
+            <th class="py-2 px-4 border-b">Ação</th>
+            <th class="py-2 px-4 border-b">Data e Hora</th>
+            <th class="py-2 px-4 border-b">IP</th>
+            <th class="py-2 px-4 border-b">Nome do Computador</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for log in action_logs %}
+        <tr>
+            <td class="py-2 px-4 border-b">{{ log.user.email }}</td>
+            <td class="py-2 px-4 border-b">{{ log.action }}</td>
+            <td class="py-2 px-4 border-b">{{ log.timestamp|date:"d/m/Y H:i:s" }}</td>
+            <td class="py-2 px-4 border-b">{{ log.ip_address }}</td>
+            <td class="py-2 px-4 border-b">{{ log.computer_name }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

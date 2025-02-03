@@ -27,5 +27,9 @@ urlpatterns = [
     path('verificar_cpf/', v.verificar_cpf, name='verificar_cpf'),  # Adiciona a URL para verificação de CPF
     path('access_history/', v.access_history, name='access_history'),
     path('all_users_list/', v.all_users_list, name='all_users_list'),
+    path('user/<int:pk>/action_history/', v.user_action_history, name='user_action_history'),
+    path('all_user_action_history/', v.all_user_action_history, name='all_user_action_history'),
+
+
     path('users/', include(user_patterns)),
 ]

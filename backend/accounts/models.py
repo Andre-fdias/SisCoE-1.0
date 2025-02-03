@@ -115,3 +115,19 @@ class User(AbstractBaseUser, PermissionsMixin):
             dt = datetime.fromisoformat(dt_str)
             return dt.strftime('%d/%m/%Y - %H:%M:%S')
         return None
+    
+
+from django.db import models
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+class UserActionLog(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    action = models.CharField(max_length=255)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField(null=True, blank=True)
+    computer_name = models.CharField(max_length=255, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.action} - {self.timestamp}"
