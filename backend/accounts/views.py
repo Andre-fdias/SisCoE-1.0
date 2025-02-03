@@ -11,12 +11,27 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import get_user_model
 from backend.accounts.services import send_mail_to_user
 from backend.efetivo.models import Cadastro, DetalhesSituacao, Promocao, Imagem  # Ajuste a importaÃ§Ã£o conforme necessÃ¡rio
-
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, redirect
+import socket
 from .models import User
 from .forms import CustomUserForm
+from django.utils import timezone
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+
+from datetime import datetime
+from django.utils.timezone import make_naive, is_aware
+
+
 
 def my_logout(request):
-    # ... logout logic
+    user = request.user
+    user.update_login_history(None, None, logout_time=timezone.now())
+    user.is_online = False
+    user.save()
+    logout(request)
     return redirect('core:capa')
 
 
@@ -155,3 +170,103 @@ def user_update(request, pk):
         'form': form,
     }
     return render(request, template_name, context)
+
+
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[0]
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+def get_computer_name(ip):
+    try:
+        return socket.gethostbyaddr(ip)[0]
+    except socket.herror:
+        return 'Unknown'
+    
+
+def login_view(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            user = form.get_user()
+            user_ip = get_client_ip(request)
+            user_computer_name = get_computer_name(user_ip)
+            user.update_login_history(user_ip, user_computer_name, login_time=timezone.now())
+            user.is_online = True
+            user.save()
+            login(request, user)
+            return redirect('core:index')
+    return render(request, 'registration/login.html', {'form': form})
+
+
+@login_required
+def access_history(request):
+    user = request.user
+    login_history = []
+    for entry in user.login_history:
+        login_time = entry.get('login_time')
+        logout_time = entry.get('logout_time')
+        duration = user.get_login_duration(login_time, logout_time)
+        formatted_login_time = user.format_datetime(login_time)
+        formatted_logout_time = user.format_datetime(logout_time)
+        login_history.append({
+            'login_time': formatted_login_time,
+            'ip': entry.get('ip'),
+            'computer_name': entry.get('computer_name'),
+            'logout_time': formatted_logout_time,
+            'duration': duration,
+            'is_online': user.is_online,
+        })
+    return render(request, 'accounts/access_history.html', {'login_history': login_history})
+
+
+
+@login_required
+def all_users_list(request):
+    users = User.objects.all()
+    selected_user = request.GET.get('user')
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    all_login_history = []
+    for user in users:
+        if selected_user and user.email != selected_user:
+            continue
+        for entry in user.login_history:
+            login_time = entry.get('login_time')
+            logout_time = entry.get('logout_time')
+            
+            # Convert to naive datetime if aware
+            if login_time and is_aware(datetime.fromisoformat(login_time)):
+                login_time = make_naive(datetime.fromisoformat(login_time))
+            if logout_time and is_aware(datetime.fromisoformat(logout_time)):
+                logout_time = make_naive(datetime.fromisoformat(logout_time))
+            
+            if start_date and login_time:
+                if datetime.fromisoformat(start_date) > login_time:
+                    continue
+            if end_date and logout_time:
+                if datetime.fromisoformat(end_date) < logout_time:
+                    continue
+            duration = user.get_login_duration(login_time.isoformat() if login_time else None, logout_time.isoformat() if logout_time else None)
+            formatted_login_time = user.format_datetime(login_time.isoformat() if login_time else None)
+            formatted_logout_time = user.format_datetime(logout_time.isoformat() if logout_time else None)
+            all_login_history.append({
+                'email': user.email,
+                'login_time': formatted_login_time,
+                'ip': entry.get('ip'),
+                'computer_name': entry.get('computer_name'),
+                'logout_time': formatted_logout_time,
+                'duration': duration,
+                'is_online': user.is_online,
+            })
+    return render(request, 'accounts/all_list.html', {
+        'all_login_history': all_login_history,
+        'users': users,
+        'selected_user': selected_user,
+        'start_date': start_date,
+        'end_date': end_date,
+    })

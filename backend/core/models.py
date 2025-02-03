@@ -50,7 +50,6 @@ class Profile(models.Model):
     image = models.ImageField(upload_to='img/fotos_perfil/usuario')
     cpf = models.CharField(max_length=14, blank=False, null=False, unique=True)
     tipo = models.CharField(max_length=15, choices=tipo_choices, blank=False, null=False)
-
     class Meta:
         ordering = ('user__first_name',)
         verbose_name = 'perfil'

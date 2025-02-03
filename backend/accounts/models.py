@@ -10,7 +10,8 @@ from django.utils.translation import gettext_lazy as _
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils.safestring import mark_safe
-
+from django.utils import timezone
+from datetime import datetime, timedelta
 
 from .managers import UserManager
 
@@ -26,6 +27,11 @@ class User(AbstractBaseUser, PermissionsMixin):
         default=False,
         help_text=_(
             'Designates whether the user can log into this admin site.'),)
+    last_login_ip = models.GenericIPAddressField(null=True, blank=True)
+    last_login_computer_name = models.CharField(max_length=255, null=True, blank=True)
+    login_history = models.JSONField(default=list, blank=True)
+    is_online = models.BooleanField(default=False)
+
 
     objects = UserManager()
 
@@ -78,3 +84,34 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_absolute_url(self):
         return reverse_lazy('user_detail', kwargs={'pk': self.pk})
     
+
+    
+    def update_login_history(self, ip, computer_name, login_time=None, logout_time=None):
+        if login_time:
+            self.login_history.append({
+                'login_time': login_time.isoformat(),
+                'ip': ip,
+                'computer_name': computer_name,
+                'logout_time': None,
+            })
+        if logout_time:
+            self.login_history[-1]['logout_time'] = logout_time.isoformat()
+        self.save()
+
+
+    def get_login_duration(self, login_time, logout_time):
+        if login_time and logout_time:
+            login_dt = datetime.fromisoformat(login_time)
+            logout_dt = datetime.fromisoformat(logout_time)
+            duration = logout_dt - login_dt
+            total_seconds = int(duration.total_seconds())
+            hours, remainder = divmod(total_seconds, 3600)
+            minutes, seconds = divmod(remainder, 60)
+            return f'{hours:02}:{minutes:02}:{seconds:02}'
+        return None
+
+    def format_datetime(self, dt_str):
+        if dt_str:
+            dt = datetime.fromisoformat(dt_str)
+            return dt.strftime('%d/%m/%Y - %H:%M:%S')
+        return None

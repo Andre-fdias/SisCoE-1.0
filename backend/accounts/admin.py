@@ -2,8 +2,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.translation import gettext_lazy as _
-
-
+from .models import User  # Certifique-se de importar o modelo User
 
 class UserAdmin(BaseUserAdmin):
     # The fields to be used in displaying the User model.
@@ -37,3 +36,5 @@ class UserAdmin(BaseUserAdmin):
     ordering = ('email',)
     filter_horizontal = ('groups', 'user_permissions',)
 
+# Registrar o modelo User no admin
+admin.site.register(User, UserAdmin)
