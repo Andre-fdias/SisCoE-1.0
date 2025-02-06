@@ -16,4 +16,5 @@ urlpatterns = [
     path('historico_movimentacoes/<int:id>/', views.historico_movimentacoes, name='historico_movimentacoes'),
     path('editar_situacao_atual/<int:id>/', views.editar_situacao_atual, name='editar_situacao_atual'),
     path('cadastrar_nova_situacao/<int:id>/', views.cadastrar_nova_situacao, name='cadastrar_nova_situacao'),
+    path('check_rpt/<int:id>/', views.check_rpt, name='check_rpt'),
 ]

@@ -34,10 +34,14 @@ def profile_list(request):
     profiles = Profile.objects.all()
     return render(request, 'accounts/user_list.html', {'profiles': profiles})
 
+
+
 @login_required
 def profile_detail(request, pk):
     profile = get_object_or_404(Profile, pk=pk)
     return render(request, 'accounts/accounts/user_detail.html', {'profile': profile})
+
+
 
 @login_required
 def profile_create(request):
@@ -80,6 +84,7 @@ def profile_update(request, pk):
         'tipo_choices': tipo_choices,
     }
     return render(request, 'profiles/profile_form.html', context)
+
 @login_required
 def profile_delete(request, pk):
     profile = get_object_or_404(Profile, pk=pk)

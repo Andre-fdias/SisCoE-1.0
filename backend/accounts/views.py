@@ -220,16 +220,29 @@ def user_update(request, pk):
     return render(request, template_name, context)
 
 
+from django.utils import timezone
+from datetime import datetime
+
 @login_required
 def access_history(request):
     user = request.user
     login_history = []
     for entry in user.login_history:
-        login_time = entry.get('login_time')
-        logout_time = entry.get('logout_time')
-        duration = user.get_login_duration(login_time, logout_time)
-        formatted_login_time = user.format_datetime(login_time)
-        formatted_logout_time = user.format_datetime(logout_time)
+        login_time_str = entry.get('login_time')
+        logout_time_str = entry.get('logout_time')
+        
+        # Converte as strings de volta para objetos datetime
+        login_time = datetime.fromisoformat(login_time_str) if login_time_str else None
+        logout_time = datetime.fromisoformat(logout_time_str) if logout_time_str else None
+        
+        # Converte para o fuso horário local
+        login_time = timezone.localtime(login_time) if login_time else None
+        logout_time = timezone.localtime(logout_time) if logout_time else None
+        
+        duration = user.get_login_duration(login_time_str, logout_time_str)
+        formatted_login_time = user.format_datetime(login_time.isoformat()) if login_time else None
+        formatted_logout_time = user.format_datetime(logout_time.isoformat()) if logout_time else None
+        
         login_history.append({
             'login_time': formatted_login_time,
             'ip': entry.get('ip'),
@@ -239,8 +252,6 @@ def access_history(request):
             'is_online': user.is_online,
         })
     return render(request, 'accounts/access_history.html', {'login_history': login_history})
-
-
 
 
 from django.db.models import Q
@@ -260,11 +271,11 @@ def all_user_action_history(request):
         action_logs = action_logs.filter(user__email=selected_user)
 
     if start_date:
-        start_date = parse_datetime(start_date)
+        start_date = timezone.make_aware(parse_datetime(start_date))
         action_logs = action_logs.filter(timestamp__gte=start_date)
 
     if end_date:
-        end_date = parse_datetime(end_date)
+        end_date = timezone.make_aware(parse_datetime(end_date))
         action_logs = action_logs.filter(timestamp__lte=end_date)
 
     action_logs = action_logs.order_by('-timestamp')
@@ -292,3 +303,5 @@ def user_action_history(request, pk):
 def all_users_list(request):
     users = User.objects.all()
     return render(request, 'accounts/all_list.html', {'users': users})
+
+

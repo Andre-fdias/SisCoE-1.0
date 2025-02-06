@@ -270,8 +270,8 @@ def editar_posto_graduacao(request, id):
     return redirect('efetivo:ver_militar', id=cadastro.id)
         
 
+from django.http import JsonResponse
 
-# responsável pela edição da model pDetalhesSituação
 @login_required
 def editar_situacao_atual(request, id):
     if request.method == 'POST':
@@ -285,23 +285,19 @@ def editar_situacao_atual(request, id):
             detalhes = cadastro.detalhes_situacao.last()
             if detalhes:
                 detalhes.situacao = request.POST['situacao_atual']
+                detalhes.cat_efetivo = request.POST['cat_efetivo']
                 detalhes.saida_da_unidade = request.POST.get('saida_da_unidade', None)
                 detalhes.save()
             
-            messages.add_message(request, constants.SUCCESS, 'Situação atualizada com sucesso.')
-            return redirect('listar_militar')  # Substitua pelo nome correto da view
+            return JsonResponse({'success': True})
 
         except Exception as e:
             print(f"Erro ao salvar a situação atual: {e}")
-            messages.add_message(request, constants.ERROR, f'Erro ao salvar a situação atual: {e}')
-            return redirect('listar_militar')  # Substitua pelo nome correto da view
+            return JsonResponse({'success': False, 'error': str(e)})
     
-    messages.add_message(request, constants.ERROR, 'Método de requisição inválido.')
-    return redirect('listar_militar')  # Substitua pelo nome correto da view
+    return JsonResponse({'success': False, 'error': 'Método de requisição inválido.'})
 
 
-
-# responsável pelo cadastro de uma nova situação
 @login_required
 def cadastrar_nova_situacao(request, id):
     if request.method == 'POST':
@@ -323,7 +319,7 @@ def cadastrar_nova_situacao(request, id):
                 apresentacao_na_unidade=request.POST['apresentacao_na_unidade'],
                 saida_da_unidade=request.POST.get('saida_da_unidade', None),
                 usuario_alteracao=request.user,
-                   cat_efetivo=request.POST['cat_efetivo'],
+                cat_efetivo=request.POST['cat_efetivo'],
             )
             nova_situacao.save()
             
@@ -340,18 +336,21 @@ def cadastrar_nova_situacao(request, id):
                 saida_da_unidade=nova_situacao.saida_da_unidade,
                 data_alteracao=nova_situacao.data_alteracao,
                 usuario_alteracao=request.user,
-                  cat_efetivo=nova_situacao.cat_efetivo,
+                cat_efetivo=nova_situacao.cat_efetivo,
             )
-            messages.add_message(request, constants.SUCCESS, 'Nova situação criada com sucesso.')
-            return redirect('listar_militar')  # Substitua pelo nome correto da view
+         
+            messages.add_message(request, constants.SUCCESS, 'Criada Nova Situação Funcional com sucesso.', extra_tags='bg-green-500 text-white p-4 rounded')
+            return redirect('efetivo:listar_militar')  # Substitua pelo nome correto da view
 
         except Exception as e:
             print(f"Erro ao cadastrar a nova situação: {e}")
-            messages.add_message(request, constants.ERROR, f'Erro ao cadastrar a nova situação: {e}')
-            return redirect('listar_militar')  # Substitua pelo nome correto da view
+            messages.add_message(request, constants.ERROR, 'Dados de Posto e Graduação atualizados com sucesso.', extra_tags='bg-red-500 text-white p-4 rounded')
+      
+            return redirect('efetivo:ver_militar')  # Substitua pelo nome correto da view
     
-    messages.add_message(request, constants.ERROR, 'Método de requisição inválido.')
-    return redirect('listar_militar')  # Substitua pelo nome correto da view
+   
+    messages.add_message(request, constants.ERROR, 'Método de Reqeuisição errado.', extra_tags='bg-red-500 text-white p-4 rounded')
+    return redirect('efetivo:ver_militar')  # Substitua pelo nome correto da view
 
 
 
@@ -494,3 +493,9 @@ def editar_situacao_funcional(request, id):
         'detalhes': cadastro.detalhes_situacao.last()
     })
 
+
+@login_required
+def check_rpt(request, id):
+    cadastro = get_object_or_404(Cadastro, id=id)
+    exists = Cadastro_rpt.objects.filter(cadastro=cadastro).exists()
+    return JsonResponse({'exists': exists})

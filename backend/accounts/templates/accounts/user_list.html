@@ -118,11 +118,11 @@
 
         <td class="px-4 py-2 ">
          
-            {% if object.profile.image %}
-              <img src="{{ object.profile.image.url }}"  class="foto-perfil rounded-full w-12 h-12 object-cover object-center" alt="Imagem">
-            {% else %}
-              Sem imagem
-            {% endif %}
+          {% if object.profile.image %}
+          <img src="{{ object.profile.image.url }}" class="profileImage rounded-full w-12 h-12 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 object-cover object-center">
+      {% else %}
+          Sem imagem
+      {% endif %}
           
         </td>
 
@@ -213,5 +213,26 @@
       modal.hide()
     }
   </script>
+<script>
+  function updateBorderColor() {
+      const profileImages = document.querySelectorAll('.profileImage');
+      profileImages.forEach(profileImage => {
+          if (navigator.onLine) {
+              profileImage.classList.remove('border-indigo-800', 'border-gray-300');
+              profileImage.classList.add('border-green-500');
+          } else {
+              profileImage.classList.remove('border-indigo-800', 'border-green-500');
+              profileImage.classList.add('border-gray-300');
+          }
+      });
+  }
+
+  // Atualiza a cor da borda ao carregar a página
+  updateBorderColor();
+
+  // Atualiza a cor da borda quando o status de conexão muda
+  window.addEventListener('online', updateBorderColor);
+  window.addEventListener('offline', updateBorderColor);
+</script>
 {% endblock js %}
 </main>{% endblock %}

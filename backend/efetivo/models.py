@@ -10,6 +10,8 @@ from django.core.exceptions import ValidationError
 from PIL import Image, ImageDraw, ImageFont
 import os
 from django.contrib.auth import get_user_model
+import locale
+locale.setlocale(locale.LC_TIME, 'pt_BR.UTF-8')
 
 # responsavel pelo cadastro básico de dados de militares
 
@@ -343,11 +345,14 @@ class DetalhesSituacao(models.Model):
     cat_efetivo_choices=( 
         ("", " "),                                                
         ("ATIVO","ATIVO"),
+        ("INATIVO","INATIVO"),
         ("LSV", "LSV"),
         ("LTS", "LTS"),
         ("LTS FAMILIA", "LTS FAMILIA"),
         ("CONVAL", "CONVAL"),
-        ("ELEIÇÃO", "ELEIÇAO")
+        ("ELEIÇÃO", "ELEIÇAO"),
+        ("LP", "LP"),
+        ("FERIAS", "FÉRIAS"),
     )
 
     cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE,
@@ -390,6 +395,29 @@ class DetalhesSituacao(models.Model):
         if self.situacao == 'Mov. Interna':
             return mark_safe('<span class="bg-black text-white px-2 py-1 rounded">Mov. Interna</span>')
      
+
+ 
+    @property
+    def status_cat(self):
+        if self.cat_efetivo == 'ATIVO':
+            return mark_safe('<span class="bg-green-500 text-white px-2 py-1 rounded">Ativo</span>')
+        if self.cat_efetivo == 'INATIVO':
+            return mark_safe('<span class="bg-gray-500 text-white px-2 py-1 rounded">Inativo</span>')
+        if self.cat_efetivo == 'LSV':
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">Lsv</span>')
+        if self.cat_efetivo == 'LTS':
+            return mark_safe('<span class="bg-indigo-500 text-white px-2 py-1 rounded">Lts</span>')
+        if self.cat_efetivo == 'LTS FAMILIA':
+            return mark_safe('<span class="bg-yellow-500 text-white px-2 py-1 rounded">Lts Familia</span>')
+        if self.cat_efetivo == 'CONVAL':
+            return mark_safe('<span class="bg-black text-white px-2 py-1 rounded">Conval</span>')
+        if self.cat_efetivo == 'ELEIÇÃO':
+            return mark_safe('<span class="bg-black text-white px-2 py-1 rounded">Eleição</span>')
+        if self.cat_efetivo == 'LP':
+            return mark_safe('<span class="bg-black text-white px-2 py-1 rounded">LP</span>')
+        if self.cat_efetivo == 'FERIAS':
+            return mark_safe('<span class="bg-black text-white px-2 py-1 rounded">Férias</span>')
+
 
 # responsavel pelas promoções de militares
 
