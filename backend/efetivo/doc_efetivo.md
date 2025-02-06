@@ -4,6 +4,250 @@ Visão Geral
 Este projeto Django implementa um sistema para gerenciar informações de militares, incluindo dados pessoais, detalhes da situação, promoções, imagens e histórico de movimentações. O sistema utiliza o sistema de autenticação do Django, mensagens flash para feedback ao usuário e interage com diversos modelos.
 Funcionalidades
 
+1. Estrutura do Projeto
+1.1 Diagrama de Classes Detalhado
+
+O diagrama de classes a seguir representa a estrutura de dados do sistema de gestão de militares, mostrando as classes (modelos Django) e seus atributos (campos), bem como os relacionamentos entre eles.
+Snippet de código
+
+@startuml
+class Cadastro {
+    id : IntegerField (Primary Key)
+    re : CharField
+    dig : CharField
+    nome : CharField
+    nome_de_guerra : CharField
+    genero : CharField
+    nasc : DateField
+    matricula : CharField
+    admissao : DateField
+    previsao_de_inatividade : DateField
+    cpf : CharField (Unique)
+    rg : CharField
+    tempo_para_averbar_inss : IntegerField
+    tempo_para_averbar_militar : IntegerField
+    email : EmailField
+    telefone : CharField
+    alteracao : CharField
+    user : ForeignKey (User)
+    numero_lp : CharField
+    numero_adicional : CharField
+}
+
+class DetalhesSituacao {
+    id : IntegerField (Primary Key)
+    cadastro : ForeignKey (Cadastro)
+    situacao : CharField
+    sgb : CharField
+    posto_secao : CharField
+    esta_adido : CharField
+    funcao : CharField
+    op_adm : CharField
+    apresentacao_na_unidade : DateField
+    saida_da_unidade : DateField
+    usuario_alteracao : ForeignKey (User)
+    data_alteracao : DateTimeField (auto_now=True)
+    cat_efetivo : CharField
+}
+
+class Promocao {
+    id : IntegerField (Primary Key)
+    cadastro : ForeignKey (Cadastro)
+    posto_grad : CharField
+    quadro : CharField
+    grupo : CharField
+    ultima_promocao : DateField
+    usuario_alteracao : ForeignKey (User)
+    data_alteracao : DateTimeField (auto_now=True)
+}
+
+class Imagem {
+    id : IntegerField (Primary Key)
+    cadastro : ForeignKey (Cadastro)
+    image : ImageField
+    user : ForeignKey (User)
+}
+
+class HistoricoDetalhesSituacao {
+    id : IntegerField (Primary Key)
+    cadastro : ForeignKey (Cadastro)
+    situacao : CharField
+    sgb : CharField
+    posto_secao : CharField
+    esta_adido : CharField
+    funcao : CharField
+    op_adm : CharField
+    apresentacao_na_unidade : DateField
+    saida_da_unidade : DateField
+    usuario_alteracao : ForeignKey (User)
+    data_alteracao : DateTimeField
+    cat_efetivo : CharField
+}
+
+class HistoricoPromocao {
+    id : IntegerField (Primary Key)
+    cadastro : ForeignKey (Cadastro)
+    posto_grad : CharField
+    quadro : CharField
+    grupo : CharField
+    ultima_promocao : DateField
+    usuario_alteracao : ForeignKey (User)
+    data_alteracao : DateTimeField
+}
+
+class Cadastro_adicional {
+    id : IntegerField (Primary Key)
+    cadastro : ForeignKey (Cadastro)
+    numero_adicional : CharField
+    data_ultimo_adicional : DateField
+    numero_lp : CharField
+    data_ultimo_lp : DateField
+}
+
+class Cadastro_rpt {
+    id : IntegerField (Primary Key)
+    cadastro : ForeignKey (Cadastro)
+    # ... outros campos específicos do RPT
+}
+
+Cadastro "1" -- "*" DetalhesSituacao : possui
+Cadastro "1" -- "*" Promocao : possui
+Cadastro "1" -- "1" Imagem : possui
+Cadastro "1" -- "*" HistoricoDetalhesSituacao : possui
+Cadastro "1" -- "*" HistoricoPromocao : possui
+Cadastro "1" -- "1" Cadastro_adicional : possui
+Cadastro "1" -- "1" Cadastro_rpt : possui
+
+DetalhesSituacao "1" -- "*" HistoricoDetalhesSituacao : histórico de
+
+Promocao "1" -- "*" HistoricoPromocao : histórico de
+
+@enduml
+
+1.2 Arquivos e Pastas Detalhados
+
+A estrutura de pastas e arquivos do projeto Django é essencial para a organização e manutenibilidade do código. Abaixo, detalhamos a estrutura completa, incluindo a descrição de cada arquivo e pasta:
+
+backend/            # Pasta raiz do projeto Django
+    __init__.py     # Arquivo de inicialização do pacote backend
+    asgi.py         # Configurações do ASGI (Asynchronous Server Gateway Interface)
+    settings.py     # Configurações globais do projeto Django
+    urls.py         # Arquivo de URLs do projeto
+    wsgi.py         # Configurações do WSGI (Web Server Gateway Interface)
+efetivo/            # Pasta do aplicativo Django "efetivo"
+    __init__.py     # Arquivo de inicialização do pacote efetivo
+    admin.py        # Configurações do painel de administração do Django para o aplicativo efetivo
+    apps.py         # Configurações do aplicativo efetivo
+    models.py       # Definição dos modelos (Cadastro, DetalhesSituacao, Promocao, etc.)
+    views.py        # Views (lógica de apresentação e processamento das requisições)
+    forms.py        # Definição dos formulários (se houver)
+    urls.py         # Definição das URLs do aplicativo efetivo
+    templates/      # Templates HTML
+        efetivo/
+            cadastrar_militar.html
+            listar_militar.html
+            ver_militar.html
+            editar_posto_graduacao.html
+            editar_dados_pessoais_contatos.html
+            editar_imagem.html
+            historico_movimentacoes.html
+            editar_situacao_funcional.html
+            # ... outros templates
+    static/         # Arquivos estáticos (CSS, Javascript, imagens)
+        efetivo/
+            css/
+                style.css
+            js/
+                script.js
+            img/
+                logo.png
+    migrations/     # Migrações do banco de dados
+        0001_initial.py
+        # ... outros arquivos de migração
+manage.py           # Script para gerenciar o projeto Django
+requirements.txt    # Lista de dependências do projeto
+
+Descrição Detalhada dos Arquivos e Pastas:
+
+    backend/: Pasta raiz do projeto Django, contendo arquivos de configuração e inicialização.
+        __init__.py: Arquivo vazio que indica que a pasta backend é um pacote Python.
+        asgi.py: Arquivo de configuração para o servidor ASGI, utilizado para部署 em ambientes de produção modernos.
+        settings.py: Arquivo principal de configurações do projeto Django, incluindo configurações de banco de dados, SECRET_KEY, aplicativos instalados, middleware, templates, arquivos estáticos, etc.
+        urls.py: Arquivo que define as URLs globais do projeto, ou seja, as URLs que são mapeadas para as views dos aplicativos.
+        wsgi.py: Arquivo de configuração para o servidor WSGI, utilizado para部署 em servidores web tradicionais como Apache ou Nginx.
+    efetivo/: Pasta do aplicativo Django responsável pela gestão de militares.
+        __init__.py: Arquivo vazio que indica que a pasta efetivo é um pacote Python.
+        admin.py: Arquivo que permite personalizar a interface de administração do Django para os modelos do aplicativo efetivo.
+        apps.py: Arquivo que contém a configuração do aplicativo efetivo, como o nome do aplicativo e outras configurações específicas.
+        models.py: Arquivo que define os modelos de dados (Cadastro, DetalhesSituacao, Promocao, etc.) que representam as entidades do sistema no banco de dados.
+        views.py: Arquivo que contém as views, que são funções ou classes que recebem as requisições web, processam os dados e retornam as respostas (geralmente templates HTML ou dados JSON).
+        forms.py: Arquivo que define os formulários Django, que são classes que representam formulários HTML e facilitam a validação e o processamento dos dados do formulário.
+        urls.py: Arquivo que define as URLs específicas do aplicativo efetivo, ou seja, as URLs que são mapeadas para as views do aplicativo.
+        templates/efetivo/: Pasta que contém os templates HTML utilizados para renderizar as páginas web do aplicativo efetivo. Os templates são arquivos HTML que contêm marcações Django para exibir dados dinâmicos e interagir com as views.
+
+
+
+      1.3 Fluxo de Dados Detalhado
+
+O fluxo de dados descreve como as informações percorrem o sistema, desde a entrada do usuário até a persistência no banco de dados e a exibição nos templates. No seu sistema de gestão de militares, o fluxo de dados pode ser dividido em alguns cenários principais:
+
+1. Cadastro de Militar:
+
+    Entrada de Dados: O usuário acessa o formulário de cadastro (cadastrar_militar.html) e preenche os campos com os dados do militar (nome, CPF, posto/graduação, etc.).
+
+    Envio do Formulário: Ao clicar no botão de envio, o formulário é submetido via requisição POST para a view cadastrar_militar.
+
+    Processamento na View:
+        A view recebe os dados do formulário e os valida (ex: verifica se o CPF já existe, se os campos obrigatórios foram preenchidos).
+        Se os dados forem válidos, a view cria instâncias dos modelos Cadastro, DetalhesSituacao, Promocao e Imagem (se houver imagem) com os dados recebidos.
+        As instâncias dos modelos são salvas no banco de dados.
+
+    Redirecionamento: A view redireciona o usuário para uma página de sucesso (ex: listar_militar.html) ou para o próprio formulário em caso de erro, exibindo mensagens flash informativas.
+
+2. Listagem de Militares:
+
+    Requisição: O usuário acessa a página de listagem de militares (listar_militar.html).
+
+    Consulta ao Banco de Dados: A view listar_militar consulta o banco de dados para obter a lista de militares, ordenados pelo último posto/graduação.
+
+    Renderização do Template: A view envia a lista de militares para o template listar_militar.html, que itera sobre a lista e exibe os dados de cada militar.
+
+3. Visualização de um Militar:
+
+    Requisição: O usuário clica em um link para visualizar os detalhes de um militar específico (ver_militar.html).
+
+    Consulta ao Banco de Dados: A view ver_militar recebe o ID do militar como parâmetro e consulta o banco de dados para obter os dados do militar, seus detalhes de situação, promoção e informações adicionais (RPT).
+
+    Renderização do Template: A view envia os dados do militar para o template ver_militar.html, que exibe os detalhes do militar em diferentes seções.
+
+4. Edição de Dados:
+
+    Requisição: O usuário acessa a página de edição de um militar (ex: editar_dados_pessoais_contatos.html).
+
+    Carregamento dos Dados: A view correspondente (ex: editar_dados_pessoais_contatos) consulta o banco de dados para obter os dados do militar a serem editados.
+
+    Exibição do Formulário: A view exibe o formulário preenchido com os dados do militar.
+
+    Envio do Formulário: O usuário edita os dados e envia o formulário.
+
+    Processamento na View: A view recebe os dados do formulário, valida-os e atualiza os dados do militar no banco de dados.
+
+    Redirecionamento: A view redireciona o usuário para a página de detalhes do militar ou para outra página apropriada.
+
+5. Exclusão de Militar:
+
+    Requisição: O usuário (com permissão) acessa a página de exclusão de um militar.
+
+    Exclusão no Banco de Dados: A view excluir_militar remove o registro do militar do banco de dados.
+
+    Redirecionamento: A view redireciona o usuário para a página de listagem de militares.
+
+Observações:
+
+    Este é um fluxo de dados simplificado. Em cenários mais complexos, podem haver etapas adicionais, como validações personalizadas, integração com outros sistemas, envio de emails, etc.
+    É importante documentar o fluxo de dados para cada funcionalidade do sistema, incluindo os casos de erro e as possíveis exceções.
+      
+
     Detalhamento Aprofundado das Views Django para Gestão de Militares
 
 Este documento complementa a documentação anterior, aprofundando a análise das views e seus componentes.
