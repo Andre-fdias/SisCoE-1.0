@@ -236,17 +236,275 @@ Este documento complementa a documentação anterior, aprofundando a análise da
         View retorna um JSON com o resultado.
         Javascript recebe o JSON e atualiza a página de acordo.
 
-Este detalhamento aprofundado das views deve fornecer uma compreensão mais completa do código Django para gestão de militares. Se você tiver mais perguntas ou precisar de esclarecimentos adicionais, não hesite em perguntar.
-Modelos
+O código fornecido é um modelo Django para um sistema de gerenciamento de militares. Ele inclui várias classes (models) que representam diferentes aspectos dos dados dos militares, como cadastro básico, situação funcional, promoções, imagens e histórico de alterações. Abaixo está uma documentação detalhada de cada parte do código:
+1. Importações
 
-    Cadastro: Armazena os dados pessoais do militar (RE, Dig, Nome, Nome de Guerra, Gênero, Data de Nascimento, Matrícula, Admissão, Previsão de Inatividade, CPF, RG, Tempo para Averbar INSS, Tempo para Averbar Militar, Email, Telefone).
-    DetalhesSituacao: Armazena os detalhes da situação funcional do militar (Situação, SGB, Posto/Seção, Está Adido, Função, Op Adm, Apresentação na Unidade, Saída da Unidade, Categoria de Efetivo).
-    Promocao: Armazena as informações de promoção do militar (Posto/Graduação, Quadro, Grupo, Última Promoção).
-    Imagem: Armazena a foto do militar.
-    HistoricoDetalhesSituacao: Armazena o histórico das alterações na situação funcional.
-    HistoricoPromocao: Armazena o histórico das promoções.
-    Cadastro_adicional: Armazena informações adicionais do militar (Número Adicional, Data do Último Adicional, Número LP, Data do Último LP).
-    Cadastro_rpt: Armazena informações do RPT do militar.
+    Bibliotecas e Módulos: O código importa várias bibliotecas e módulos necessários para o funcionamento do sistema, como date, datetime, models do Django, relativedelta para cálculos de datas, mark_safe para renderização segura de HTML, e Image do PIL para manipulação de imagens.
+
+2. Configuração de Localidade
+
+    locale.setlocale: Configura a localidade para o português do Brasil, o que afeta a formatação de datas e outros elementos sensíveis à localização.
+
+3. Modelo Cadastro
+
+    Descrição: Este modelo representa o cadastro básico de um militar.
+
+    Campos:
+
+        genero_choices: Opções de gênero.
+
+        alteracao_choices: Tipos de alterações que podem ser feitas no cadastro.
+
+        n_choices: Lista de números de 1 a 8 formatados como strings de dois dígitos.
+
+        id: Identificador único.
+
+        re: Registro do militar.
+
+        dig: Dígito verificador.
+
+        nome: Nome completo.
+
+        nome_de_guerra: Nome de guerra.
+
+        genero: Gênero do militar.
+
+        nasc: Data de nascimento.
+
+        matricula: Data de matrícula.
+
+        admissao: Data de admissão.
+
+        previsao_de_inatividade: Data prevista para inatividade.
+
+        cpf: CPF do militar.
+
+        rg: RG do militar.
+
+        tempo_para_averbar_inss: Tempo para averbação no INSS.
+
+        tempo_para_averbar_militar: Tempo para averbação militar.
+
+        email: E-mail do militar.
+
+        telefone: Telefone do militar.
+
+        alteracao: Tipo de alteração feita no cadastro.
+
+        create_at: Data de criação do registro.
+
+        user: Usuário responsável pelo cadastro.
+
+    Métodos:
+
+        __str__: Retorna uma representação legível do objeto.
+
+        idade_detalhada: Calcula a idade detalhada do militar.
+
+        matricula_detalhada: Calcula o tempo desde a matrícula.
+
+        admissao_detalhada: Calcula o tempo desde a admissão.
+
+        previsao_de_inatividade_detalhada: Calcula o tempo restante para a inatividade.
+
+        previsao_de_inatividade_dias: Retorna o número de dias até a inatividade.
+
+        tempo_para_inatividade: Calcula o tempo até a inatividade.
+
+        inativa_status: Retorna o status de inatividade com base nos dias restantes.
+
+        tempo_para_averbar_inss_inteiro: Retorna o tempo para averbação no INSS.
+
+        tempo_para_averbar_militar_inteiro: Retorna o tempo para averbação militar.
+
+4. Modelo CPF
+
+    Descrição: Este modelo armazena o CPF e o registro do militar.
+
+    Campos:
+
+        id: Identificador único.
+
+        cpf: CPF do militar.
+
+        re: Registro do militar.
+
+    Sinal post_save: Quando um novo Cadastro é salvo, um registro correspondente em CPF é criado automaticamente.
+
+5. Modelo DetalhesSituacao
+
+    Descrição: Este modelo representa a situação funcional do militar.
+
+    Campos:
+
+        situacao_choices: Opções de situação funcional.
+
+        sgb_choices: Opções de SGB (Subgrupo de Batalhão).
+
+        op_adm_choices: Opções de operação administrativa.
+
+        funcao_choices: Opções de função.
+
+        posto_secao_choices: Opções de posto/seção.
+
+        esta_adido_choices: Opções de adido.
+
+        cat_efetivo_choices: Opções de categoria efetiva.
+
+        cadastro: Chave estrangeira para o modelo Cadastro.
+
+        situacao: Situação funcional do militar.
+
+        cat_efetivo: Categoria efetiva.
+
+        sgb: Subgrupo de Batalhão.
+
+        posto_secao: Posto/seção.
+
+        esta_adido: Indica se o militar está adido.
+
+        funcao: Função do militar.
+
+        op_adm: Operação administrativa.
+
+        apresentacao_na_unidade: Data de apresentação na unidade.
+
+        saida_da_unidade: Data de saída da unidade.
+
+        data_alteracao: Data da última alteração.
+
+        usuario_alteracao: Usuário que fez a última alteração.
+
+    Métodos:
+
+        __str__: Retorna uma representação legível do objeto.
+
+        tempo_na_unidade: Calcula o tempo que o militar está na unidade.
+
+        status: Retorna o status da situação funcional.
+
+        status_cat: Retorna o status da categoria efetiva.
+
+6. Modelo Promocao
+
+    Descrição: Este modelo representa as promoções do militar.
+
+    Campos:
+
+        posto_grad_choices: Opções de posto/graduação.
+
+        quadro_choices: Opções de quadro.
+
+        grupo_choices: Opções de grupo.
+
+        cadastro: Chave estrangeira para o modelo Cadastro.
+
+        posto_grad: Posto/graduação do militar.
+
+        quadro: Quadro do militar.
+
+        grupo: Grupo do militar.
+
+        ultima_promocao: Data da última promoção.
+
+        data_alteracao: Data da última alteração.
+
+        usuario_alteracao: Usuário que fez a última alteração.
+
+    Métodos:
+
+        __str__: Retorna uma representação legível do objeto.
+
+        grad: Retorna o status da graduação.
+
+        ultima_promocao_detalhada: Calcula o tempo desde a última promoção.
+
+7. Modelo Imagem
+
+    Descrição: Este modelo armazena as imagens dos militares.
+
+    Campos:
+
+        cadastro: Chave estrangeira para o modelo Cadastro.
+
+        image: Campo de imagem.
+
+        create_at: Data de criação do registro.
+
+        user: Usuário que fez o upload da imagem.
+
+    Métodos:
+
+        __str__: Retorna uma representação legível do objeto.
+
+8. Modelo HistoricoPromocao
+
+    Descrição: Este modelo armazena o histórico de promoções do militar.
+
+    Campos:
+
+        cadastro: Chave estrangeira para o modelo Cadastro.
+
+        posto_grad: Posto/graduação.
+
+        quadro: Quadro.
+
+        grupo: Grupo.
+
+        ultima_promocao: Data da última promoção.
+
+        data_alteracao: Data da última alteração.
+
+        usuario_alteracao: Usuário que fez a última alteração.
+
+    Métodos:
+
+        __str__: Retorna uma representação legível do objeto.
+
+9. Modelo HistoricoDetalhesSituacao
+
+    Descrição: Este modelo armazena o histórico de situações funcionais do militar.
+
+    Campos:
+
+        cadastro: Chave estrangeira para o modelo Cadastro.
+
+        situacao: Situação funcional.
+
+        sgb: Subgrupo de Batalhão.
+
+        posto_secao: Posto/seção.
+
+        esta_adido: Indica se o militar está adido.
+
+        funcao: Função.
+
+        op_adm: Operação administrativa.
+
+        cat_efetivo: Categoria efetiva.
+
+        apresentacao_na_unidade: Data de apresentação na unidade.
+
+        saida_da_unidade: Data de saída da unidade.
+
+        data_alteracao: Data da última alteração.
+
+        usuario_alteracao: Usuário que fez a última alteração.
+
+    Métodos:
+
+        __str__: Retorna uma representação legível do objeto.
+
+10. Considerações Finais
+
+    Segurança: O uso de mark_safe para renderizar HTML diretamente no Django deve ser feito com cuidado para evitar vulnerabilidades de XSS.
+
+    Extensibilidade: O código está bem estruturado e pode ser facilmente extendido para incluir novas funcionalidades.
+
+    Documentação: A documentação adicional pode ser adicionada para métodos complexos ou lógicas de negócio específicas.
+
+Este sistema é adequado para gerenciar informações detalhadas de militares, incluindo cadastro, situação funcional, promoções, e histórico de alterações.
+
 
 Views (Detalhes)
 
