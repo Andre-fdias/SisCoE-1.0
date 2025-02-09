@@ -1,0 +1,403 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cadastrar Posto{% endblock %}
+
+{% block 'body' %}
+
+    <br>
+<div class=" md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_efetivo">
+    <fieldset class=" p-4 mb-8   rounded-md w-full" id="second-fieldset">
+      <fieldset class="bg-gray-800 p-4 mb-8 rounded-md">
+                <div id="01" class="mb-4">
+                    <div class="bg-gray-800 p-4 rounded-md">
+                        <div class="flex flex-wrap items-center justify-between py-3">
+                            <div class="w-full md:w-9/12">
+                                <h1 class="text-3xl text-gray-200">Cadastrar Posto</h1>
+                            </div>
+                            <div class="w-full md:w-3/12 text-right">
+                                <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
+                                <a href="{% url 'municipios:posto_list' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <form class="row g-3 needs-validation" novalidate action="{% if form.instance.pk %}{% url 'municipios:posto_update' form.instance.pk %}{% else %}{% url 'municipios:posto_create' %}{% endif %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                    <div class="mb-4">
+                        <p class="text-lg font-bold">Dados do Posto</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Campos do Posto -->
+                        <div>
+                            <label for="sgb" class="block text-sm font-medium text-gray-700">SGB</label>
+                            <select name="sgb" id="sgb" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                {% for value, label in sgb_choices %}
+                                    <option value="{{ value }}" {% if posto.sgb == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="sgb_error">Por favor, selecione um SGB.</div>
+                        </div>
+                        <div>
+                            <label for="posto_secao" class="block text-sm font-medium text-gray-700">Posto/Seção</label>
+                            <select name="posto_secao" id="posto_secao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                {% for value, label in posto_secao_choices %}
+                                    <option value="{{ value }}" {% if posto.posto_secao == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="posto_secao_error">Por favor, selecione um posto/seção.</div>
+                        </div>
+                        <div>
+                            <label for="posto_atendimento" class="block text-sm font-medium text-gray-700">Posto de Atendimento</label>
+                            <select name="posto_atendimento" id="posto_atendimento" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                {% for value, label in posto_atendimento_choices %}
+                                    <option value="{{ value }}" {% if posto.posto_atendimento == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="posto_atendimento_error">Por favor, selecione um posto de atendimento.</div>
+                        </div>
+                        <div>
+                            <label for="tipo_cidade" class="block text-sm font-medium text-gray-700">Tipo de Cidade</label>
+                           <select name="tipo_cidade" id="tipo_cidade" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                {% for value, label in tipo_choices %}
+                                    <option value="{{ value }}" {% if posto.tipo_cidade == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="tipo_cidade_error">Por favor, selecione o tipo de cidade.</div>
+                        </div>
+                        <div>
+                            <label for="cidade_posto" class="block text-sm font-medium text-gray-700">Cidade do Posto/Seção</label>
+                            <input type="text" name="cidade_posto" id="cidade_posto" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="cidade_posto">Por favor, insira o município.</div>
+                        </div>
+                        <div>
+                            <label for="op_adm" class="block text-sm font-medium text-gray-700">Operacional/Administrativo</label>
+                            <select name="op_adm" id="op_adm" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                {% for value, label in op_adm_choices %}
+                                    <option value="{{ value }}" {% if posto.op_adm == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="operacional_ou_adm_error">Por favor, selecione o tipo de operação.</div>
+                        </div>
+                    </div>
+                </fieldset>
+                
+
+                            <!-- Campos para Contato -->
+                <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                    <div class="mb-4">
+                        <p class="text-lg font-bold">Endereço e Contato</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label for="cep" class="block text-sm font-medium text-gray-700">CEP</label>
+                            <input type="text" name="cep" id="cep" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required oninput="buscarEnderecoPorCEP(this.value)">
+                            <div class="text-red-500 text-sm mt-1 hidden" id="cep_error">Por favor, insira o CEP.</div>
+                        </div>
+                   
+                        <div>
+                            <label for="rua" class="block text-sm font-medium text-gray-700">Rua</label>
+                            <input type="text" name="rua" id="rua" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="rua_error">Por favor, insira a rua.</div>
+                        </div>
+                        <div>
+                            <label for="numero" class="block text-sm font-medium text-gray-700">Número</label>
+                            <input type="text" name="numero" id="numero" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="numero_error">Por favor, insira o número.</div>
+                        </div>
+                        <div>
+                            <label for="complemento" class="block text-sm font-medium text-gray-700">Complemento</label>
+                            <input type="text" name="complemento" id="complemento" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        </div>
+                        <div>
+                            <label for="bairro" class="block text-sm font-medium text-gray-700">Bairro</label>
+                            <input type="text" name="bairro" id="bairro" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="bairro_error">Por favor, insira o bairro.</div>
+                        </div>
+                        <div>
+                            <label for="cidade" class="block text-sm font-medium text-gray-700">Cidade</label>
+                            <input type="text" name="cidade" id="cidade" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="cidade_error">Por favor, insira a cidade.</div>
+                        </div>
+                        <div>
+                            <label for="latitude_contato" class="block text-sm font-medium text-gray-700">Latitude</label>
+                            <input type="text" name="latitude_contato" id="latitude_contato" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="latitude_contato_error">Por favor, insira a latitude.</div>
+                        </div>
+                        <div>
+                            <label for="longitude_contato" class="block text-sm font-medium text-gray-700">Longitude</label>
+                            <input type="text" name="longitude_contato" id="longitude_contato" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="longitude_contato_error">Por favor, insira a longitude.</div>
+                        </div>
+                        <div>
+                            <label for="email_funcional" class="block text-sm font-medium text-gray-700">Email</label>
+                            <input type="email" name="email_funcional" id="email_funcional" placeholder=".......@policiamilitar.sp.gov.br" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="email_funcional_error">Por favor, insira um email válido.</div>
+                        </div>
+                        <div>
+                            <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
+                            <input type="tel" name="telefone" id="telefone" placeholder="(xx) xxxxx-xxxx" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="telefone_error">Por favor, insira um telefone válido.</div>
+                        </div>
+                   
+                    </div>
+                </fieldset>
+
+                <!-- Campos para Pessoal -->
+                <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                    <div class="mb-4">
+                        <p class="text-lg font-bold">QPO Fixado</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                        <div>
+                            <label for="cel" class="block text-sm font-medium text-gray-700">Cel</label>
+                            <input type="number" name="cel" id="cel" value="0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="cel_error">Por favor, insira o número de cel.</div>
+                        </div>
+                        <div>
+                            <label for="ten_cel" class="block text-sm font-medium text-gray-700">Ten Cel</label>
+                            <input type="number" name="ten_cel" id="ten_cel" value="0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="ten_cel_error">Por favor, insira o número de ten cel.</div>
+                        </div>
+                        <div>
+                            <label for="maj" class="block text-sm font-medium text-gray-700">Maj</label>
+                            <input type="number" name="maj" id="maj" value="0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="maj_error">Por favor, insira o número de maj.</div>
+                        </div>
+                        <div>
+                            <label for="cap" class="block text-sm font-medium text-gray-700">Cap</label>
+                            <input type="number" name="cap" id="cap" value="0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="cap_error">Por favor, insira o número de cap.</div>
+                        </div>
+                        <div>
+                            <label for="ten" class="block text-sm font-medium text-gray-700">Ten</label>
+                            <input type="number" name="ten" id="ten" value="0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="ten_error">Por favor, insira o número de ten.</div>
+                        </div>
+                        <div>
+                            <label for="tenqa" class="block text-sm font-medium text-gray-700">Ten QA</label>
+                            <input type="number" name="tenqa" id="tenqa" value="0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="tenqa_error">Por favor, insira o número de ten QA.</div>
+                        </div>
+                        <div>
+                            <label for="asp" class="block text-sm font-medium text-gray-700">Asp</label>
+                            <input type="number" name="asp" id="asp" value="0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="asp_error">Por favor, insira o número de asp.</div>
+                        </div>
+                        <div>
+                            <label for="st_sgt" class="block text-sm font-medium text-gray-700">ST Sgt</label>
+                            <input type="number" name="st_sgt" id="st_sgt" value="0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="st_sgt_error">Por favor, insira o número de ST Sgt.</div>
+                        </div>
+                        <div>
+                            <label for="cb_sd" class="block text-sm font-medium text-gray-700">CB/SD</label>
+                            <input type="number" name="cb_sd" id="cb_sd" value="0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            <div class="text-red-500 text-sm mt-1 hidden" id="cb_sd_error">Por favor, insira o número de CB/SD.</div>
+                        </div>
+                    </div>
+                </fieldset>
+
+
+                <!-- Campo Dinâmico para Cidades -->
+                <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                    <div class="mb-6">
+                        <p class="text-lg font-bold">Cidades Atendidas</p>
+                    </div>
+                    <div id="cidades-container">
+                        <div class="cidade-item grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4 mt-4">
+                            <div>
+                                <label for="municipio_0" class="block text-sm font-medium text-gray-700">Município</label>
+                                <input type="text" name="municipios[]" id="municipio_0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                <div class="text-red-500 text-sm mt-1 hidden" id="municipio_0_error">Por favor, insira o município.</div>
+                            </div>
+                            <div>
+                                <label for="latitude_0" class="block text-sm font-medium text-gray-700">Latitude</label>
+                                <input type="text" name="latitudes[]" id="latitude_0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                <div class="text-red-500 text-sm mt-1 hidden" id="latitude_0_error">Por favor, insira a latitude.</div>
+                            </div>
+                            <div>
+                                <label for="longitude_0" class="block text-sm font-medium text-gray-700">Longitude</label>
+                                <input type="text" name="longitudes[]" id="longitude_0" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                <div class="text-red-500 text-sm mt-1 hidden" id="longitude_0_error">Por favor, insira a longitude.</div>
+                            </div>
+                            <div>
+                                <div class="mb-4">
+                                    <p class="text-lg font-bold">Bandeira Municipal</p>
+                                </div>
+                                <div class="mb-3">
+                                    <img id="preview_${cidadeIndex}" src="#" alt="Pré-visualização" style="display: none; max-width: 200px;">
+                                    <input class="mt-1 block w-full text-base border-gray-300 border-blue-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" 
+                                           name="bandeiras[]" 
+                                           type="file" 
+                                           accept="image/*" 
+                                           onchange="previewImage(event, ${cidadeIndex})">
+                                    <div class="text-red-500 text-sm mt-1 hidden" id="bandeira_${cidadeIndex}_error">Por favor, selecione uma imagem.</div>
+                                </div>
+                            </div>
+                            <div>
+                                <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 remove-cidade">Remover</button>
+                          </div>
+                        </div>
+                    </div>
+                    <button type="button" id="add-cidade" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Adicionar Cidade</button>
+                </fieldset>
+
+                <!-- Botão de Envio -->
+                <fieldset class="bg-gray-800 p-4 mb-8 rounded-md">
+                    <div class="flex items-center justify-between py-3">
+                        <input type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" value="Salvar">
+                    </div>
+                </fieldset>
+            </form>
+        </fieldset>
+    </div>
+
+    <!-- Script para Adicionar/Remover Cidades -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cidadesContainer = document.getElementById('cidades-container');
+            const addCidadeButton = document.getElementById('add-cidade');
+            let cidadeIndex = 1;
+
+            addCidadeButton.addEventListener('click', function () {
+                const newCidadeItem = document.createElement('div');
+                newCidadeItem.classList.add('cidade-item', 'grid', 'grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-4', 'gap-4', 'mb-4');
+                newCidadeItem.innerHTML = `
+                    <div>
+                        <label for="municipio_${cidadeIndex}" class="block text-sm font-medium text-gray-700">Município</label>
+                        <input type="text" name="municipios[]" id="municipio_${cidadeIndex}" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="municipio_${cidadeIndex}_error">Por favor, insira o município.</div>
+                    </div>
+                    <div>
+                        <label for="latitude_${cidadeIndex}" class="block text-sm font-medium text-gray-700">Latitude</label>
+                        <input type="text" name="latitudes[]" id="latitude_${cidadeIndex}" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="latitude_${cidadeIndex}_error">Por favor, insira a latitude.</div>
+                    </div>
+                    <div>
+                        <label for="longitude_${cidadeIndex}" class="block text-sm font-medium text-gray-700">Longitude</label>
+                        <input type="text" name="longitudes[]" id="longitude_${cidadeIndex}" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="longitude_${cidadeIndex}_error">Por favor, insira a longitude.</div>
+                    </div>
+                    <div>
+                        <label for="bandeira_${cidadeIndex}" class="block text-sm font-medium text-gray-700">Bandeira (URL)</label>
+                        <input type="url" name="bandeiras[]" id="bandeira_${cidadeIndex}" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="bandeira_${cidadeIndex}_error">Por favor, insira a URL da bandeira.</div>
+                    </div>
+                    <div>
+                        <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 remove-cidade">Remover</button>
+                    </div>
+                `;
+                cidadesContainer.appendChild(newCidadeItem);
+                cidadeIndex++;
+            });
+
+            cidadesContainer.addEventListener('click', function (event) {
+                if (event.target.classList.contains('remove-cidade')) {
+                    event.target.closest('.cidade-item').remove();
+                }
+            });
+        });
+    </script>
+   <script>
+    function buscarEnderecoPorCEP(cep) {
+        // Remove caracteres não numéricos do CEP
+        cep = cep.replace(/\D/g, '');
+
+        // Verifica se o CEP tem 8 dígitos
+        if (cep.length === 8) {
+            // Faz a requisição à API ViaCEP para obter o endereço
+            fetch(`https://viacep.com.br/ws/${cep}/json/`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.erro) {
+                        // Preenche os campos de endereço com os dados retornados
+                        document.getElementById('rua').value = data.logradouro || '';
+                        document.getElementById('bairro').value = data.bairro || '';
+                        document.getElementById('cidade').value = data.localidade || '';
+                        document.getElementById('complemento').value = data.complemento || '';
+
+                        // Monta o endereço completo para geocodificação
+                        const enderecoCompleto = `${data.logradouro}, ${data.bairro}, ${data.localidade}, ${data.uf}, Brasil`;
+
+                        // Faz a requisição à API de geocodificação (OpenCage)
+                        const apiKey = 'c551e30d46174904aba53cf0669cb401'; // Substitua pela sua chave de API
+                        fetch(`https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(enderecoCompleto)}&key=${apiKey}`)
+                            .then(response => response.json())
+                            .then(geoData => {
+                                if (geoData.results && geoData.results.length > 0) {
+                                    const latitude = geoData.results[0].geometry.lat;
+                                    const longitude = geoData.results[0].geometry.lng;
+
+                                    // Preenche os campos de latitude e longitude
+                                    document.getElementById('latitude_contato').value = latitude;
+                                    document.getElementById('longitude_contato').value = longitude;
+                                } else {
+                                    alert('Não foi possível obter a latitude e longitude.');
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Erro ao buscar latitude e longitude:', error);
+                                alert('Erro ao buscar latitude e longitude. Tente novamente.');
+                            });
+                    } else {
+                        alert('CEP não encontrado.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao buscar o CEP:', error);
+                    alert('Erro ao buscar o CEP. Tente novamente.');
+                });
+        }
+    }
+    </script>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Previne o envio do formulário ao pressionar Enter
+            document.querySelectorAll('input, select, textarea').forEach(function (element) {
+                element.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                    }
+                });
+            });
+    
+            // Validação do formulário ao enviar
+            document.querySelector('form').addEventListener('submit', function (event) {
+                let isValid = true;
+    
+                // Verifica se todos os campos obrigatórios estão preenchidos
+                document.querySelectorAll('input[required], select[required], textarea[required]').forEach(function (element) {
+                    if (!element.value) {
+                        isValid = false;
+                        const errorMessage = element.nextElementSibling;
+                        if (errorMessage && errorMessage.classList.contains('text-red-500')) {
+                            errorMessage.classList.remove('hidden');
+                        }
+                    }
+                });
+    
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
+        });
+    </script>
+    <script>
+            // Função para pré-visualizar a imagem
+            function previewImage(event, index) {
+    const reader = new FileReader();
+    reader.onload = function() {
+        const preview = document.getElementById(`preview_${index}`);
+        preview.src = reader.result;
+        preview.style.display = 'block';
+    }
+    if (event.target.files[0]) {
+        reader.readAsDataURL(event.target.files[0]);
+    }
+}
+    </script>
+</body>
+{% endblock 'body' %}

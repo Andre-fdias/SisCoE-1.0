@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'backend.faisca',
     'backend.rpt',
     'backend.bm',
+    'backend.municipios',
  
   
 ]

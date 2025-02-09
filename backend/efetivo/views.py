@@ -494,6 +494,11 @@ def editar_situacao_funcional(request, id):
     })
 
 
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+from backend.rpt.models import Cadastro_rpt
+from backend.efetivo.models import Cadastro
+
 @login_required
 def check_rpt(request, id):
     cadastro = get_object_or_404(Cadastro, id=id)

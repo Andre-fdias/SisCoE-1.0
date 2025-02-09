@@ -357,13 +357,16 @@
                             </div>
 
                             <!-- Modal de Escolha -->
-                            <div id="choiceModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                                <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-md">
-                                    <div class="flex justify-between bg-gray-800 p-4">
-                                        <h5 class="text-xl text-gray-300">Você deseja cadastrar nova Situação Funcional?</h5>
-                                        <button type="button" class="text-gray-500 hover:text-gray-700 w-5 h-5" data-modal-close="#choiceModal">×</button>
+                            <div id="choiceModal" class="fixed inset-0 flex items-center justify-center w-120 bg-black bg-opacity-50 hidden">
+                                <div class="bg-gray-300 rounded-lg shadow-lg w-full max-w-md">
+                                    <div class="flex justify-between  bg-gray-400 p-4">
+                                        <h5 class="text-xl text-gray-00">Você deseja cadastrar nova Situação Funcional?</h5>
+                                        <button type="button" class="text-gray-500 hover:text-gray-700 w-10 h-10" data-modal-close="#choiceModal">×</button>
                                     </div>
                                     <div class="p-4 text-center">
+                                        <br>
+                                        <br>
+
                                         <button type="button" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-target="#newSituacaoModal">SIM</button>
                                         <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#choiceModal" onclick="window.location.href='{% url 'efetivo:ver_militar' cadastro.id %}'">NÃO</button>
                                     </div>
@@ -480,224 +483,8 @@
                             </div>
 
 
-                        <!-- Modal de Escolha do RPT -->
-<div id="rptChoiceModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-    <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-md">
-        <div class="flex justify-between bg-gray-800 p-4">
-            <h5 class="text-xl text-gray-300">Militar possui nome cadastrado na Relação de Transferência Interna (RPT), deseja manter o cadastro ou editar?</h5>
-            <button type="button" class="text-gray-500 hover:text-gray-700 w-5 h-5" data-modal-close="#rptChoiceModal">×</button>
-        </div>
-        <div class="p-4 text-center">
-            <button type="button" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-target="#editRptModal">SIM</button>
-            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#rptChoiceModal">NÃO</button>
-        </div>
-    </div>
-</div>
+     
 
-                            <!-- Modal Editar Rpt -->
-                            <div id="editModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                                <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
-                                        <!-- MOdal header -->
-                                    <div class="flex items-start justify-between p-4 bg-gray-800 rounded-t border-gray-500">
-                                        <h5 class="text-xl font-semibold text-gray-300 dark:text-white" id="trocaFotoModalLabel">Editar Rpt</h5>   
-                                        <button class="text-gray-200 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" onclick="closeModal()">&times;</button>
-                                    </div>
-                                        <!-- MOdal Body -->
-                                    
-                                        <div class="p-6 space-y-6">
-                                            <form method="POST" action="{% url 'rpt:editar_rpt' cadastro_rpt.id %}">
-                                                {% csrf_token %}
-                                                <!-- Adicione aqui os campos do formulário de edição -->
-                                                <div class="grid grid-cols-2 gap-4">
-                                                    <div>
-                                                        <label for="sgb_destino" class="block mb-2 text-sm font-medium text-gray-400">Sgb Destino</label>
-                                                        <select name="sgb_destino" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="posto_grad" required>
-                                                            {% for choice in sgb_choices %}
-                                                                <option value="{{ choice.0 }}" {% if cadastro_rpt.sgb_destino == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, selecione o SGB.
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div>
-                                                        <label for="posto_secao_destino" class="block mb-2 text-sm font-medium text-gray-400">Posto Seção Destino</label>
-                                                        <select name="posto_secao_destino" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="posto_grad" required>
-                                                            {% for choice in posto_secao_choices %}
-                                                                <option value="{{ choice.0 }}" {% if cadastro_rpt.posto_secao_destino == choice.0 %}selected{% endif %}>{{ choice.1 }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, selecione Posto ou Seção de destino.
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div>
-                                                        <label for="alteracao" class="block mb-2 text-sm font-medium text-gray-400">Motivo da Alteração</label>
-                                                        <select name="alteracao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="posto_grad" required>
-                                                            {% for value, display in alteracao_choices %}
-                                                                <option value="{{ value }}" {% if cadastro_rpt.alteracao == value %}selected{% endif %}>{{ display }}</option>
-                                                            {% endfor %}
-                                                        </select>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, selecione o Motivo da Alteração.
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div>
-                                                        <label for="status" class="block mb-2 text-sm font-medium text-gray-400">Status</label>
-                                                        <select name="status" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="posto_grad" required>
-                                                            {% for value, display in status_choices %}
-                                                <option value="{{ value }}" {% if cadastro.status == value %}selected{% endif %}>{{ display }}</option>
-                                                                    {% endfor %}
-                            </select>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, selecione o Status.
-                                                        </div>
-                                                    </div><div>
-                                                        <label for="data_pedido" class="block mb-2 text-sm font-medium text-gray-400">Data do Pedido</label>
-                                                        <input type="date" name="data_pedido" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="apresentacao_na_unidade" value="{{ cadastro_rpt.data_pedido|date:'Y-m-d' }}" required>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, insira a data do pedido.
-                                                        </div>
-                                                    </div>
-                                        
-                                                    <div>
-                                                        <label for="data_movimentacao" class="block mb-2 text-sm font-medium text-gray-400">Data da Movimentação</label>
-                                                        <input type="date" name="data_movimentacao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="apresentacao_na_unidade" value="{{ cadastro_rpt.data_movimentacao|date:'Y-m-d' }}" required>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, insira a data de movimentação.
-                                                        </div>
-                                                    </div>
-                                        
-                                                    <div>
-                                                        <label for="data_alteracao" class="block mb-2 text-sm font-medium text-gray-400">Data de Alteração</label>
-                                                        <input type="date" name="data_alteracao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="apresentacao_na_unidade" value="{{ cadastro_rpt.data_alteracao|date:'Y-m-d' }}" required>
-                                                        <div class="text-red-500 text-sm mt-1 hidden">
-                                                            Por favor, insira a data de Alteração.
-                                                        </div>
-                                                    </div>
-                                        
-                                                    <div>
-                                                        <label for="doc_solicitacao" class="block text-sm font-medium text-gray-400 dark:text-white">Doc de Solicitação</label>
-                                                        <input type="text" name="doc_solicitacao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="nome_de_guerra" value="{{ cadastro_rpt.doc_solicitacao }}" required>
-                                                    </div>
-                                        
-                                                    <div>
-                                                        <label for="doc_alteracao" class="block text-sm font-medium text-gray-400 dark:text-white">Doc de Alteração</label>
-                                                        <input type="text" name="doc_alteracao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="nome_de_guerra" value="{{ cadastro_rpt.doc_alteracao }}" required>
-                                                    </div>
-                                        
-                                                    <div>
-                                                        <label for="doc_movimentacao" class="block text-sm font-medium text-gray-400 dark:text-white">Doc de Movimentação</label>
-                                                        <input type="text" name="doc_movimentacao" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" id="nome_de_guerra" value="{{ cadastro_rpt.doc_movimentacao }}" required>
-                                                    </div>
-                                                </div>
-                                                <!-- Adicione outros campos conforme necessário -->
-                                                <div class="flex justify-end mt-4">
-                                                    <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" onclick="closeModal()">Cancelar</button>
-                                                    <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
-                                                </div>
-                                            </form>
-                                        </div>
-                                    <script>
-                                        function openModal() {
-                                            document.getElementById('editModal').classList.remove('hidden');
-                                        }
-                                        
-                                        function closeModal() {
-                                            document.getElementById('editModal').classList.add('hidden');
-                                        }
-                                    </script>
-                                </div>
-                            
-
-                                <a class="btn btn-primary " href="{% url 'rpt:listar_rpt' %}" role="button">Voltar</a>
-                             </div>
-            
-
-                             <script>
-                                document.addEventListener('DOMContentLoaded', () => {
-                                    const openModalButtons = document.querySelectorAll('[data-modal-target]');
-                                    const closeModalButtons = document.querySelectorAll('[data-modal-close]');
-                                    
-                                    openModalButtons.forEach(button => {
-                                        button.addEventListener('click', () => {
-                                            const modal = document.querySelector(button.dataset.modalTarget);
-                                            openModal(modal);
-                                        });
-                                    });
-                                    
-                                    closeModalButtons.forEach(button => {
-                                        button.addEventListener('click', () => {
-                                            const modal = button.closest('.fixed');
-                                            closeModal(modal);  al) {
-                                        if (modal == null) return;
-                                        modal.classList.remove('hidden');
-                                    }
-                                    
-                                    function closeModal(modal) {
-                                        if (modal == null) return;
-                                        modal.classList.add('hidden');
-                                    }
-                                    
-                                    const editSituacaoForm = document.getElementById('editSituacaoForm');
-                                    editSituacaoForm.addEventListener('submit', (event) => {
-                                        event.preventDefault();
-                                        const formData = new FormData(editSituacaoForm);
-                                        fetch(editSituacaoForm.action, {
-                                            body: formData,
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.success) {
-                                                const choiceModal = document.getElementById('choiceModal');
-                                                openModal(choiceModal);
-                                            } else {
-                                                alert('Erro ao salvar a situação atual.');
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.error('Erro:', error);
-                                            alert('Erro ao salvar a situação atual.');
-                                        });
-                                    });
-                                    
-                                    const newSituacaoForm = document.getElementById('newSituacaoForm');
-                                    newSituacaoForm.addEventListener('submit', (event) => {
-                                        event.preventDefault();
-                                        const formData = new FormData(newSituacaoForm);
-                                        fetch(newSituacaoForm.action, {
-                                            method: 'POST',
-                                            body: formData,
-                                        })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.success) {
-                                                fetch(`/efetivo/check_rpt/${data.cadastro_id}/`)
-                                                .then(response => response.json())
-                                                .then(rptData => {
-                                                    if (rptData.exists) {
-                                                        const rptChoiceModal = document.getElementById('rptChoiceModal');
-                                                        openModal(rptChoiceModal);
-                                                    } else {
-                                                        closeModal(document.getElementById('newSituacaoModal'));
-                                                    }
-                                                });
-                                            } else {
-                                                alert('Erro ao cadastrar a nova situação.');
-                                            }
-                                        })
-                                        .catch(error => {
-                                            console.error('Erro:', error);
-                                            alert('Erro ao cadastrar a nova situação.');
-                                        });
-                                    });
-                                });
-                                </script>
-                                
-                                
                         </div>
                         <div id="03" class="w-full lg:w-1/2 p-4 leading-relaxed space-y-4">
                             <h2 class="text-xl font-semibold text-indigo-800mb-4">Documentos e Contatos</h2>

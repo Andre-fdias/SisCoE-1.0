@@ -2,15 +2,14 @@
 {% extends "base.html" %}
 {% load static %}
 {% block title %}Cadastrar Rpt{% endblock %}
-{% block head %}
-    <link rel="stylesheet" href="{% static 'efetivo/css/cadastrar_militar.css' %}">
-{% endblock head %}
+
+
 
 {% block 'body' %}
-
-<body class="w-4/5 mt-30 mx-auto">
-
-    <div class="container mx-auto p-4 mt-30" id="cad_efetivo">
+<body>
+    <div class=" md:items-center md:justify-between rounded-lg mt-4  w-full" id="cad_efetivo">
+    
+    <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
         <fieldset class="  bg-gray-800  p-4 mb-8 rounded-md">
    
             <div id="01" class="mb-4">
@@ -178,7 +177,7 @@
         </fieldset>
        </form>
      
-
+    </fieldset>
        
     <script>
         function buscarMilitar() {

@@ -1,8 +1,10 @@
 from django.db import models
-#from geopy.distance import geodesic
+from django.conf import settings
+from django.utils import timezone
+from django.core.validators import URLValidator
 
 
-class Municipios(models.Model):
+class Posto(models.Model):
 
     sgb_choices=( 
         ("", " "),                                                
@@ -89,6 +91,7 @@ class Municipios(models.Model):
     )
 
     cidade_posto_choices = [
+    ("", " "),
     ("Avaré", "Avaré"),
     ("Apiaí", "Apiaí"),
     ("Itapetininga", "Itapetininga"),
@@ -115,7 +118,8 @@ class Municipios(models.Model):
     ("São Paulo", "São Paulo"),
 ]
     posto_atendimento_choices = [
-    ("EB AVARÉ", "EB AVARÉ"),
+     ("", " "),    
+   ("EB AVARÉ", "EB AVARÉ"),
     ("EB APIAÍ", "EB APIAÍ"),
     ("EB ITAPETININGA", "EB ITAPETININGA"),
     ("EB ITARARÉ", "EB ITARARÉ"),
@@ -142,8 +146,7 @@ class Municipios(models.Model):
     ("EB SANTA ROSÁLIA", "EB SANTA ROSÁLIA"),
     ("EB ZONA NORTE", "EB ZONA NORTE"),
     ("EB ÉDEM", "EB ÉDEM"),
-    ("LTS", "LTS"),
-    ("LSV", "LSV"),
+ 
 ]
     
     tipo_choices=( 
@@ -151,52 +154,97 @@ class Municipios(models.Model):
         ("Sede","Sede"),
         ("Apoio", "Apoio"),
     )
+
+
+
+
     id = models.AutoField(primary_key=True)
+    sgb = models.CharField(max_length=30, blank=False, null=False, choices=sgb_choices)
+    posto_secao = models.CharField(max_length=120, blank=False, null=False, choices=posto_secao_choices)
+    posto_atendimento = models.CharField(max_length=50, blank=False, null=False, choices=posto_atendimento_choices)
+    cidade_posto = models.CharField(max_length=50, blank=False, null=False, choices=cidade_posto_choices)
+    tipo_cidade = models.CharField(max_length=50, blank=False, null=False, choices=op_adm_choices)
+    op_adm = models.CharField(max_length=50, blank=False, null=False, choices=tipo_choices)
+    data_criacao = models.DateTimeField(default=timezone.now)
+    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
-    sgb = models.CharField(max_length=9, blank=False, null=False, choices=sgb_choices)
-    posto_secao = models.CharField(max_length=100, blank=False, null=False, choices=posto_secao_choices)
-   
-    posto_atendimento = models.CharField(max_length=9, blank=False, null=False, choices=posto_atendimento_choices)
-    cidade_posto = models.CharField(max_length=9, blank=False, null=False, choices=cidade_posto_choices)
-    tipo_cidade = models.CharFieldmax_length=9, blank=False, null=False, choices=op_adm_choices)
-    operacional_ou_adm = models.CharFieldmax_length=9, blank=False, null=False, choices=tipo_choices)
-    municipio = models.CharField(max_length=100)   
-    telefone = models.CharField(max_length=15)
-    email = models.EmailField(max_length=100, unique=True, blank=False, null=False)
-    cel = models.IntegerField(blank=False, null=False)
-    ten_cel= models.IntegerField(blank=False, null=False)
-    maj= models.IntegerField(blank=False, null=False)
-    cap = models.IntegerField(blank=False, null=False)
-    ten= models.IntegerField(blank=False, null=False)
-    ten_qa= models.IntegerField(blank=False, null=False)
-    st_sgt= models.IntegerField(blank=False, null=False)
-    cb/sd= models.IntegerField(blank=False, null=False)
-    
-    bandeira = models.URLField(max_length=100)
-    create_at = models.DateTimeField(auto_now_add=True)
-   
 
+        
     def __str__(self):
-        return self.posto_atendimento
+        # Substitua por campos reais do seu modelo
+        return f'{self.posto_atendimento} - {self.cidade_posto}' 
     
-
-
-class Endereco(models.Model):
+class Contato(models.Model):
+    posto = models.ForeignKey(Posto, on_delete=models.CASCADE, related_name='contatos')
+    telefone = models.CharField(max_length=20)
     rua = models.CharField(max_length=100)
     numero = models.CharField(max_length=10)
     complemento = models.CharField(max_length=100, blank=True, null=True)
     bairro = models.CharField(max_length=100)
     cidade = models.CharField(max_length=100)
-    estado = models.CharField(max_length=2)
-    cep = models.CharField(max_length=9)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)
+    cep = models.CharField(max_length=10)
+    email = models.EmailField()
+    latitude = models.DecimalField(max_digits=15, decimal_places=10, verbose_name="Latitude")  # Exemplo: 10 casas decimais
+    longitude = models.DecimalField(max_digits=15, decimal_places=10, verbose_name="Longitude") # Exemplo: 10 casas decimais
+  
+
+
 
     def __str__(self):
-        return f"{self.rua}, {self.numero} - {self.cidade}/{self.estado}"
+        return f'{self.telefone}'  # ✔️ Campo existente
+    
 
-    #def distancia_para(self, outro_endereco):
-    #   """Calcula a distância para outro endereço em quilômetros."""
-    #  origem = (self.latitude, self.longitude)
-    # destino = (outro_endereco.latitude, outro_endereco.longitude)
-    # return geodesic(origem, destino).kilometers
+
+class Pessoal(models.Model):
+    posto = models.ForeignKey(Posto, on_delete=models.CASCADE, related_name='pessoal')
+    cel = models.IntegerField()
+    ten_cel = models.IntegerField()
+    maj = models.IntegerField()
+    cap = models.IntegerField()
+    tenqo = models.IntegerField()
+    tenqa = models.IntegerField()
+    asp = models.IntegerField()
+    st_sgt = models.IntegerField()
+    cb_sd = models.IntegerField()
+
+
+
+    def __str__(self):
+        return f'{self.c} {self.posto} '
+
+class Cidade(models.Model):
+    posto = models.ForeignKey(
+        Posto, 
+        on_delete=models.CASCADE, 
+        related_name='cidades',
+        verbose_name="Posto vinculado"  # Melhoria para admin
+    )
+    municipio = models.CharField(
+        max_length=100,
+        verbose_name="Município"
+    )
+    latitude = models.DecimalField(
+        max_digits=15, 
+        decimal_places=10,
+        verbose_name="Latitude (formato: 12.345678)"
+    )
+    longitude = models.DecimalField(
+        max_digits=15, 
+        decimal_places=10,
+        verbose_name="Longitude (formato: -34.567890)"
+    )
+    bandeira = models.ImageField(
+        upload_to='img/bandeiras/%Y/%m/%d/',  # Organização por data
+        blank=True,
+        null=True,
+        verbose_name="Bandeira municipal",
+        help_text="Formato: PNG/JPG. Tamanho máximo: 2MB"  # Guia para usuários
+     
+    )
+
+    def __str__(self):
+        return f'QPO - {self.posto.posto_atendimento}'  # ✔️ Usando campo existente
+    
+    class Meta:
+        verbose_name = "Cidade"
+        verbose_name_plural = "Cidades"

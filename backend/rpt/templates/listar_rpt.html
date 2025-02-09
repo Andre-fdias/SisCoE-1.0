@@ -10,13 +10,12 @@
 
 {% block 'body' %}
 
-
-
 <body>
 
-    <div class="container mx-auto p-4 mt-30" id="cad_efetivo">
-
-        <fieldset class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">
+    <div class=" md:items-center md:justify-between rounded-lg mt-12  w-full" id="cad_efetivo">
+    
+        <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+         <fieldset class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">
             <div id="01" class="mb-4">
                 <div class="bg-gray-800 p-4 rounded-md">
                     <div class="flex flex-wrap items-center justify-between py-3">
@@ -30,7 +29,7 @@
                     </div>
                 </div>
             </div>
-        </fieldset>
+         </fieldset>
         
         <fieldset class="bg-gray-100  mb-8 rounded-md w-full" id="first-fieldset">   
             <legend  class=" mb-8 rounded-md w-full" >
@@ -92,7 +91,7 @@
             <div>
                 <br>
                 <br>
-                <table id="table1" class="text-gray-700 bg-white p-5">
+                <table id="table1" class="text-gray-700 bg-white p-5" style="table-layout: auto;">
                     <thead>
                         <tr>
                             <th scope="col" class="p-4">
@@ -106,7 +105,7 @@
                             <th class="px-4 py-2 text-center">Nome Guerra</th>
                             <th class="px-4 py-2 text-center">Sgb Origem</th>
                             <th class="px-4 py-2 text-center">Sgb Destino</th>
-                            <th class="px-4 py-2 text-center">Posto Destino</th>
+                       
                             <th class="px-4 py-2 text-center">Data do Pedido</th>
                             <th class="px-4 py-2 text-center">Status Pedido</th>
                             <th class="px-4 py-2 text-center">Status</th>
@@ -137,32 +136,41 @@
                                 {% endif %}
                             </td>
                             <td class="px-4 py-2 text-center" contenteditable="false"> 
-                               <div class="ps-3">
+                            <div class="ps-3">
                                 <div class="text-indigo-700 font-medium rounded-lg"> {{ cadastro.cadastro.nome_de_guerra }}</div>
                                 <div class="font-normal text-gray-500 ">RE: {{ cadastro.cadastro.re }} - {{ cadastro.cadastro.dig }}</div>
-                               </div>  
+                            </div>  
                             </td>
                             <td class="px-4 py-2 text-center" contenteditable="false"> 
                                 <div class="ps-3">
                                     <div class="text-gray-100  bg-yellow-500 rounded-lg"> 
                                         {% if cadastro.cadastro.detalhes_situacao %}
-                                          {{ cadastro.cadastro.detalhes_situacao.last.sgb }}
+                                        {{ cadastro.cadastro.detalhes_situacao.last.sgb }}
                                         {% else %}
-                                          Sem detalhes
-                                         {% endif %}
-                                    </div>
-                                 <div class="font-normal text-gray-500 ">
-                                    {% if cadastro.cadastro.detalhes_situacao %}
-                                       {{ cadastro.cadastro.detalhes_situacao.last.posto_secao }}
-                                      {% else %}
                                         Sem detalhes
-                                     {% endif %}
-                                 </div>
+                                        {% endif %}
+                                    </div>
+                                <div class="font-normal text-gray-500 ">
+                                    {% if cadastro.cadastro.detalhes_situacao %}
+                                    {{ cadastro.cadastro.detalhes_situacao.last.posto_secao }}
+                                    {% else %}
+                                        Sem detalhes
+                                    {% endif %}
+                                </div>
                                 </div>  
-                             </td>
-              
-                            <td class="px-4 py-2 text-center">{{ cadastro.sgb_destino }}</td>
-                            <td class="px-4 py-2 text-center">{{ cadastro.posto_secao_destino }}</td>
+                            </td>
+                            <td class="px-4 py-2 text-center" contenteditable="false"> 
+                                <div class="ps-3">
+                                    <div class="text-gray-100  bg-blue-500 rounded-lg"> 
+                                        
+                                        {{ cadastro.sgb_destino }}
+                                    </div>
+                                <div class="font-normal text-gray-500 ">
+                                    {{ cadastro.posto_secao_destino }}
+                                </div>
+                                </div>  
+                            </td>
+                       
                             <td class="px-4 py-2 text-center">{{ cadastro.data_pedido|date:"d/m/Y" }}</td>
                             <td class="px-4 py-2 text-center">{{ cadastro.pedido_status  }}</td>
                             <td class="px-4 py-2 text-center" >{{cadastro.status_badge}}</td>
@@ -170,9 +178,9 @@
                                 <a href="{% url 'rpt:ver_rpt' cadastro.id %}"> <button class="text-white bg-gradient-to-r from-yellow-300 via-yellow-300 to-yellow-400 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
                                         <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
-                                      </svg>
+                                    </svg>
                                 </button></a>
-                           </td>
+                        </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -182,7 +190,8 @@
                 </div>
         </fieldset>
     
-  
+    </fieldset>
+    
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
     <script>
         const dataTable = new simpleDatatables.DataTable("#example");

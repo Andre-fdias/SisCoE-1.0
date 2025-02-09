@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Detalhes do Posto{% endblock %}
+
+{% block 'head' %}
+<link rel="stylesheet" href="{% static 'rpt/css/cadastrar_rpt.css' %}">
+{% endblock 'head' %}
+
+{% block 'body' %}
+<body class="w-4/5 mt-30 mx-auto">
+    <div class="container mx-auto p-4 mt-30">
+        <fieldset class="bg-gray-800 p-4 mb-8 rounded-md">
+            <div class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="w-full md:w-9/12">
+                            <h1 class="text-3xl text-gray-200">Detalhes do Posto</h1>
+                        </div>
+                        <div class="w-full md:w-3/12 text-right">
+                            <a href="{% url 'municipios:posto_update' object.pk %}" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Editar</a>
+                            <button type="button" data-toggle="modal" data-target="#deleteModal" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Deletar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+            <p>SGB: {{ object.SGB }}</p>
+            <p>Posto Seção: {{ object.posto_secao }}</p>
+            <!-- Adicione os outros campos aqui -->
+        </fieldset>
+
+        <!-- Modal de confirmação de exclusão -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deleteModalLabel">Confirmar Exclusão</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja excluir este posto?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <form method="post" action="{% url 'municipios:posto_delete' object.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock 'body' %}
