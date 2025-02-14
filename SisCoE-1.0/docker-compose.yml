@@ -1,0 +1,85 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: siscoe.db
+    image: postgres:17-alpine
+    restart: always
+    user: postgres  # importante definir o usuário
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - LC_ALL=C.UTF-8
+      - POSTGRES_PASSWORD=davi2807  # senha padrão
+      - POSTGRES_USER=postgres  # usuário padrão
+      - POSTGRES_DB=siscoe_db  # necessário porque foi configurado assim no settings
+    ports:
+      - 5431:5432  # repare na porta externa 5431
+    networks:
+      - siscoe-network
+
+  pgadmin:
+    container_name: siscoe_pgadmin
+    image: dpage/pgadmin4
+    restart: unless-stopped
+    volumes:
+       - pgadmin:/var/lib/pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: andrefonsecadias21@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: davi280711
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - 5051:80
+    networks:
+      - siscoe-network
+
+  mailhog:
+    container_name: siscoe_mailhog
+    image: mailhog/mailhog
+    restart: always
+    logging:
+      driver: 'none'
+    ports:
+      - 1025:1025
+      - 8025:8025
+    networks:
+       - siscoe-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: siscoe_app
+    hostname: app
+    stdin_open: true
+    expose:
+      - '8000'
+    volumes:
+      - .env.docker:/app/.env
+    command: bash -c "gunicorn backend.wsgi:application -b 0.0.0.0:8000"
+    depends_on:
+      - db
+    networks:
+      - siscoe-network
+
+
+  nginx:
+    container_name: siscoe_nginx
+    image: nginx
+    hostname: nginx
+    ports:
+      - '80:8000'
+    volumes:
+      - ./docker/config/nginx/:/etc/nginx/conf.d/
+    depends_on:
+      - app
+    networks:
+       - siscoe-network
+
+
+volumes:
+  pgdata:  # mesmo nome do volume externo definido na linha 10
+  pgadmin:
+
+networks:
+  siscoe-network:

@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Consultar BM{% endblock %}
+
+
+<link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
+<link href="{% static 'flowbite.min.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet">
+
+
+{% block 'body' %}
+
+
+<body>
+
+    <br>
+    <div class=" md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_efetivo">
+     <fieldset class=" p-4 mb-8   rounded-md w-full" id="second-fieldset">
+         <fieldset class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">
+                <div id="01" class="mb-4">
+                    <div class="bg-gray-800 p-4 rounded-md">
+                        <div class="flex flex-wrap items-center justify-between py-3">
+                            <div class="col-12 md:w-auto">
+                                <h1 class="text-3xl text-gray-200">Relação de Bombeiros Municipais</h1>
+                                <p class="text-gray-400" >Consulte abaixo o efetivo da unidade.</p>
+                            </div>
+                            <div class="w-full md:w-auto text-right">
+                                <a href="{% url 'bm:cadastrar_bm' %}" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Cadastrar Militar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="bg-gray-100  mb-8 rounded-md w-full" id="first-fieldset">   
+                <legend  class=" mb-8 rounded-md w-full" >
+                    {% if messages %}
+                    {% for message in messages %}
+                        <section class="alert {{ message.tags }}">
+                            {{ message }}
+                        </section>
+                    {% endfor %}
+                    {% endif %}
+                </legend>  
+                <div class="flex items-center  p-4 bg-gray-700 space w-full md:w-auto">
+                    <div class="container" id="filtros"> 
+                        <div class="flex flex-wrap mb-3">
+
+                            <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                                <label for="sgbFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Sgb</label>
+                                <select id="sgbFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="">Todos</option>
+                                    <option value="EM">EM</option>
+                                    <option value="1ºSGB">1ºSGB</option>
+                                    <option value="2ºSGB">2ºSGB</option>
+                                    <option value="3ºSGB">3ºSGB</option>
+                                    <option value="4ºSGB">4ºSGB</option>
+                                    <option value="5ºSGB">5ºSGB</option>
+                                </select>
+                            </form>
+                            <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                                <label for="postoSecaoFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Posto ou Seção</label>
+                                <select id="postoSecaoFilter" class="bg-gray-50 border border-gray-300 text-gray-00 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="">Todos</option>6
+                                </select>
+                            </form>
+        
+                            <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0 flex items-end">
+                                <button id="clearFilters" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                        <button type="button" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                        </svg>
+                        Export
+                    </button>
+                    </div>
+                </div>
+                <table id="example" class=" text-gray-700 bg-white p-2">
+                    <thead>
+                        <tr>
+                            <th scope="col" class="p-4">
+                                <div class="flex items-center">
+                                    <input id="checkbox-all" type="checkbox" class=" w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="checkbox-all" class="sr-only">checkbox</label>
+                                </div>
+                            </th>
+                            <th class=" px-4 py-2 text-center">Imagem</th>
+                            <th class=" px-4 py-2 text-center">Nome</th>
+                            <th class=" px-4 py-2 text-center">Sgb</th>
+                            <th class=" px-4 py-2 text-center">OVB</th>
+                            <th class=" px-4 py-2 text-center">ESB</th>
+                            <th class=" px-4 py-2 text-center">Status</th>
+                            <th class=" px-4 py-2 text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for cadastro in cadastros %}
+                        <tr >
+                            <td class="w-4 px-4 py-3">
+                                <div class="flex items-center">
+                                    <input id="checkbox-table-search-1" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                    <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                                </div>
+                            </td>
+                            <td class="px-4 py-2">
+                                <div class="flex items-center">
+                                {% if cadastro.imagens.exists %}
+                                    <img src="{{ cadastro.imagens.last.image.url }}" class="foto-perfil rounded-full w-10 h-10 object-cover object-center" alt="Imagem">
+                                    {% else %}
+                                    Sem imagem
+                                {% endif %}
+                            </div>
+                            </td>
+                            <td class="px-4 py-2 text-center" contenteditable="false"> 
+                                <div class="ps-3">
+                                    <div class="text-gray-700  font-medium rounded-lg"> 
+                                        {{ cadastro.nome }}              
+                                    </div>
+                                 <div class="font-normal text-gray-500 ">
+                                       {{ cadastro.email }}
+                                 </div>
+                                </div>  
+                             </td>
+                             <td class="px-4 py-2 text-center" contenteditable="false"> 
+                                <div class="ps-3">
+                                    <div class="text-gray-700  font-medium rounded-lg"> 
+                                        {{ cadastro.sgb }}              
+                                    </div>
+                                 <div class="font-normal text-gray-500 ">
+                                       {{ cadastro.posto_secao }}
+                                 </div>
+                                </div>  
+                             </td>
+                            <td class=" px-4 py-2 text-center">{{ cadastro.ovb }}</td>
+                            <td class=" px-4 py-2 text-center">{{ cadastro.esb }}</td>
+                            <td class=" px-4 py-2 text-center">{{ cadastro.status }}</td>
+                        
+                            
+                            <td class="px-4 py-2 text-center">
+                                <a  class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{% url 'bm:ver_bm' cadastro.id %}">Editar</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <div class="flex justify-end mb-3">
+                    <button id="printButton" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Imprimir</button>
+                </div>
+           </fieldset>
+           <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+           <script>
+               const dataTable = new simpleDatatables.DataTable("#example");
+           </script>
+           <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+           <script>
+               document.addEventListener('DOMContentLoaded', function() {
+                   const dataTable = new simpleDatatables.DataTable("#example", {
+                       labels: {
+                           placeholder: "Pesquisar...",
+                           perPage: "{select} resultados por página",
+                           noRows: "Nenhum registro encontrado",
+                           info: "Mostrando {start} até {end} de {rows} registros",
+                           noResults: "Nenhum resultado encontrado",
+                           loading: "Carregando...",
+                           infoFiltered: " (filtrado de {rowsTotal} registros)",
+                           previous: "Anterior",
+                           next: "Próximo",
+                           first: "Primeiro",
+                           last: "Último"
+                       }
+                   });
+               });
+           </script>
+
+</div>
+</body>
+</html>
+{% endblock %}

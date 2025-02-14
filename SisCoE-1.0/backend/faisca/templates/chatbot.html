@@ -1,0 +1,378 @@
+{% extends "base_login.html" %}
+{% load static %}
+{% block title %} Faísca IA{% endblock %}
+
+
+{% block content %}
+
+<div class="bg-gray-100 shadow rounded-lg md:mt-10 max-w-600p xl:p-0 w-9/12 mx-auto"> 
+            
+    <div class="container mx-auto p-4 mt-30" id="cad_efetivo">
+   
+    
+        <fieldset class="bg-gray-800 p-4 mb-8 rounded-lg  h-32 w-full" id="first-fieldset">
+            <div class="container mx-auto flex justify-between items-center">
+                <div class="text-white text-3xl"> 
+                    <h1 class="text-3xl text-gray-200">Faísca <span class="text-yellow-600"><b>IA</b></span></h1>
+                    <p class="text-gray-400 text-sm" >Tire suas dúvidas sobre Normas internas com o Faísca.</p>
+                      
+                </div>
+                <div>
+                   
+                    <!-- Adicionar botão de reset -->
+                    <button type="button" class="btn-reset bg-red-500 text-white p-2 rounded-lg ml-2" onclick="resetChat()">Nova Conversa</button>
+                    <!-- Botão para abrir o modal de histórico -->
+                    <a href="{% url 'core:index' %}"  class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-7 py-3 text-center me-2 mb-2">Voltar</a>
+
+                    
+              <!-- Modal de histórico de conversas -->
+              <!-- Atualizar o modal de histórico -->
+           <div id="historyModal" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 hidden z-50">
+            <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all max-w-lg w-full">
+                <div class="flex justify-between bg-gray-500 text-white items-center p-4 border-b border-gray-200">
+                    <h5 class="text-2xl font-bold">Histórico de Conversas</h5>
+                    <button class="text-gray-500" onclick="closeModal('historyModal')">&times;</button>
+                </div>
+                <div class="p-4 max-h-96 overflow-y-auto">
+                    <ul class="history-list space-y-2">
+                        <!-- Histórico será carregado aqui -->
+                    </ul>
+                </div>
+                <div class="flex justify-end p-4 border-t bg-gray-200 border-gray-200">
+                    <button class="bg-gray-500 text-white p-2 rounded-lg" onclick="closeModal('historyModal')">Fechar</button>
+                </div>
+            </div>
+        </div>
+            </div>
+            </div>      
+        </fieldset>
+
+
+        <div class="flex flex-col bg-gray- ">
+          <div class="card flex-grow">
+           <div class="messages-box p-4 rounded-lg bg-gray-200">
+
+            <ul class="messages-list space-y-4">
+              {% for chat in chats %}
+              <li class="message sent flex justify-end">
+                  <div class="message-text bg-green-200 p-3 rounded-lg">
+                      <div class="font-bold">
+                          <div style="display: flex; align-items: center;">
+                              <div class="w-10 h-10 rounded-full overflow-hidden border-2">
+                                  {% if request.user.profile.image %}
+                                  <img src="{{ request.user.profile.image.url }}" alt="Profile Image" class="w-full h-full object-cover">
+                                  {% else %}
+                                  <p>S/I.</p>
+                                  {% endif %}
+                              </div>
+                              <div style="margin-left: 10px;">
+                                  {{ request.user.first_name }}
+                              </div>
+                          </div>
+                          <div>{{ chat.message }}</div>
+                          <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ request.user.username }}</span>
+                          <span class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ chat.created_at|date:"H:i" }}</span>
+                      </div>
+                      <div class="text-sm text-gray-500 mt-2">Enviado em: {{ chat.created_at|date:"d/m/y - H:i:s" }}</div> <!-- Horário de envio -->
+                  </div>
+              </li>
+              <li class="message received flex justify-start">
+                  <div class="message-text bg-gray-300 p-3 rounded-lg">
+                      <div style="display: flex; align-items: center;">
+                          <div class="w-10 h-10 rounded-full overflow-hidden border-2">
+                              <img src="{% static 'img/faisca.jpeg' %}" role="img" aria-label="people-circle" id="logo">
+                          </div>
+                          <div style="margin-left: 10px;">
+                              Faísca AI
+                          </div>
+                      </div>
+                      <div class="markdown-content">{{ chat.response|safe }}</div>
+                      <span class="text-sm font-normal text-gray-500 dark:text-gray-400">{{ chat.created_at|date:"H:i" }}</span>
+                      <div class="text-sm text-gray-500 mt-2">Respondido em: {{ chat.created_at|date:"d/m/y - H:i:s" }}</div> <!-- Horário de retorno -->
+                  </div>
+              </li>
+              {% endfor %}
+          </ul>
+
+            </div>
+
+          </div>
+          <form class="message-form flex p-4 bg-gray-700" action="{% url 'faisca:chatbot' %}" method="post">
+            {% csrf_token %}
+            <input type="text" class="message-input flex-grow bg-gray-200 p-2 border border-gray-300 rounded-l-lg text-gray-800" placeholder="No que posso ajudar?">
+            <button type="submit" class="btn-send bg-blue-500 text-white p-2 rounded-r-lg">Enviar</button>
+            <button type="button" class="btn-reset bg-red-500 text-white p-2 rounded-lg ml-2" onclick="resetChat()">Nova Conversa</button>
+    
+        </form>
+        </div>
+    </div>
+      </main>
+
+      <script>
+        const messagesList = document.querySelector('.messages-list');
+        const messageForm = document.querySelector('.message-form');
+        const messageInput = document.querySelector('.message-input');
+
+        messageForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+
+          const message = messageInput.value.trim();
+          if (message.length === 0) {
+            return;
+          }
+
+          const messageItem = document.createElement('li');
+          messageItem.classList.add('message', 'sent', 'flex', 'justify-end');
+          messageItem.innerHTML = `
+              <div class="message-text bg-green-200 p-3 rounded-lg">
+                  <div class="font-bold">Você</div>
+                  <div>${message}</div>
+              </div>`;
+          messagesList.appendChild(messageItem);
+
+          messageInput.value = '';
+
+          fetch('', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+              'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              'message': message
+            })
+          })
+          
+            .then(response => response.json())
+            .then(data => {
+              const response = data.response;
+              const messageItem = document.createElement('li');
+              messageItem.classList.add('message', 'received', 'flex', 'justify-start');
+              messageItem.innerHTML = `
+              <div class="message-text bg-gray-300 p-3 rounded-lg">
+                  <div class="font-bold">Faísca AI</div>
+                  <div class="markdown-content">${response}</div>
+              </div>`;
+              messagesList.appendChild(messageItem);
+            });
+        });
+      </script>
+      <script>
+        function resetChat() {
+            const messagesList = document.querySelector('.messages-list');
+            messagesList.innerHTML = '';
+            // Adicione lógica para limpar o histórico no backend, se necessário
+        }
+      </script>
+      <script>
+        document.querySelector('[data-target="#historyModal"]').addEventListener('click', function() {
+            console.log('Botão de histórico clicado');
+        });
+      </script>
+      <script>
+    document.querySelectorAll('.history-link').forEach(link => {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            const message = this.getAttribute('data-message');
+            const response = this.getAttribute('data-response');
+    
+            const messageItem = document.createElement('li');
+            messageItem.classList.add('message', 'sent', 'flex', 'justify-end');
+            messageItem.innerHTML = `
+                <div class="message-text bg-green-200 p-3 rounded-lg">
+                    <div class="font-bold">Você</div>
+                    <div>${message}</div>
+                </div>`;
+            document.querySelector('.messages-list').appendChild(messageItem);
+    
+            const responseItem = document.createElement('li');
+            responseItem.classList.add('message', 'received', 'flex', 'justify-start');
+            responseItem.innerHTML = `
+                <div class="message-text bg-gray-300 p-3 rounded-lg">
+                    <div class="font-bold">Faísca AI</div>
+                    <div class="markdown-content">${response}</div>
+                </div>`;
+            document.querySelector('.messages-list').appendChild(responseItem);
+        });
+    });
+      </script>
+      <script>
+  function openModal(modalId) {
+      document.getElementById(modalId).classList.remove('hidden');
+  }
+  
+  function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+  }
+  
+  document.querySelector('[onclick="openModal(\'historyModal\')"]').addEventListener('click', function() {
+      fetch('{% url "faisca:chat_history" %}')
+      .then(response => response.json())
+      .then(data => {
+          const historyList = document.querySelector('.history-list');
+          historyList.innerHTML = '';
+          data.history.forEach(chat => {
+              const listItem = document.createElement('li');
+              listItem.innerHTML = `
+                  <a href="#" class="history-link block p-2 rounded-lg text-gray-700 hover:bg-gray-100" data-message="${chat.message}" data-response="${chat.response}">
+                      <strong>${chat.created_at}</strong>: ${chat.message}
+                  </a>`;
+              historyList.appendChild(listItem);
+          });
+  
+          // Adicionar evento de clique para os links de histórico
+          document.querySelectorAll('.history-link').forEach(link => {
+              link.addEventListener('click', function(event) {
+                  event.preventDefault();
+                  const message = this.getAttribute('data-message');
+                  const response = this.getAttribute('data-response');
+  
+                  const messageItem = document.createElement('li');
+                  messageItem.classList.add('message', 'sent', 'flex', 'justify-end');
+                  messageItem.innerHTML = `
+                      <div class="message-text bg-green-200 p-3 rounded-lg">
+                          <div class="font-bold">Você</div>
+                          <div>${message}</div>
+                      </div>`;
+                  document.querySelector('.messages-list').appendChild(messageItem);
+  
+                  const responseItem = document.createElement('li');
+                  responseItem.classList.add('message', 'received', 'flex', 'justify-start');
+                  responseItem.innerHTML = `
+                      <div class="message-text bg-gray-300 p-3 rounded-lg">
+                          <div class="font-bold">Faísca AI</div>
+                          <div class="markdown-content">${response}</div>
+                      </div>`;
+                  document.querySelector('.messages-list').appendChild(responseItem);
+  
+                  // Fechar o modal após selecionar uma conversa
+                  closeModal('historyModal');
+              });
+          });
+      });
+  });
+      </script>
+<script>
+  document.querySelector('.message-form').addEventListener('submit', (event) => {
+      event.preventDefault();
+  
+      const message = document.querySelector('.message-input').value.trim();
+      if (message.length === 0) {
+          return;
+      }
+  
+      const profileImage = document.querySelector('.profile-image img').src;
+      const firstName = document.querySelector('.user-first-name').textContent;
+      const username = document.querySelector('.user-username').textContent;
+      const currentTime = new Date().toLocaleTimeString();
+      const currentDateTime = new Date().toLocaleString();
+  
+      const messageItem = document.createElement('li');
+      messageItem.classList.add('message', 'sent', 'flex', 'justify-end');
+      messageItem.innerHTML = `
+          <div class="message-text bg-green-200 p-3 rounded-lg">
+              <div class="font-bold">
+                  <div style="display: flex; align-items: center;">
+                      <div class="w-10 h-10 rounded-full overflow-hidden border-2">
+                          <img src="${profileImage}" alt="Profile Image" class="w-full h-full object-cover">
+                      </div>
+                      <div style="margin-left: 10px;">
+                          ${firstName}
+                      </div>
+                  </div>
+                  <div>${message}</div>
+                  <span class="text-sm font-semibold text-gray-900 dark:text-white">${username}</span>
+                  <span class="text-sm font-normal text-gray-500 dark:text-gray-400">${currentTime}</span>
+              </div>
+              <div class="text-sm text-gray-500 mt-2">Enviado em: ${currentDateTime}</div> <!-- Horário de envio -->
+          </div>`;
+      document.querySelector('.messages-list').appendChild(messageItem);
+  
+      document.querySelector('.message-input').value = '';
+  
+      fetch('', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams({
+              'csrfmiddlewaretoken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+              'message': message
+          })
+      })
+      .then(response => response.json())
+      .then(data => {
+          const response = data.response;
+          const responseItem = document.createElement('li');
+          responseItem.classList.add('message', 'received', 'flex', 'justify-start');
+          responseItem.innerHTML = `
+              <div class="message-text bg-gray-300 p-3 rounded-lg">
+                  <div style="display: flex; align-items: center;">
+                      <div class="w-10 h-10 rounded-full overflow-hidden border-2">
+                          <img src="{% static 'img/faisca.jpeg' %}" role="img" aria-label="people-circle" id="logo">
+                      </div>
+                      <div style="margin-left: 10px;">
+                          Faísca AI
+                      </div>
+                  </div>
+                  <div class="markdown-content">${response}</div>
+                  <span class="text-sm font-normal text-gray-500 dark:text-gray-400">${currentTime}</span>
+                  <div class="text-sm text-gray-500 mt-2">Respondido em: ${currentDateTime}</div> <!-- Horário de retorno -->
+              </div>`;
+          document.querySelector('.messages-list').appendChild(responseItem);
+      });
+  });
+  </script>
+  <script>
+   function resetChat() {
+    fetch('{% url "faisca:reset_chat" %}')
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'reset') {
+            document.querySelector('.messages-list').innerHTML = '';
+        }
+    });
+}
+    
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.remove('hidden');
+        fetch('{% url "faisca:chat_history" %}')
+        .then(response => response.json())
+        .then(data => {
+            const historyList = document.querySelector('.history-list');
+            historyList.innerHTML = '';
+            data.history.forEach(chat => {
+                const listItem = document.createElement('li');
+                listItem.innerHTML = `
+                    <a href="#" class="history-link block p-2 rounded-lg text-gray-700 hover:bg-gray-100" data-id="${chat.id}">
+                        <strong>${chat.created_at}</strong>: ${chat.first_message}
+                    </a>`;
+                historyList.appendChild(listItem);
+            });
+    
+            document.querySelectorAll('.history-link').forEach(link => {
+                link.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    const conversationId = this.getAttribute('data-id');
+                    fetch(`/chat/${conversationId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const messagesList = document.querySelector('.messages-list');
+                        messagesList.innerHTML = '';
+                        data.chats.forEach(chat => {
+                            const messageItem = document.createElement('li');
+                            messageItem.classList.add('message', chat.sent ? 'sent' : 'received', 'flex', chat.sent ? 'justify-end' : 'justify-start');
+                            messageItem.innerHTML = `
+                                <div class="message-text ${chat.sent ? 'bg-green-200' : 'bg-gray-300'} p-3 rounded-lg">
+                                    <div class="font-bold">${chat.sent ? 'Você' : 'Faísca AI'}</div>
+                                    <div>${chat.message}</div>
+                                </div>`;
+                            messagesList.appendChild(messageItem);
+                        });
+                        closeModal('historyModal');
+                    });
+                });
+            });
+        });
+    }
+    </script>
+       
+  </fieldset>    
+</div>
+{% endblock %}

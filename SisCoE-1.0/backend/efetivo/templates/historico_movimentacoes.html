@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load static %}
+{% load custom_filters %}
+{% block title %} Histórico de Movimentações{% endblock %}
+{% block 'head' %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+<link rel="stylesheet" href="{% static 'efetivo/css/historico.css' %}">
+{% endblock 'head' %}
+
+{% block 'body' %}
+
+
+<body>
+
+    <div class=" md:items-center md:justify-between rounded-lg mt-12  w-full" id="cad_efetivo">
+    
+        <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+            <fieldset class="  bg-gray-800  p-4 mb-8 rounded-md">
+            <div id="01" class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="col-12 md:w-auto">
+                            <h3 class="text-2xl font-semibold text-gray-300">Histórico de Movimentações e Promoções</h3>
+                        </div>  
+                        <div class="w-full md:w-auto text-right">
+                        
+                            <a href="{% url 'efetivo:ver_militar' cadastro.id %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+                <legend>
+                    {% if messages %}
+                    {% for message in messages %}
+                        <section class="alert {{ message.tags }} p-4 mb-4 rounded-md">
+                            {{ message }}
+                        </section>
+                    {% endfor %}
+                    {% endif %}
+                </legend>
+            </div>
+        </fieldset>
+            <div class="w-full space-y-4">
+                
+                <fieldset class="w-full bg-gray-200 p-4 rounded-lg">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="text-xl text-gray-700 font-semibold">Promoções</h3>
+                        </div>  
+                        <div class="container mx-auto" id="table">
+                            <div class="overflow-x-auto">
+                                <table id="dataTablePromocoes" class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-4 text-gray-700  py-2">Posto/Grad</th>
+                                            <th class="px-4 text-gray-700 py-2">Quadro</th>
+                                            <th class="px-4 text-gray-700 py-2">Grupo</th>
+                                            <th class="px-4 text-gray-700 py-2">Última Promoção</th>
+                                            <th class="px-4 text-gray-700 py-2">Alterado em</th>
+                                            <th class="px-4 text-gray-700 py-2">Por</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for promocao in promocoes %}
+                                        <tr>
+                                            <td class="border  text-gray-700 px-4 py-2">{{ promocao.posto_grad}}</td>
+                                            <td class="border text-gray-700  px-4 py-2">{{ promocao.quadro }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ promocao.grupo }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ promocao.ultima_promocao|date:"d/m/Y" }}</td>
+                                            <td class="border text-gray-700  px-4 py-2">{{ promocao.data_alteracao|format_date }}</td>
+                                            <td class="border  text-gray-700 px-4 py-2">{{ promocao.usuario_alteracao }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="w-full bg-gray-200 p-4 rounded-lg">  
+                    <div class="row">
+                        <h3 class="text-xl text-gray-600 font-semibold">Detalhes das Movimentações</h3>
+                        <div class="container mx-auto" id="table1">
+                            <div class="overflow-x-auto">
+                                <table id="dataTableDetalhes" class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-4 text-gray-700 py-2">Situação</th>
+                                            <th class="px-4 text-gray-700 py-2">SGB</th>
+                                            <th class="px-4 text-gray-700 py-2">Posto/Seção</th>
+                                            <th class="px-4 text-gray-700 py-2">Apresentação</th>
+                                            <th class="px-4 text-gray-700 py-2">Saída</th>
+                                            <th class="px-4 text-gray-700 py-2">Alterado em</th>
+                                            <th class="px-4 text-gray-700 py-2">Por</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for detalhe in cadastro.detalhes_situacao.all %}
+                                        <tr>
+                                            <td class="border text-gray-700 px-4 py-2">{{ detalhe.situacao }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ detalhe.sgb }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ detalhe.posto_secao }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ detalhe.apresentacao_na_unidade|date:"d/m/Y" }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ detalhe.saida_da_unidade|date:"d/m/Y" }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ detalhe.data_alteracao|format_date }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ detalhe.usuario_alteracao }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </fieldset>
+    </fieldset>
+        
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const dataTablePromocoes = new simpleDatatables.DataTable("#dataTablePromocoes", {
+                    labels: {
+                        placeholder: "Pesquisar...",
+                        perPage: "{select} registros por página",
+                        noRows: "Nenhum registro encontrado",
+                        info: "Mostrando {start} a {end} de {rows} registros (Página {page} de {pages})"
+                    }
+                });
+    
+                const dataTableDetalhes = new simpleDatatables.DataTable("#dataTableDetalhes", {
+                    labels: {
+                        placeholder: "Pesquisar...",
+                        perPage: "{select} registros por página",
+                        noRows: "Nenhum registro encontrado",
+                        info: "Mostrando {start} a {end} de {rows} registros (Página {page} de {pages})"
+                    }
+                });
+            });
+        </script>
+    </div>
+</body>
+{% endblock %}
+

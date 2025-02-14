@@ -1,0 +1,368 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Consultar Efetivo{% endblock %}
+
+
+<link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
+<link href="{% static 'flowbite.min.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet">
+
+
+{% block 'body' %}
+
+<body>
+
+    <div class=" md:items-center md:justify-between rounded-lg mt-12  w-full" id="cad_efetivo">
+    
+        <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+            <fieldset class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">
+                <div id="01" class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="col-12 md:w-auto">
+                            <h1 class="text-3xl text-gray-200">Relação de Efetivo</h1>
+                            <p class="text-gray-500 tracking-tight md:tracking-wide " >Consulte abaixo o efetivo da unidade.</p>
+                        </div>
+                        <div class="w-full md:w-auto text-right">
+                            <a href="{% url 'efetivo:cadastrar_militar' %}" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Cadastrar Militar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            </fieldset>
+      
+                <fieldset class="bg-gray-100  mb-8 rounded-md w-full" id="first-fieldset">   
+                    <legend  class=" mb-8 rounded-md w-full" >
+                        {% if messages %}
+                        {% for message in messages %}
+                            <section class="alert {{ message.tags }}">
+                                {{ message }}
+                            </section>
+                        {% endfor %}
+                        {% endif %}
+                    </legend>  
+                    <div class="flex items-center  p-4 bg-gray-700 space w-full md:w-auto">
+                        <div class="container" id="filtros"> 
+                            <div class="flex flex-wrap mb-3">
+                                <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                                    <label for="situacaoFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Situação</label>
+                                    <select id="situacaoFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option value="">Todos</option>
+                                        <option value="Efetivo">Efetivo</option>
+                                        <option value="Exonerado a Pedido">Exonerado a Pedido</option>
+                                        <option value="Exonerado Ex-Ofício">Exonerado Ex-Ofício</option>
+                                        <option value="Reserva a Pedido">Reserva a Pedido</option>
+                                        <option value="Transferido">Transferido</option>
+                                    </select>
+                                </form>
+                                <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                                    <label for="statusFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Status</label>
+                                    <select id="situacaoFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option value="">Todos</option>
+                                        <option value="ATIVO">Ativo</option>
+                                        <option value="INATIVO">Inativo</option>
+                                        <option value="LSV">LSV</option>
+                                        <option value="LTS">LTS</option>
+                                        <option value="LTS FAMILIA">LTS Família</option>
+                                        <option value="CONVAL">Conval</option>
+                                        <option value="ELEIÇÃO">Eleição</option>
+                                        <option value="LP">LP</option>
+                                        <option value="FERIAS">Férias</option>
+                                    </select>
+                                </form>
+                                <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                                    <label for="sgbFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Sgb</label>
+                                    <select id="sgbFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option value="">Todos</option>
+                                        <option value="EM">EM</option>
+                                        <option value="1ºSGB">1ºSGB</option>
+                                        <option value="2ºSGB">2ºSGB</option>
+                                        <option value="3ºSGB">3ºSGB</option>
+                                        <option value="4ºSGB">4ºSGB</option>
+                                        <option value="5ºSGB">5ºSGB</option>
+                                    </select>
+                                </form>
+                                <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                                    <label for="postoSecaoFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Posto ou Seção</label>
+                                    <select id="postoSecaoFilter" class="bg-gray-50 border border-gray-300 text-gray-00 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                        <option value="">Todos</option>6
+                                    </select>
+                                </form>
+            
+                                <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0 flex items-end">
+                                    <button id="clearFilters" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
+                            <button type="button" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                            <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                            </svg>
+                            Export
+                        </button>
+                        </div>
+                    </div>
+                    <div> 
+                        <br>
+                        <br>        
+                    <table id="example" class=" text-gray-700 bg-white p-2">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="p-4">
+                                    <div class="flex items-center">
+                                        <input id="checkbox-all" type="checkbox" class=" w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="checkbox-all" class="sr-only">checkbox</label>
+                                    </div>
+                                </th>
+                                <th class=" px-4 py-2 text-center">Imagem</th>
+                                <th class=" px-4 py-2 text-center">Posto/Grad</th>
+                                <th class=" px-4 py-2 text-center">Re</th>
+                                <th class=" px-4 py-2 text-center">Nome Guerra</th>
+                                <th class=" px-4 py-2 text-center">Sgb</th>
+                                <th class=" px-4 py-2 text-center">Posto/Seção</th>
+                                <th class=" px-4 py-2 text-center">Situação</th>
+                                <th class=" px-4 py-2 text-center">Status</th>
+                                <th class=" px-4 py-2 text-center">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for cadastro in cadastros %}
+                            <tr >
+                                <td class="w-4 px-4 py-3">
+                                    <div class="flex items-center">
+                                        <input id="checkbox-table-search-1" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                                        <label for="checkbox-table-search-1" class="sr-only">checkbox</label>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-2">
+                                    <div class="flex items-center">
+                                    {% if cadastro.imagens.exists %}
+                                        <img src="{{ cadastro.imagens.last.image.url }}" class="foto-perfil rounded-full w-10 h-10 object-cover object-center" alt="Imagem">
+                                        {% else %}
+                                        Sem imagem
+                                    {% endif %}
+                                </div>
+                                </td>
+                                <td class=" px-4 py-2 text-center">
+                                    {% if cadastro.promocoes.exists %}
+                                        {{ cadastro.promocoes.last.grad|safe }}
+                                    {% else %}
+                                        Sem detalhes
+                                    {% endif %}
+                                </td>
+                                <td class=" px-4 py-2 text-center">{{ cadastro.re }}-{{ cadastro.dig }}</td>
+                                <td class=" px-4 py-2 text-center">{{ cadastro.nome_de_guerra }}</td>
+                            
+                                <td class="px-4 py-2 text-center">
+                                    {% if cadastro.detalhes_situacao.exists %}
+                                        {{ cadastro.detalhes_situacao.last.sgb }}
+                                    {% else %}
+                                        Sem detalhes
+                                    {% endif %}
+                                </td>
+                                <td class=" px-4 py-2 text-center">
+                                    {% if cadastro.detalhes_situacao.exists %}
+                                        {{ cadastro.detalhes_situacao.last.posto_secao }}
+                                    {% else %}
+                                        Sem detalhes
+                                    {% endif %}
+                                </td>
+                                <td class="px-4 py-2 text-center">
+                                    {% if cadastro.detalhes_situacao.exists %}
+                                        {{ cadastro.detalhes_situacao.last.status }}
+                                    {% else %}
+                                        Sem detalhes
+                                    {% endif %}
+                                </td>
+                                <td class=" px-4 py-2 text-center">
+                                    {% if cadastro.detalhes_situacao.exists %}
+                                    {{ cadastro.detalhes_situacao.last.status_cat }}
+                                {% else %}
+                                    Sem detalhes
+                                {% endif %}
+                                </td>
+                                <td class="px-4 py-2 text-center">
+                                    <a  class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{% url 'efetivo:ver_militar' cadastro.id %}">Editar</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="flex justify-end mb-3">
+                        <button id="printButton" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Imprimir</button>
+                    </div>
+            </fieldset>
+        </fieldset>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+        <script>
+            const dataTable = new simpleDatatables.DataTable("#example");
+        </script>
+        <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const dataTable = new simpleDatatables.DataTable("#example", {
+                    labels: {
+                        placeholder: "Pesquisar...",
+                        perPage: "{select} resultados por página",
+                        noRows: "Nenhum registro encontrado",
+                        info: "Mostrando {start} até {end} de {rows} registros",
+                        noResults: "Nenhum resultado encontrado",
+                        loading: "Carregando...",
+                        infoFiltered: " (filtrado de {rowsTotal} registros)",
+                        previous: "Anterior",
+                        next: "Próximo",
+                        first: "Primeiro",
+                        last: "Último"
+                    }
+                });
+            });
+        </script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dataTable = new simpleDatatables.DataTable("#example", {
+            labels: {
+                placeholder: "Pesquisar...",
+                perPage: "{select} resultados por página",
+                noRows: "Nenhum registro encontrado",
+                info: "Mostrando {start} até {end} de {rows} registros",
+                noResults: "Nenhum resultado encontrado",
+                loading: "Carregando...",
+                infoFiltered: " (filtrado de {rowsTotal} registros)",
+                previous: "Anterior",
+                next: "Próximo",
+                first: "Primeiro",
+                last: "Último"
+            }
+        });
+
+        // Filtros personalizados
+        $('#sgbFilter').on('change', function() {
+            var searchTerm = $(this).val();
+            dataTable.columns().search(searchTerm, 5);
+            updatePostoSecaoOptions(searchTerm);
+        });
+        $('#postoSecaoFilter').on('change', function() {
+            var searchTerm = $(this).val();
+            dataTable.columns().search(searchTerm, 6);
+        });
+        $('#situacaoFilter').on('change', function() {
+            var searchTerm = $(this).val();
+            dataTable.columns().search(searchTerm, 7);
+        });
+        $('#statusFilter').on('change', function() {
+            var searchTerm = $(this).val();
+            dataTable.columns().search(searchTerm, 8);
+        });
+        // Limpar filtros
+        $('#clearFilters').on('click', function() {
+            $('#sgbFilter').val('');
+            $('#postoSecaoFilter').val('');
+            $('#situacaoFilter').val('');
+            $('#statusFilter').val('');
+            dataTable.columns().search('');
+        });
+
+        function updatePostoSecaoOptions(sgbChoice) {
+            const postoSecaoChoices = {
+                "EM": [
+                    { value: "", text: " " },
+                    { value: "703150000 - CMT", text: "CMT" },
+                    { value: "703159000 - SUB CMT", text: "SUB CMT" },
+                    { value: "703159100 - SEC ADM", text: "SEC ADM" },
+                    { value: "703159110 - B/1 E B/5", text: "B/1 E B/5" },
+                    { value: "703159110-1 - B/5", text: "B/5" },
+                    { value: "703159120 - AA", text: "AA" },
+                    { value: "703159130 - B/3 E MOTOMEC", text: "B/3 E MOTOMEC" },
+                    { value: "703159130-1 - MOTOMEC", text: "MOTOMEC" },
+                    { value: "703159131 - COBOM", text: "COBOM" },
+                    { value: "703159140 - B/4", text: "B/4" },
+                    { value: "703159150 - ST UGE", text: "ST UGE" },
+                    { value: "703159160 - ST PJMD", text: "ST PJMD" },
+                    { value: "703159200 - SEC ATIV TEC", text: "SEC ATIV TEC" }
+                ],
+                "1ºSGB": [
+                    { value: "", text: " " },
+                    { value: "703151000 - CMT 1º SGB", text: "CMT 1º SGB" },
+                    { value: "703151100 - ADM PB CERRADO", text: "ADM PB CERRADO" },
+                    { value: "703151101 - EB CERRADO", text: "EB CERRADO" },
+                    { value: "703151102 - EB ZONA NORTE", text: "EB ZONA NORTE" },
+                    { value: "703151200 - ADM PB SANTA ROSÁLIA", text: "ADM PB SANTA ROSÁLIA" },
+                    { value: "703151201 - EB SANTA ROSÁLIA", text: "EB SANTA ROSÁLIA" },
+                    { value: "703151202 - EB ÉDEM", text: "EB ÉDEM" },
+                    { value: "703151300 - ADM PB VOTORANTIM", text: "ADM PB VOTORANTIM" },
+                    { value: "703151301 - EB VOTORANTIM", text: "EB VOTORANTIM" },
+                    { value: "703151302 - EB PIEDADE", text: "EB PIEDADE" },
+                    { value: "703151800 - ADM 1º SGB", text: "ADM 1º SGB" }
+                ],
+                "2ºSGB": [
+                    { value: "", text: " " },
+                    { value: "703152000 - CMT 2º SGB", text: "CMT 2º SGB" },
+                    { value: "703152100 - ADM PB ITU", text: "ADM PB ITU" },
+                    { value: "703152101 - EB ITU", text: "EB ITU" },
+                    { value: "703152102 - EB PORTO FELIZ", text: "EB PORTO FELIZ" },
+                    { value: "703152200 - ADM PB SALTO", text: "ADM PB SALTO" },
+                    { value: "703152201 - EB SALTO", text: "EB SALTO" },
+                    { value: "703152300 - ADM PB SÃO ROQUE", text: "ADM PB SÃO ROQUE" },
+                    { value: "703152301 - EB SÃO ROQUE", text: "EB SÃO ROQUE" },
+                    { value: "703152302 - EB IBIÚNA", text: "EB IBIÚNA" },
+                    { value: "703152800 - ADM 2º SGB", text: "ADM 2º SGB" },
+                    { value: "703152900 - NUCL ATIV TEC 2º SGB", text: "NUCL ATIV TEC 2º SGB" }
+                ],
+                "3ºSGB": [
+                    { value: "", text: " " },
+                    { value: "703153000 - CMT 3º SGB", text: "CMT 3º SGB" },
+                    { value: "703153100 - ADM PB ITAPEVA", text: "ADM PB ITAPEVA" },
+                    { value: "703153101 - EB ITAPEVA", text: "EB ITAPEVA" },
+                    { value: "703153102 - EB APIAÍ", text: "EB APIAÍ" },
+                    { value: "703153103 - EB ITARARÉ", text: "EB ITARARÉ" },
+                    { value: "703153104 - EB CAPÃO BONITO", text: "EB CAPÃO BONITO" },
+                    { value: "703153800 - ADM 3º SGB", text: "ADM 3º SGB" },
+                    { value: "703153900 - NUCL ATIV TEC 3º SGB", text: "NUCL ATIV TEC 3º SGB" }
+                ],
+                "4ºSGB": [
+                    { value: "", text: " " },
+                    { value: "703154000 - CMT 4º SGB", text: "CMT 4º SGB" },
+                    { value: "703154100 - ADM PB ITAPETININGA", text: "ADM PB ITAPETININGA" },
+                    { value: "703154101 - EB ITAPETININGA", text: "EB ITAPETININGA" },
+                    { value: "703154102 - EB BOITUVA", text: "EB BOITUVA" },
+                    { value: "703154103 - EB ANGATUBA", text: "EB ANGATUBA" },
+                    { value: "703154200 - ADM PB TATUÍ", text: "ADM PB TATUÍ" },
+                    { value: "703154201 - EB TATUÍ", text: "EB TATUÍ" },
+                    { value: "703154202 - EB TIETÊ", text: "EB TIETÊ" },
+                    { value: "703154203 - EB LARANJAL PAULISTA", text: "EB LARANJAL PAULISTA" },
+                    { value: "703154800 - ADM 4º SGB", text: "ADM 4º SGB" },
+                    { value: "703154900 - NUCL ATIV TEC 4º SGB", text: "NUCL ATIV TEC 4º SGB" }
+                ],
+                "5ºSGB": [
+                    { value: "", text: " " },
+                    { value: "703155000 - CMT 5º SGB", text: "CMT 5º SGB" },
+                    { value: "703155100 - ADM PB BOTUCATU", text: "ADM PB BOTUCATU" },
+                    { value: "703155101 - EB BOTUCATU", text: "EB BOTUCATU" },
+                    { value: "703155102 - EB ITATINGA", text: "EB ITATINGA" },
+                    { value: "703155200 - ADM PB AVARÉ", text: "ADM PB AVARÉ" },
+                    { value: "703155201 - EB AVARÉ", text: "EB AVARÉ" },
+                    { value: "703155202 - EB PIRAJU", text: "EB PIRAJU" },
+                    { value: "703155203 - EB ITAÍ", text: "EB ITAÍ" },
+                    { value: "703155800 - ADM 5º SGB", text: "ADM 5º SGB" },
+                    { value: "703155900 - NUCL ATIV TEC 5º SGB", text: "NUCL ATIV TEC 5º SGB" }
+                ]
+            };
+            const postoSecaoFilter = $('#postoSecaoFilter');
+            postoSecaoFilter.empty();
+            if (postoSecaoChoices[sgbChoice]) {
+                postoSecaoChoices[sgbChoice].forEach(function(choice) {
+                    postoSecaoFilter.append(new Option(choice.text, choice.value));
+                });
+            } else {
+                postoSecaoFilter.append(new Option("Todos", ""));
+            }
+        }
+    });
+</script>
+
+</div>
+</body>
+</html>
+{% endblock %}

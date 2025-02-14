@@ -1,0 +1,35 @@
+.menu {
+    color: yellow;
+}
+
+/* Adicione isso ao seu arquivo CSS */
+.alert {
+    @apply bg-gray-100 border-l-4 p-4;
+}
+
+.alert-success {
+    @apply border-green-500 text-green-700;
+}
+
+.alert-error {
+    @apply border-red-500 text-red-700;
+}
+
+/* Adicione mais estilos conforme necessário */
+
+
+@layer components {
+    /* .btn-primary {
+        @apply py-1.5 px-3 text-center bg-blue-700 rounded-md text-white;
+    } */
+  }
+  @layer components {
+  /* .btn-primary {
+      @apply py-1.5 px-3 text-center bg-blue-700 rounded-md text-white;
+  } */
+}
+
+.messages-box {
+    flex: 1;
+    overflow-y: auto;
+  }

@@ -1,0 +1,20 @@
+{% extends "base_login.html" %}
+{% load static %}
+{% block content %}
+<main class="bg-gray-150">
+    <div class="mx-auto md:h-screen flex flex-col justify-center items-center px-6 pt-8 pt:mt-0">
+        <img src="{% static 'img/logo-siscoe-black2.png' %}" class="my-5" width="180" height="152" role="img" aria-label="people-circle" id="logo">
+        <div class="bg-gray-900 shadow rounded-lg md:mt-0 w-full sm:max-w-screen-sm xl:p-0">
+            <div class="p-6 sm:p-8 lg:p-16 space-y-8">
+                <h2 class="text-2xl lg:text-3xl font-bold text-white">Perfis</h2>
+                <ul>
+                    {% for profile in profiles %}
+                        <li class="text-white">{{ profile.user.first_name }} - <a href="{% url 'profile_update' profile.pk %}" class="text-teal-500 hover:underline">Editar</a> - <a href="{% url 'profile_delete' profile.pk %}" class="text-teal-500 hover:underline">Deletar</a></li>
+                    {% endfor %}
+                </ul>
+                <a href="{% url 'profile_create' %}" class="text-teal-500 hover:underline">Criar Novo Perfil</a>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}

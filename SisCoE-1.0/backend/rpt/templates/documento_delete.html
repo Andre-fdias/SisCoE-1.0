@@ -1,0 +1,241 @@
+{% extends "base.html" %}
+{% load static %}
+{% block 'title' %} Consultar Efetivo{% endblock %}
+
+{% block 'head' %}
+<link rel="stylesheet" href="https://cdn.datatables.net/2.1.8/css/dataTables.dataTables.css" />
+<link rel="stylesheet" href="{% static 'efetivo\css\ver_militar.css' %}">
+    
+{% endblock 'head' %}
+    
+    
+{% block 'body' %}
+    
+    
+    <body>
+    <br>
+    <br>
+    <div class="container-fluid" id="ver_rpt">
+        {% if messages %}
+        {% for message in messages %}
+            <section class="alert {{message.tags}}">
+                {{message}}
+    
+            </section>
+        {% endfor %}
+    {% endif %}
+        <fieldset>
+            <legend>
+                <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between ">
+                    <div class="col-md-6">
+                        <div class="d-grid gap-12 d-md-block">
+                            <h1 class="titulo3"> {{cadastro.cadastro.nome}}</h1>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                      
+                    </head>
+                    <body>
+               
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">Excluir</button>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h1 class="modal-title fs-5" id="exampleModalLabel">Excluir</h1>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Você tem certeza que deseja excluir o cadastro?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Voltar</button>
+                                        <a href="" class="btn btn-danger">Excluir</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <a class="btn btn-primary " href="{% url 'listar_rpt' %}" role="button">Voltar</a>
+                    </div>
+                </div>
+            </legend>
+            <div id="01" class="row">
+                <div class="col-12 highlighted-div bg-lightblue">
+                    <div class="row">
+                
+                        
+                        <div class="col-md-2" name="cabecalho">
+                            {% if cadastro.imagens.exists %}
+                                <img src="{{ cadastro.imagens.last.image.url }}" class="foto-empresa" alt="">
+                               
+                            {% else %}
+                                Sem imagem
+                            {% endif %}
+          
+                        <div class="col-md-9">
+                            <h3 class="titulo5"> {{promocao.grad}}  </h3>
+                            <h4 class="titulo5"> <b>RE:</b><span class="espaco-direita">{{cadastro.re}}-{{cadastro.dig}}</h4>
+                            <h4 class="titulo5"><b>Nome de Guerra:</b><span class="espaco-direita">{{cadastro.nome_de_guerra}}</span></h4>
+                            <h4 class="titulo5"><b>Quadro:</b><span class="espaco-direita">{{promocao.quadro}}</span></h4>
+                            <h4 class="titulo5"><b>Grupo:</b><span class="espaco-direita">{{promocao.grupo}}</span></h4>
+                            <h4 class="titulo5"><b>Genero:</b><span class="espaco-direita">{{cadastro.genero}}</span></h4>
+                       
+                           
+                        </div>                                            
+                        <br>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset>
+            <div class="row row-bg">
+                <div id="02" class="col-lg-6 col-md-12 order-1 highlighted-div">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div>
+                                <h1>Editar Cadastro</h1>
+                                <form method="post">
+                                    {% csrf_token %}
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="data_pedido" class="form-label">Data do Pedido</label>
+                                                <input type="date" class="form-control" id="data_pedido" name="data_pedido" value="{{ form.data_pedido.value|default_if_none:'' }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="data_movimentacao" class="form-label">Data de Movimentação</label>
+                                                <input type="date" class="form-control" id="data_movimentacao" name="data_movimentacao" value="{{ form.data_movimentacao.value|default_if_none:'' }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="data_alteracao" class="form-label">Data de Alteração</label>
+                                                <input type="date" class="form-control" id="data_alteracao" name="data_alteracao" value="{{ form.data_alteracao.value|default_if_none:'' }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="status" class="form-label">Status</label>
+                                                <select class="form-control" id="status" name="status">
+                                                    {% for choice in form.status.field.choices %}
+                                                        <option value="{{ choice.0 }}" {% if choice.0 == form.status.value %}selected{% endif %}>{{ choice.1 }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="sgb_destino" class="form-label">SGB Destino</label>
+                                                <select class="form-control" id="sgb_destino" name="sgb_destino">
+                                                    {% for choice in form.sgb_destino.field.choices %}
+                                                        <option value="{{ choice.0 }}" {% if choice.0 == form.sgb_destino.value %}selected{% endif %}>{{ choice.1 }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="posto_secao_destino" class="form-label">Posto/Seção Destino</label>
+                                                <select class="form-control" id="posto_secao_destino" name="posto_secao_destino">
+                                                    {% for choice in form.posto_secao_destino.field.choices %}
+                                                        <option value="{{ choice.0 }}" {% if choice.0 == form.posto_secao_destino.value %}selected{% endif %}>{{ choice.1 }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="mb-3">
+                                                <label for="doc_solicitacao" class="form-label">Documento de Solicitação</label>
+                                                <input type="text" class="form-control" id="doc_solicitacao" name="doc_solicitacao" value="{{ form.doc_solicitacao.value|default_if_none:'' }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="doc_alteracao" class="form-label">Documento de Alteração</label>
+                                                <input type="text" class="form-control" id="doc_alteracao" name="doc_alteracao" value="{{ form.doc_alteracao.value|default_if_none:'' }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="doc_movimentacao" class="form-label">Documento de Movimentação</label>
+                                                <input type="text" class="form-control" id="doc_movimentacao" name="doc_movimentacao" value="{{ form.doc_movimentacao.value|default_if_none:'' }}">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="alteracao" class="form-label">Alteração</label>
+                                                <select class="form-control" id="alteracao" name="alteracao">
+                                                    {% for choice in form.alteracao.field.choices %}
+                                                        <option value="{{ choice.0 }}" {% if choice.0 == form.alteracao.value %}selected{% endif %}>{{ choice.1 }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="cadastro" class="form-label">Cadastro</label>
+                                        <select class="form-control" id="cadastro" name="cadastro">
+                                            {% for cadastro in form.cadastro.field.queryset %}
+                                                <option value="{{ cadastro.id }}" {% if cadastro.id == form.cadastro.value %}selected{% endif %}>{{ cadastro.nome }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="usuario_alteracao" class="form-label">Usuário de Alteração</label>
+                                        <select class="form-control" id="usuario_alteracao" name="usuario_alteracao">
+                                            {% for user in form.usuario_alteracao.field.queryset %}
+                                                <option value="{{ user.id }}" {% if user.id == form.usuario_alteracao.value %}selected{% endif %}>{{ user.username }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Salvar</button>
+                                    <a href="{% url 'listar_rpt' %}" class="btn btn-secondary">Cancelar</a>
+                                </form>
+                            </div>        <!-- Bootstrap JS -->
+                           </div>                           
+                    </div> 
+                </div>
+            </div>
+
+        </fieldset>
+        <fieldset>
+            <legend>
+               
+            </legend>
+                <div id="01" class="row">
+                    <div class="col-12 highlighted-div bg-lightblue">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="container1">
+                                            <div class="row">
+                                                <div class="col-md-12">
+                                                    <br>
+                                                    <div class="d-flex justify-content-start">
+                                                        
+                                                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                                            Excluir
+                                                        </button>
+                                                    </div>
+                            
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br><br><br>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="container1">
+                                            <div class="row">
+                                                <div class="col-md-12 text-end">
+                                                    <br>
+                                                    <a class="btn btn-primary" href="{% url 'listar_militar' %}" role="button">Voltar</a>
+                                                    <br><br><br>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                    </div>
+                </div>
+                                                                
+                <br>
+                <br>
+            </div>     
+        </fieldset>
+    </div>
+    <script src="{% static 'efetivo/js/ver_militar.js' %}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    
+    
+    {% endblock  %}
+   

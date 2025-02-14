@@ -1,0 +1,228 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cadastrar Rpt{% endblock %}
+
+
+
+{% block 'body' %}
+<body>
+    <div class=" md:items-center md:justify-between rounded-lg mt-4  w-full" id="cad_efetivo">
+    
+    <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+        <fieldset class="  bg-gray-800  p-4 mb-8 rounded-md">
+   
+            <div id="01" class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="w-full md:w-9/12">
+                            <h1 class="text-3xl text-gray-200">Cadastrar Novo Rpt</h1>
+                        </div>
+                        <div class="w-full md:w-3/12 text-right">
+                            <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
+                            
+                            <a href="{% url 'rpt:listar_rpt' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <legend  class=" mb-8 rounded-md w-full" >
+            {% if messages %}
+            {% for message in messages %}
+                <section class="alert {{ message.tags }} p-4 mb-4 rounded-md">
+                    {{ message }}
+                </section>
+            {% endfor %}
+            {% endif %}
+        </legend>
+        <fieldset class="border bg-gray-600 border-gray-600 p-4 mb-8 rounded-md">
+            <div class="mb-4">
+                <p class="text-gray-300 font-semibold">Digite abaixo o RE (sem dígito) do militar que será cadastrado!</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <form class="grid grid-cols-1 md:grid-cols-2 gap-4 needs-validation" method="POST" action="{% url 'rpt:buscar_militar_rpt' %}">
+                        {% csrf_token %}
+                        <div class="col-md-4">
+                            <input type="text" name="re" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" placeholder="Digite o RE" required>
+                        </div>
+                        <div class="col-md-2">
+                            <input type="submit" class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" value="Buscar">
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </fieldset>
+    
+       <form class="row g-3 needs-validation" novalidate action="{% url 'rpt:cadastrar_rpt' %}" method="POST" enctype="multipart/form-data">  {% csrf_token %}
+         <input type="hidden" name="cadastro_id" value="{{ cadastro.id }}">
+         <fieldset class=" p-2 mb-8 rounded-md rounded-[10px]">
+            <div class="flex flex-col h-auto rounded-[10px]">
+                <div class=" bg-gray-200 rounded-md shadow-2xl  w-full p-8 transition-all duration-300 animate-fade-in">
+                    <div class="flex flex-wrap tracking-wide">
+                        <div id="02" class="w-full lg:w-1/2 p-4 leading-relaxed space-y-4">
+                            <h2 class="text-md font-semibold text-gray-700  mb-4">Dados Funcionais</h2>
+                            <hr class="my-4 border-b-1 border-gray-500">
+                            <br>
+                            <div class="col-md-12">
+                                <label for="validationCustom01" class="block text-sm font-medium text-gray-700">RE</label>
+                                <input type="text" name="re" value="{{ cadastro.re }}" class="mt-1 block pl-3 pr-10 py-2 border border-gray-200 bg-gray-100 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="validationCustom02" readonly>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="validationCustom01" class="block text-sm font-medium text-gray-700">Posto/Grad</label>
+                                <input type="text" name="posto_grad" value="{{ promocao.posto_grad }}" class="mt-1 block pl-3 pr-10 py-2 border border-gray-200 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="validationCustom02" readonly>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="validationCustom02" class="block text-sm font-medium text-gray-700">Nome</label>
+                                <input type="text" name="nome" value="{{ cadastro.nome }}" class="mt-1 block  pl-3 pr-10 py-2 border border-gray-200 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="validationCustom02" readonly>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="validationCustom01" class="block text-sm font-medium text-gray-700">SGB</label>
+                                <input type="text" name="sgb" value="{{ detalhes.sgb }}" class="mt-1 block pl-3 pr-10 py-2 border border-gray-200 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"id="validationCustom02" readonly>
+                            </div>
+                            <div class="col-md-12">
+                                <label for="validationCustom01" class="block text-sm font-medium text-gray-700">Posto ou Seção</label>
+                                <input type="text" name="posto_secao" value="{{ detalhes.posto_secao }}" class="mt-1 block  pl-3 pr-10 py-2 border border-gray-200 bg-gray-100  rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" id="validationCustom02" readonly>
+                            </div>
+                        </div>
+                        <div id="03" class="w-full lg:w-1/2 p-4 leading-relaxed space-y-4">
+                            <h2 class="text-md font-semibold text-gray-700  mb-4">Foto de Perfil </h2>
+                            <hr class="my-4 border-b-1 border-gray-500">
+                            <br>
+                            <div class="col-md-12">
+                                <br><br>
+                                {% if imagem and imagem.image %}
+                                    <img id="preview" src="{{ imagem.image.url }}" alt="Pré-visualização da imagem" style="max-width: 200px;">
+                                {% else %}
+                                    <img id="preview" src="#" alt="Pré-visualização da imagem" style="display: none; max-width: 200px;">
+                                {% endif %}
+                                <br><br>
+                                <input class="form-control col-md-12" name="image" type="file" id="formFile" aria-label="file example" accept="image/*" onchange="previewImage(event)">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+         </fieldset> 
+         
+         
+        <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+            <h2 class="text-md font-semibold text-gray-700 mb-4">Insira abaixo o Local de destino solicitado</h2>
+            <hr class="my-4 border-b-1 border-gray-300">
+            <br>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <div class="form-group">
+                        <label for="sgb_destino" class="block text-sm font-medium text-gray-700">SGB Destino:</label>
+                        <select name="sgb_destino" class="mt-1 block w-full pl-3 pr-10 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                            {% for value, label in sgb_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                     
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="posto_secao_destino" class="block text-sm font-medium text-gray-700">Posto/Seção Destino:</label>
+                        <select name="posto_secao_destino" class="mt-1 block w-full pl-3 pr-10 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                            {% for value, label in posto_secao_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                      
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="data_pedido" class="block text-sm font-medium text-gray-700">Data do Pedido:</label>
+                        <input type="date" name="data_pedido" class="mt-1 block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                   
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="doc_solicitacao" class="block text-sm font-medium text-gray-700">Documento de Solicitação:</label>
+                        <input type="text" name="doc_solicitacao" class="mt-1 block w-full pl-3 pr-10 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                     
+                    </div>
+                </div>
+                <div>
+                    <div class="form-group">
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status:</label>
+                        <select name="status" class="mt-1 block w-full pl-3 pr-10 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" required>
+                            {% for value, label in status_choices %}
+                                <option value="{{ value }}" {% if value == "Aguardando" %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                      
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="bg-gray-800  p-4 mb-8 rounded-md">
+            <div class="mb-4">
+                <div class="flex items-center justify-between py-3">
+                    <div class="w-full md:w-auto">
+                        <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
+                    </div>
+                    <div class="flex space-x-2">
+                        <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
+                                
+                        <a href="{% url 'rpt:listar_rpt' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+       </form>
+     
+    </fieldset>
+       
+    <script>
+        function buscarMilitar() {
+            var re = document.getElementById('re').value;
+            fetch("{% url 'rpt:buscar_militar_rpt' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({ 're': re })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                } else {
+                    document.getElementById('re').value = data.re;
+                    document.getElementById('posto_grad').value = data.posto_grad;
+                    document.getElementById('nome').value = data.nome;
+                    document.getElementById('sgb').value = data.sgb;
+                    document.getElementById('posto_secao').value = data.posto_secao;
+                    if (data.image_url) {
+                        document.getElementById('preview').src = data.image_url;
+                        document.getElementById('preview').style.display = 'block';
+                    } else {
+                        document.getElementById('preview').style.display = 'none';
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Ocorreu um erro ao buscar os dados.');
+            });
+        }
+    
+        function previewImage(event) {
+            var reader = new FileReader();
+            reader.onload = function(){
+                var output = document.getElementById('preview');
+                output.src = reader.result;
+                output.style.display = 'block';
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    </script>
+</div>
+{% endblock %}

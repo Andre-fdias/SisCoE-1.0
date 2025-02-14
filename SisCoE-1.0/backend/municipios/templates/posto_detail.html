@@ -1,0 +1,125 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ posto.posto_atendimento }}{% endblock %}
+
+{% block 'body' %}
+<div class="md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_efetivo">
+    <fieldset class="p-4 mb-8 rounded-md w-full" id="second-fieldset">
+        <!-- Seção Superior - Informações Gerais -->
+        <fieldset class="p-2 mb-8 rounded-md rounded-[5px]">
+            <div class="flex flex-col h-auto rounded-[10px]">
+                <div class="bg-gray-800 rounded-xl shadow-2xl w-full transition-all duration-300 animate-fade-in">
+                    <div class="flex flex-col md:flex-row">
+                        <!-- Bandeira e Imagem -->
+                        <div class="md:w-1/2 relative mb-8 md:mb-0">
+                            {% if posto.cidades.first.bandeira %}
+                            <div class="relative w-full h-full">
+                                <img src="{{ posto.cidades.first.bandeira.url }}" 
+                                     class="foto-perfil rounded-sm w-full h-full object-cover object-center" 
+                                     alt="Bandeira de {{ posto.cidades.first.municipio }}">
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-gray-800"></div>
+                            </div>
+                            {% else %}
+                            <div class="flex items-center justify-center h-full">
+                                <span class="text-gray-500">Sem imagem disponível</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Detalhes do Posto -->
+                        <div class="md:w-1/2 md:pl-8 mt-8">
+                            <h1 class="text-5xl font-semibold text-gray-300 mb-4">
+                                {{ posto.posto_atendimento }}
+                            </h1>
+                            
+                            <div class="mb-6">
+                                <h2 class="text-xl font-semibold text-gray-300 mb-4">Municípios Atendidos</h2>
+                                <div class="flex flex-wrap gap-2">
+                                    {% for cidade in posto.cidades.all %}
+                                    <span class="bg-indigo-700 text-purple-200 px-3 py-1 rounded-full text-sm">
+                                        {{ cidade.municipio }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Informações de Contato -->
+                            <h2 class="text-xl font-semibold text-gray-300 mb-4">Contatos</h2>
+                            <ul class="space-y-2 text-gray-500">
+                                {% if posto.contato %}
+                                <li class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                                    </svg>
+                                    {{ posto.contato.email }}
+                                </li>
+                                <li class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
+                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                                    </svg>
+                                    {{ posto.contato.telefone }}
+                                </li>
+                                {% endif %}
+                                <li class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                    </svg>
+                                    {{ posto.sgb }} - {{ posto.posto_secao }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Seção de Detalhes -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Detalhes da Unidade -->
+            <div class="bg-gray-200 rounded-xl shadow-2xl p-8">
+                <h2 class="text-xl font-semibold text-indigo-800 mb-4">Detalhes da Unidade</h2>
+                <hr class="my-4 border-b-1 border-gray-500">
+                <div class="space-y-4">
+                    <div>
+                        <p class="text-gray-700"><strong>Endereço:</strong> 
+                            {{ posto.contato.rua }}, {{ posto.contato.numero }}<br>
+                            {{ posto.contato.bairro }} - {{ posto.contato.cidade }}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-gray-700"><strong>Data de Criação:</strong> 
+                            {{ posto.data_criacao|date:"d/m/Y" }}
+                        </p>
+                    </div>
+                    <div>
+                        <p class="text-gray-700"><strong>Responsável:</strong> 
+                            {{ posto.usuario.get_full_name }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mapa -->
+            <div class="bg-gray-800 rounded-xl shadow-2xl p-4">
+                <h2 class="text-xl font-semibold text-white mb-4">Localização</h2>
+                <div class="relative w-full pb-[56.25%]"> <!-- Proporção 16:9 -->
+                    <iframe class="absolute top-0 left-0 w-full h-full rounded-lg"
+                            src="https://maps.google.com/maps?q={{ posto.cidades.first.latitude }},{{ posto.cidades.first.longitude }}&z=15&output=embed"
+                            frameborder="0"
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botão Voltar -->
+        <div class="mt-8 text-center">
+            <a href="{% url 'municipios:posto_list' %}" 
+               class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                Voltar para a Listagem
+            </a>
+        </div>
+    </fieldset>
+</div>
+{% endblock %}
