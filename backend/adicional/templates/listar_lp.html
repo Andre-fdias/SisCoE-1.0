@@ -1,0 +1,477 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Consultar Adicional  e LP{% endblock %}
+
+{% block 'head' %}
+<link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
+<link href="{% static 'flowbite.min.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'body' %}
+
+<div class="container mx-auto p-4 mt-30" id="cad_lp">
+
+    <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+        <fieldset class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">
+            <div id="01" class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="col-12 md:w-auto">
+                            <h1 class="text-3xl text-gray-200">Adicional de Tempo e Licença Prêmio</h1>
+                            <p class="text-gray-400" >Consulte abaixo o adicional e LP.</p>
+                        </div>
+                        <div class="w-full md:w-auto text-right">
+                            <a href="{% url 'adicional:cadastrar_lp' %}" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Cadastrar ATS-LP</a>
+                        </div>
+                    </div>
+                </div>
+            </div>  
+        </fieldset>  
+        <fieldset>
+                <legend  class=" mb-8 rounded-md w-full" >
+                    {% if messages %}
+                    {% for message in messages %}
+                        <section class="alert {{ message.tags }}">
+                            {{ message }}
+                        </section>
+                    {% endfor %}
+                    {% endif %}
+                </legend>  
+        </fieldset>
+        <!-- Cabeçalho para Adicional de Tempo -->
+        <fieldset class="bg-gray-700 mb-8 rounded-md w-full p-5" id="adicionalTempoHeader">
+            <h1 class="text-2xl text-gray-200">Adicional de Tempo</h1>
+            <p class="text-gray-400">Consulte abaixo o adicional de Tempo de Serviço.</p>
+            <br>
+            <div class="flex justify-end mb-3">
+                <button id="toggleToLicencaPremio" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Licença Prêmio</button>
+            </div>
+        </fieldset>
+
+        <!-- Cabeçalho para Licença Prêmio -->
+        <fieldset class="bg-gray-700 mb-8 rounded-md w-full p-5 hidden" id="licencaPremioHeader">
+            <h1 class="text-2xl text-gray-200">Licença Prêmio</h1>
+            <p class="text-gray-400">Consulte abaixo as Licenças-Prêmio.</p>
+            <br>
+            <div class="flex justify-end mb-3">
+                <button id="toggleToAdicionalTempo" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Adicional de Tempo</button>
+            </div>
+        </fieldset>
+
+        
+        <fieldset class="bg-gray-100 mb-8 rounded-md w-full" id="adicionalTempoTable">
+            <div class="flex flex-wrap mb-3 justify-between p-4 bg-gray-600">
+                <div class="flex flex-wrap w-full md:w-3/4">
+                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                        <label for="anoFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Ano</label>
+                        <select id="anoFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="">Todos</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                            <option value="2031">2031</option>
+                            <option value="2032">2032</option>
+                            <option value="2033">2033</option>
+                            <option value="2034">2034</option>
+                            <option value="2035">2035</option>
+                            <option value="2036">2036</option>
+                            <option value="2037">2037</option>
+                            <option value="2038">2038</option>
+                            <option value="2039">2039</option>
+                            <option value="2040">2040</option>
+                        </select>
+                    </form>
+                    
+                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                        <label for="mesFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Mês</label>
+                        <select id="mesFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="">Todos</option>
+                            <option value="01">Jan</option>
+                            <option value="02">Fev</option>
+                            <option value="03">Mar</option>
+                            <option value="04">Abr</option>
+                            <option value="05">Mai</option>
+                            <option value="06">Jun</option>
+                            <option value="07">Jul</option>
+                            <option value="08">Ago</option>
+                            <option value="09">Set</option>
+                            <option value="10">Out</option>
+                            <option value="11">Nov</option>
+                            <option value="12">Dez</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0 flex items-center justify-end">
+                    <button type="button" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                        </svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+            <table id="table1" class="text-gray-700 bg-white p-5">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-center"></th>
+                        <th class="px-4 py-2 text-center">Posto/Grad</th>
+                        <th class="px-4 py-2 text-center">RE</th>
+                        <th class="px-4 py-2 text-center">Nome Guerra</th>
+                        <th class="px-4 py-2 text-center">Sgb </th>
+                        <th class="px-4 py-2 text-center">Prox Bloco</th>
+                        <th class="px-4 py-2 text-center">Prox Adicional</th>
+                        <th class="px-4 py-2 text-center">Mês</th>
+                        <th class="px-4 py-2 text-center">Ano</th>
+                        <th class="px-4 py-2 text-center">Status</th>
+                        <th class="px-4 py-2 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cadastro in registros_adicional %}
+                    <tr  data-id="{{ cadastro.id }}">
+                        <td class="px-4 py-2 text-center">
+                            {% if cadastro.ultima_imagem %}
+                                <img src="{{ cadastro.ultima_imagem.image.url }}" class="foto-perfil rounded-full w-12 h-12 object-cover object-center" alt="Imagem">
+                            {% else %}
+                                Sem imagem
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.promocoes.last.grad|safe }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.re }}-{{ cadastro.cadastro.dig}}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.nome_de_guerra }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">  <div class="ps-3">
+                            <div class="text-gray-700  bg-yellow-300 rounded-lg">    {{ cadastro.cadastro.detalhes_situacao.last.sgb }}</div>
+                            <div class="font-normal text-gray-500 ">{{ cadastro.cadastro.detalhes_situacao.last.posto_secao }}</div>
+                        </div>  
+                        </td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">
+                            {% if cadastro.numero_prox_adicional == 4 %}
+
+                            <div class="flex items-center">
+                                <div class="h-2.5 w-2.5 rounded-full bg-red-800 mr-2"></div><span>
+                                    <div class="ps-3">
+                                        <div class="text-gray-700 ">   {{ cadastro.numero_prox_adicional }}</div>
+                                        <div class="font-normal px-2 bg-yellow-700  text-gray-200 rounded-lg ">6ª parte</div>
+                                    </div>  </span>
+                            </div>
+                            {% else %}
+                            {{ cadastro.numero_prox_adicional }}
+                        {% endif %}
+                        </td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.proximo_adicional|date:"d/m/Y" }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.mes_abreviado_proximo_adicional }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.ano_proximo_adicional}}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.status_adicional}}</td>
+                        <td class="px-4 py-2 text-center">
+                     
+                            <a href="{% url 'adicional:ver_lp' cadastro.id %}"> <button class="text-white bg-gradient-to-r from-yellow-300 via-yellow-300 to-yellow-400 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                                  </svg>
+                            </button></a>
+                            
+                            <button class="text-white bg-gradient-to-r from-teal-400 via-teal-500 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-teal-300 dark:focus:ring-teal-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-check-square text-gray-200" viewBox="0 0 16 16">
+                                    <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                                    <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                                  </svg>
+                            </button>
+                          
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            
+        </fieldset>
+        <script>
+                        document.querySelectorAll('.edit-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    row.querySelectorAll('[contenteditable]').forEach(cell => {
+                        cell.setAttribute('contenteditable', 'true');
+                    });
+                    row.querySelector('.edit-btn').style.display = 'none';
+                    row.querySelector('.save-btn').style.display = 'inline-block';
+                });
+            });
+
+            document.querySelectorAll('.save-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const row = this.closest('tr');
+                    const id = row.getAttribute('data-id');
+                    const data = {};
+                    row.querySelectorAll('[contenteditable]').forEach(cell => {
+                        data[cell.getAttribute('data-field')] = cell.innerText;
+                        cell.setAttribute('contenteditable', 'false');
+                    });
+                    row.querySelector('.edit-btn').style.display = 'inline-block';
+                    row.querySelector('.save-btn').style.display = 'none';
+
+                    fetch(`/editar_lp/${id}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}'
+                        },
+                        body: JSON.stringify(data)
+                    }).then(response => {
+                        if (response.ok) {
+                            alert('Registro atualizado com sucesso!');
+                        } else {
+                            alert('Erro ao atualizar o registro.');
+                        }
+                    });
+                });
+            });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const anoFilter = document.getElementById('anoFilter');
+                const mesFilter = document.getElementById('mesFilter');
+                const table = document.getElementById('table1').getElementsByTagName('tbody')[0];
+            
+                function filterTable() {
+                    const ano = anoFilter.value;
+                    const mes = mesFilter.value;
+                    const rows = table.getElementsByTagName('tr');
+            
+                    for (let i = 0; i < rows.length; i++) {
+                        const anoCell = rows[i].getElementsByTagName('td')[7];
+                        const mesCell = rows[i].getElementsByTagName('td')[8];
+            
+                        if ((ano === "" || anoCell.textContent === ano) &&
+                            (mes === "" || mesCell.textContent === mes)) {
+                            rows[i].style.display = "";
+                        } else {
+                            rows[i].style.display = "none";
+                        }
+                    }
+                }
+            
+                anoFilter.addEventListener('change', filterTable);
+                mesFilter.addEventListener('change', filterTable);
+            });
+            </script>
+    
+        <fieldset class="bg-gray-100 mb-8 rounded-md w-full hidden" id="licencaPremioTable">
+            <div class="flex flex-wrap mb-3 justify-between p-4 bg-gray-600">
+                <div class="flex flex-wrap w-full md:w-3/4">
+                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                        <label for="anoFilter2" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Ano</label>
+                        <select id="anoFilter2" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="">Todos</option>
+                            <option value="2018">2018</option>
+                            <option value="2019">2019</option>
+                            <option value="2020">2020</option>
+                            <option value="2021">2021</option>
+                            <option value="2022">2022</option>
+                            <option value="2023">2023</option>
+                            <option value="2024">2024</option>
+                            <option value="2025">2025</option>
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+                            <option value="2029">2029</option>
+                            <option value="2030">2030</option>
+                            <option value="2031">2031</option>
+                            <option value="2032">2032</option>
+                            <option value="2033">2033</option>
+                            <option value="2034">2034</option>
+                            <option value="2035">2035</option>
+                            <option value="2036">2036</option>
+                            <option value="2037">2037</option>
+                            <option value="2038">2038</option>
+                            <option value="2039">2039</option>
+                            <option value="2040">2040</option>
+                        </select>
+                    </form>
+                    
+                    <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                        <label for="mesFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Mês</label>
+                        <select id="mesFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                            <option value="">Todos</option>
+                            <option value="01">Jan</option>
+                            <option value="02">Fev</option>
+                            <option value="03">Mar</option>
+                            <option value="04">Abr</option>
+                            <option value="05">Mai</option>
+                            <option value="06">Jun</option>
+                            <option value="07">Jul</option>
+                            <option value="08">Ago</option>
+                            <option value="09">Set</option>
+                            <option value="10">Out</option>
+                            <option value="11">Nov</option>
+                            <option value="12">Dez</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0 flex items-center justify-end">
+                    <button type="button" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                        <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                        </svg>
+                        Export
+                    </button>
+                </div>
+            </div>
+            <table id="table2" class="text-gray-700 bg-white p-5">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-2 text-center"></th>
+                        <th class="px-4 py-2 text-center">Posto/Grad</th>
+                        <th class="px-4 py-2 text-center">RE</th>
+                        <th class="px-4 py-2 text-center">Nome Guerra</th>
+                        <th class="px-4 py-2 text-center">Sgb </th>
+                        <th class="px-4 py-2 text-center">Prox Bloco</th>
+                        <th class="px-4 py-2 text-center">Prox LP</th>
+                        <th class="px-4 py-2 text-center">Mês</th>
+                        <th class="px-4 py-2 text-center">Ano</th>
+                        <th class="px-4 py-2 text-center">Status</th>
+                        <th class="px-4 py-2 text-center">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for cadastro in registros_lp %}
+                    <tr  data-id="{{ cadastro.id }}">
+                        <td class="px-4 py-2 text-center">
+                            {% if cadastro.ultima_imagem %}
+                                <img src="{{ cadastro.ultima_imagem.image.url }}" class="foto-perfil rounded-full w-12 h-12 object-cover object-center" alt="Imagem">
+                            {% else %}
+                                Sem imagem
+                            {% endif %}
+                        </td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.promocoes.last.grad|safe }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.re }}-{{ cadastro.cadastro.dig}}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.cadastro.nome_de_guerra }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">  <div class="ps-3">
+                            <div class="text-gray-700  bg-yellow-300 rounded-lg">    {{ cadastro.cadastro.detalhes_situacao.last.sgb }}</div>
+                            <div class="font-normal text-gray-500 ">{{ cadastro.cadastro.detalhes_situacao.last.posto_secao }}</div>
+                        </div>  
+                        </td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.numero_prox_lp }}</td> 
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.proximo_lp|date:"d/m/Y" }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.mes_abreviado_proximo_lp }}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.ano_proximo_lp}}</td>
+                        <td class="px-4 py-2 text-center" contenteditable="false">{{ cadastro.status_lp}}</td>
+                        <td class="px-4 py-2 text-center">
+                            <a class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="">Editar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </fieldset>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const anoFilter2 = document.getElementById('anoFilter2');
+                const mesFilter2 = document.getElementById('mesFilter2');
+                const table2 = document.getElementById('table2').getElementsByTagName('tbody')[0];
+            
+                function filterTable2() {
+                    const ano = anoFilter2.value;
+                    const mes = mesFilter2.value;
+                    const rows = table2.getElementsByTagName('tr');
+            
+                    for (let i = 0; i < rows.length; i++) {
+                        const anoCell = rows[i].getElementsByTagName('td')[7];
+                        const mesCell = rows[i].getElementsByTagName('td')[8];
+            
+                        if ((ano === "" || anoCell.textContent === ano) &&
+                            (mes === "" || mesCell.textContent.toLowerCase() === mes.toLowerCase())) {
+                            rows[i].style.display = "";
+                        } else {
+                            rows[i].style.display = "none";
+                        }
+                    }
+                }
+            
+                anoFilter2.addEventListener('change', filterTable2);
+                mesFilter2.addEventListener('change', filterTable2);
+            });
+            </script>
+        
+        
+        <script>
+            document.getElementById('toggleToLicencaPremio').addEventListener('click', function() {
+        const adicionalTempoHeader = document.getElementById('adicionalTempoHeader');
+        const licencaPremioHeader = document.getElementById('licencaPremioHeader');
+        const adicionalTempoTable = document.getElementById('adicionalTempoTable');
+        const licencaPremioTable = document.getElementById('licencaPremioTable');
+
+        adicionalTempoHeader.classList.add('hidden');
+        licencaPremioHeader.classList.remove('hidden');
+        adicionalTempoTable.classList.add('hidden');
+        licencaPremioTable.classList.remove('hidden');
+    });
+
+    document.getElementById('toggleToAdicionalTempo').addEventListener('click', function() {
+        const adicionalTempoHeader = document.getElementById('adicionalTempoHeader');
+        const licencaPremioHeader = document.getElementById('licencaPremioHeader');
+        const adicionalTempoTable = document.getElementById('adicionalTempoTable');
+        const licencaPremioTable = document.getElementById('licencaPremioTable');
+
+        licencaPremioHeader.classList.add('hidden');
+        adicionalTempoHeader.classList.remove('hidden');
+        licencaPremioTable.classList.add('hidden');
+        adicionalTempoTable.classList.remove('hidden');
+    });
+        </script>
+    
+    
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+    <script>
+        const dataTable = new simpleDatatables.DataTable("#example");
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dataTable1 = new simpleDatatables.DataTable("#table1", {
+                labels: {
+                    placeholder: "Pesquisar...",
+                    perPage: "{select} resultados por página",
+                    noRows: "Nenhum registro encontrado",
+                    info: "Mostrando {start} até {end} de {rows} registros",
+                    noResults: "Nenhum resultado encontrado",
+                    loading: "Carregando...",
+                    infoFiltered: " (filtrado de {rowsTotal} registros)",
+                    previous: "Anterior",
+                    next: "Próximo",
+                    first: "Primeiro",
+                    last: "Último"
+                }
+            });
+            const dataTable2 = new simpleDatatables.DataTable("#table2", {
+                labels: {
+                    placeholder: "Pesquisar...",
+                    perPage: "{select} resultados por página",
+                    noRows: "Nenhum registro encontrado",
+                    info: "Mostrando {start} até {end} de {rows} registros",
+                    noResults: "Nenhum resultado encontrado",
+                    loading: "Carregando...",
+                    infoFiltered: " (filtrado de {rowsTotal} registros)",
+                    previous: "Anterior",
+                    next: "Próximo",
+                    first: "Primeiro",
+                    last: "Último"
+                }
+            });
+        });
+    </script>
+
+</div>
+</body>
+</html>
+{% endblock %}

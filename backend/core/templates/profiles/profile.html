@@ -1,0 +1,92 @@
+<!-- registration_form.html -->
+<!-- registration_form.html -->
+{% extends "base_login.html" %}
+{% load static %}
+{% block content %}
+<main class="bg-gray-150">
+    <div class="bg-gray-900 shadow rounded-lg md:mt-0 w-full sm:max-w-screen-sm xl:p-0">
+     
+
+        <div class="bg-gray-900 shadow rounded-lg md:mt-0 w-full xl:p-0" style="max-width: 60%;"> <img src="{% static 'img/logo-siscoe-black2.png' %}" class="my-5" width="180" height="152" role="img" aria-label="people-circle" id="logo">
+        <div class="bg-gray-900 shadow rounded-lg md:mt-0 w-full sm:max-w-screen-sm xl:p-0">
+            <div class="p-6 sm:p-8 lg:p-16 space-y-8">
+                <h2 class="text-2xl lg:text-3xl font-bold text-white">{{ form.instance.pk|yesno:"Editar Perfil,Complete seu Perfil" }}</h2>
+                <form class="mt-8 space-y-6" action="." method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                 
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label for="cpf" class="text-sm font-medium text-white block mb-2">CPF</label>
+                            <input id="cpf" type="text" name="cpf" value="{{ form.cpf.value }}" class="bg-gray-300 border border-gray-300 text-gray-700 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="Digite seu CPF" required>
+                        </div>
+                        <div>
+                            <label for="posto_grad" class="text-sm font-medium text-white block mb-2">Posto/Graduação</label>
+                            <select id="posto_grad" name="posto_grad" class="bg-gray-300 border border-gray-300 text-gray-700 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5">
+                                {% for value, label in form.posto_grad.field.choices %}
+                                    <option value="{{ value }}" {% if value == form.posto_grad.value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div>
+                            <label for="re" class="text-sm font-medium text-white block mb-2">RE</label>
+                            <input id="re" type="text" name="re" value="{{ form.re.value }}" class="bg-gray-300 border border-gray-300 text-gray-700 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required>
+                        </div>
+                        <div>
+                            <label for="dig" class="text-sm font-medium text-white block mb-2">Dígito</label>
+                            <input id="dig" type="text" name="dig" value="{{ form.dig.value }}" class="bg-gray-300 border border-gray-300 text-gray-700 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" required>
+                        </div>
+                    </div>
+                    
+                    <div class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                        <p class="text-sm font-bold text-gray-900">Marque se você pertence ao Serviço operacional ou Administrativo</p>
+                        <div class="flex items-center mb-4">
+                            <input id="radio-administrativo" type="radio" value="administrativo" name="tipo" class="w-4 h-4 text-blue-600 bg-gray-500 border-gray-300 focus:ring-blue-500" {% if form.tipo.value == 'administrativo' %}checked{% endif %}>
+                            <label for="radio-administrativo" class="block text-sm font-medium text-gray-700 p-4">Administrativo</label>
+                            
+                            <input id="radio-operacional" type="radio" value="operacional" name="tipo" class="w-4 h-4 text-blue-600 bg-gray-500 border-gray-300 focus:ring-blue-500" {% if form.tipo.value == 'operacional' %}checked{% endif %}>
+                            <label for="radio-operacional" class="block text-sm font-medium text-gray-700 p-4">Operacional</label>
+                        </div>
+                    </div>
+
+                    <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                        <div class="mb-4">
+                            <p class="text-lg font-bold">Imagem de Perfil</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="image" class="block text-sm font-medium text-gray-700">Envie a foto para o perfil</label>
+                            <br><br>
+                            {% if form.instance.image %}
+                                <img id="preview" src="{{ form.instance.image.url }}" alt="Pré-visualização da imagem" style="max-width: 200px;">
+                            {% else %}
+                                <img id="preview" src="#" alt="Pré-visualização da imagem" style="display: none; max-width: 200px;">
+                            {% endif %}
+                            <br><br>
+                            <input class="mt-1 block w-full text-base border-gray-300 border-blue-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)">
+                            <div class="text-red-500 text-sm mt-1 hidden" id="image_error">Por favor, envie uma imagem de perfil.</div>
+                        </div>
+                    </fieldset>
+                    <button type="submit" class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-base px-5 py-3 w-full sm:w-auto text-center">Salvar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</main>
+<script>
+
+    // Função para pré-visualizar a imagem
+    function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+            const preview = document.getElementById('preview');
+            preview.src = reader.result;
+            preview.style.display = 'block';
+        }
+        reader.readAsDataURL(event.target.files[0]);
+    }
+
+    document.getElementById('image').addEventListener('change', previewImage);
+
+</script>
+{% endblock content %}

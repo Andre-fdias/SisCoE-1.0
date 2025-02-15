@@ -1,0 +1,364 @@
+
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Cadastrar BCM{% endblock %}
+
+
+{% block 'body' %}
+
+
+
+<body>
+
+    
+    <div class=" md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_efetivo">
+     <fieldset class=" p-4 mb-8   rounded-md w-full" id="second-fieldset">
+      <fieldset class="  bg-gray-800  p-4 mb-8 rounded-md">
+   
+        <div id="01" class="mb-4">
+            <div class="bg-gray-800 p-4 rounded-md">
+                <div class="flex flex-wrap items-center justify-between py-3">
+                    <div class="w-full md:w-9/12">
+                        <h1 class="text-3xl text-gray-200">Cadastrar Bombeiros Municipais</h1>
+                    </div>
+                    <div class="w-full md:w-3/12 text-right">
+                        <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
+                        
+                        <a href="{% url 'bm:listar_bm' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+    <legend  class=" mb-8 rounded-md w-full" >
+        {% if messages %}
+        {% for message in messages %}
+            <section class="alert {{ message.tags }} p-4 mb-4 rounded-md">
+                {{ message }}
+            </section>
+        {% endfor %}
+        {% endif %}
+    </legend>
+
+    <form class="row g-3 needs-validation" novalidate action="{% url 'bm:cadastrar_bm' %}" method="POST" enctype="multipart/form-data">  {% csrf_token %}
+        <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+            <div class="mb-4">
+                <p class="text-lg font-bold">Dados Pessoais</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+               
+                <div class="col-span-2">
+                    <label for="nome" class="block text-sm font-medium text-gray-700">Nome</label>
+                    <input type="text" name="nome" id="nome" placeholder="Digite o nome do BM ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="nome_error">Por favor, insira o nome.</div>
+                </div>
+                <div>
+                    <label for="nome_de_guerra" class="block text-sm font-medium text-gray-700">Nome de Guerra</label>
+                    <input type="text" name="nome_de_guerra" id="nome_de_guerra" placeholder="Digite o nome de Guerra ..." class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="nome_de_guerra_error">Por favor, insira o nome de guerra.</div>
+                </div>
+               
+                <div>
+                    <label for="genero" class="block text-sm font-medium text-gray-700">Gênero</label>
+                    <select name="genero" id="genero" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in genero %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="genero_error">Por favor, selecione um gênero.</div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+            <div class="mb-4">
+                <p class="text-lg font-bold">Situação Funcional</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label for="situacao" class="block text-sm font-medium text-gray-700">Situação</label>
+                    <select name="situacao" id="situacao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in situacao %}
+                        <option value="{{ i.0 }}" {% if i.1 == "Efetivo" %}selected{% endif %}>{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="situacao_error">Por favor, selecione uma situação.</div>
+                </div>
+                <div>
+                    <label for="sgb" class="block text-sm font-medium text-gray-700">SGB</label>
+                    <select name="sgb" id="sgb" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in sgb %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="sgb_error">Por favor, selecione um SGB.</div>
+                </div>
+                <div>
+                    <label for="posto_secao" class="block text-sm font-medium text-gray-700">Posto ou Seção</label>
+                    <select name="posto_secao" id="posto_secao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in posto_secao %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="posto_secao_error">Por favor, selecione um posto ou seção.</div>
+                </div>
+
+                <div>
+                    <label for="funcao" class="block text-sm font-medium text-gray-700">Função que exerce</label>
+                    <select name="funcao" id="funcao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in funcao %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="funcao_error">Por favor, selecione uma função.</div>
+                </div>
+                <div>
+                    <label for="esb" class="block text-sm font-medium text-gray-700">Possui curso ESB</label>
+                    <select name="esb" id="op_adm" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in esb %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="op_adm_error">Por favor, selecione se possui curso da ESB.</div>
+                </div>
+            </div>
+        </fieldset>
+        
+        <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+          <div class="mb-4">
+            <p class="text-lg font-bold">Datas</p>
+          </div>
+           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+                <label for="nasc" class="block text-sm font-medium text-gray-700">Data de Nascimento</label>
+                <input type="date" name="nasc" id="nasc" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1 hidden" id="nasc_error">Por favor, insira a data de nascimento.</div>
+            </div>
+            <div>
+                <label for="admissao" class="block text-sm font-medium text-gray-700">Data de Admissão</label>
+                <input type="date" name="admissao" id="admissao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1 hidden" id="admissao_error">Por favor, insira a data de admissão.</div>
+            </div>
+            <div>
+                <label for="apresentacao_na_unidade" class="block text-sm font-medium text-gray-700">Data da Apresentação na Unidade</label>
+                <input type="date" name="apresentacao_na_unidade" id="apresentacao_na_unidade" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1 hidden" id="apresentacao_na_unidade_error">Por favor, insira a data da apresentação na unidade.</div>
+            </div>
+
+            </div>
+        </fieldset>
+        <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+            <div class="mb-4">
+                <p class="text-lg font-bold">Documentos e Contatos</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4"> 
+                <div>
+                    <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+                    <input type="text" name="cpf" id="cpf" placeholder="xxx.xxx.xxx-xx" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="cpf_error">Por favor, insira o CPF.</div>
+                </div>
+                <div>
+                    <label for="rg" class="block text-sm font-medium text-gray-700">RG</label>
+                    <input type="text" name="rg" id="rg" placeholder="xx.xxxx.xxx-x" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="rg_error">Por favor, insira o RG.</div>
+                </div>
+                <div>
+                    <label for="cnh" class="block text-sm font-medium text-gray-700">CNH</label>
+                    <input type="text" name="cnh" id="cnh"  class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="rg_error">Por favor, insira a CNH.</div>
+                </div>
+                <div>
+                    <label for="cat_cnh" class="block text-sm font-medium text-gray-700">Categoria CNH</label>
+                    <select name="cat_cnh" id="cat_cnh" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in cat_cnh %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="cat_cnh_error">Por favor, selecione a categoria da CNH.</div>
+                </div>
+                <div>
+                    <label for="ovb" class="block text-sm font-medium text-gray-700">Possui OVB</label>
+                    <select name="ovb" id="ovb" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                        {% for i in ovb %}
+                        <option value="{{ i.0 }}">{{ i.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="op_adm_error">Por favor, selecione se possui OVB.</div>
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                    <input type="email" name="email" id="email" placeholder="...... "class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="email_funcional_error">Por favor, insira um email válido.</div>
+                </div>
+                <div>
+                    <label for="telefone" class="block text-sm font-medium text-gray-700">Telefone</label>
+                    <input type="tel" name="telefone" id="telefone" placeholder="(xx) xxxxx-xxxx" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="telefone_error">Por favor, insira um telefone válido.</div>
+                </div>
+                
+            </fieldset>
+
+            <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                <div class="mb-4">
+                    <p class="text-lg font-bold">Imagem de Perfil</p>
+                </div>
+                <div class="mb-3">
+                    <label for="image" class="block text-sm font-medium text-gray-700">Envie a foto para o perfil</label>
+                    <br><br>
+                    <img id="preview" src="#" alt="Pré-visualização da imagem" style="display: none; max-width: 200px;">
+                    <br><br>
+                    <input class="mt-1 block w-full text-base border-gray-300 border-blue-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)" required>
+                    <div class="text-red-500 text-sm mt-1 hidden" id="image_error">Por favor, envie uma imagem de perfil.</div>
+                </div>
+            </fieldset>
+            <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                <div class="mb-4">
+                    <p class="text-lg font-bold">Motivo da alteração</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="alteracao" class="block text-sm font-medium text-gray-700">Escolha abaixo o motivo do cadastro</label>
+                        <select name="alteracao" id="alteracao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            {% for i in alteracao %}
+                            <option value="{{ i.0 }}">{{ i.1 }}</option>
+                            {% endfor %}
+                        </select>
+                   </div>
+               
+                </div>
+            </fieldset>
+        
+            <fieldset class="bg-gray-800  p-4 mb-8 rounded-md">
+                <div class="mb-4">
+                    <div class="flex items-center justify-between py-3">
+                        <div class="w-full md:w-auto">
+                           <input type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" value="Cadastrar">
+                        </div>
+                        <div class="flex space-x-2">
+                            <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
+                                    
+                            <a href="{% url 'bm:listar_bm' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+    </form>
+     </fieldset>
+</div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Previne o submit do formulário ao pressionar Enter em qualquer campo de entrada
+        document.querySelectorAll('input, select').forEach(function(element) {
+            element.addEventListener('keypress', function(event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                }
+            });
+        });
+    
+        // Validação do formulário e submit apenas com o botão "Cadastrar"
+        document.querySelector('form').addEventListener('submit', function(event) {
+            let isValid = true;
+    
+            const fields = [
+                { id: 'posto_grad', errorId: 'posto_grad_error' },
+                { id: 'quadro', errorId: 'quadro_error' },
+                { id: 'grupo', errorId: 'grupo_error' },
+                { id: 're', errorId: 're_error' },
+                { id: 'dig', errorId: 'dig_error' },
+                { id: 'genero', errorId: 'genero_error' },
+                { id: 'nome', errorId: 'nome_error' },
+                { id: 'nome_de_guerra', errorId: 'nome_de_guerra_error' },
+                { id: 'situacao', errorId: 'situacao_error' },
+                { id: 'cad_efetivo', errorId: 'cad_efetivo_error' },
+                { id: 'sgb', errorId: 'sgb_error' },
+                { id: 'posto_secao', errorId: 'posto_secao_error' },
+                { id: 'esta_adido', errorId: 'esta_adido_error' },
+                { id: 'funcao', errorId: 'funcao_error' },
+                { id: 'op_adm', errorId: 'op_adm_error' },
+                { id: 'apresentacao_na_unidade', errorId: 'apresentacao_na_unidade_error' },
+                { id: 'nasc', errorId: 'nasc_error' },
+                { id: 'matricula', errorId: 'matricula_error' },
+                { id: 'admissao', errorId: 'admissao_error' },
+                { id: 'previsao_de_inatividade', errorId: 'previsao_de_inatividade_error' },
+                { id: 'ultima_promocao', errorId: 'ultima_promocao_error' },
+                { id: 'cpf', errorId: 'cpf_error' },
+                { id: 'rg', errorId: 'rg_error' },
+                { id: 'email_funcional', errorId: 'email_funcional_error' },
+                { id: 'telefone', errorId: 'telefone_error' },
+                { id: 'tempo_para_averbar_inss', errorId: 'tempo_para_averbar_inss_error' },
+                { id: 'tempo_para_averbar_militar', errorId: 'tempo_para_averbar_militar_error' },
+                { id: 'image', errorId: 'image_error' }
+            ];
+    
+            fields.forEach(field => {
+                const input = document.getElementById(field.id);
+                if (!input.value) {
+                    document.getElementById(field.errorId).classList.remove('hidden');
+                    isValid = false;
+                } else {
+                    document.getElementById(field.errorId).classList.add('hidden');
+                }
+            });
+    
+            if (!isValid) {
+                event.preventDefault();
+            }
+        });
+    
+        // Função para pré-visualizar a imagem
+        function previewImage(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const preview = document.getElementById('preview');
+                preview.src = reader.result;
+                preview.style.display = 'block';
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+    
+        document.getElementById('image').addEventListener('change', previewImage);
+    });
+    </script>
+    <script>
+    document.getElementById('cadastroForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Impede o envio do formulário
+    
+        // Limpa mensagens de erro anteriores
+        document.getElementById('formErrors').classList.add('hidden');
+        document.querySelectorAll('.text-red-500').forEach(function(el) {
+            el.classList.add('hidden');
+        });
+    
+        // Coleta os dados do formulário
+        const formData = new FormData(this);
+    
+        // Envia os dados via AJAX
+        fetch(this.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken')
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redireciona ou exibe mensagem de sucesso
+                window.location.href = data.redirect_url;
+            } else {
+                // Exibe mensagens de erro
+                document.getElementById('formErrors').innerText = data.error_message;
+                document.getElementById('formErrors').classList.remove('hidden');
+                for (const [field, message] of Object.entries(data.field_errors)) {
+                    document.getElementById(`${field}_error`).innerText = message;
+                    document.getElementById(`${field}_error`).classList.remove('hidden');
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+        });
+    });
+    </script>
+    
+    {% endblock 'body' %}

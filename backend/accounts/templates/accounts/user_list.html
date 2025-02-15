@@ -1,0 +1,238 @@
+{% extends "base.html" %}
+{% load static %}
+{% block 'title' %} Consultar Usuários{% endblock %}
+
+{% block 'head' %}
+<link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
+<link href="{% static 'flowbite.min.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet">
+{% endblock 'head' %}
+
+{% block 'body' %}
+
+<body>
+
+<div class="container mx-auto p-4 mt-30" id="usuarios">
+
+    <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+        <fieldset class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">
+            <div id="01" class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="col-12 md:w-auto">
+                            <h1 class="text-3xl text-gray-200">Relação de Usuários</h1>
+                            <p class="text-gray-400" >Consulte abaixo a relação com os usuários do sistema.</p>
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        
+        </fieldset>
+        <fieldset>
+          <legend  class=" mb-8 rounded-md w-full" >
+              {% if messages %}
+              {% for message in messages %}
+                  <section class="alert {{ message.tags }}">
+                      {{ message }}
+                  </section>
+              {% endfor %}
+              {% endif %}
+          </legend>  
+  </fieldset>
+
+  <fieldset class="bg-gray-100 mb-8 rounded-md w-full" id="adicionalTempoTable">
+    <div class="flex flex-wrap mb-3 justify-between p-4 bg-gray-600">
+        <div class="flex flex-wrap w-full md:w-3/4">
+            <form class="w-full md:w-1/4 px-2 mb-4 md:mb-0">
+                <label for="anoFilter" class="block mb-2 text-sm font-medium text-gray-400 dark:text-white">Ano</label>
+                <select id="anoFilter" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <option value="">Todos</option>
+                    <option value="2018">Ativo</option>
+                    <option value="2019">Inativo</option>
+                </select>
+            </form>
+
+        </div>
+        <div class="w-full md:w-1/4 px-2 mb-4 md:mb-0 flex items-center justify-end">
+          <div class="flex flex-wrap w-full md:w-3/4 p-2">   
+            <button type="button" >
+                <a href="{% url 'user_create' %}" data-modal-toggle="add-user-modal" class="w-1/2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium inline-flex items-center justify-center rounded-lg text-sm px-3 py-2 text-center sm:w-auto">
+                  <svg class="-ml-1 mr-2 h-6 w-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                  Adicionar
+                </a> 
+             </button>  
+             
+          </div>
+          <div class="flex flex-wrap w-full md:w-3/4 p-2">
+            <button type="button" class="w-1/2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium inline-flex items-center justify-center rounded-lg text-sm px-3 py-2 text-center sm:w-auto">
+              <a href="{% url 'all_users_list' %}" >Acessos</a>
+            </button>
+          
+        </div>
+          <div class="flex flex-wrap w-full md:w-3/4 p-2">
+            <button type="button" class="w-1/2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium inline-flex items-center justify-center rounded-lg text-sm px-3 py-2 text-center sm:w-auto">
+              <a href="{% url 'all_user_action_history' %}" >
+                Ações
+            </a> </button>
+        
+        </div>
+          <div class="flex flex-wrap w-full md:w-3/4 p-2">
+              <button type="button" class="flex items-center justify-center flex-shrink-0 px-3 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg focus:outline-none hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700">
+                  <svg class="w-4 h-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewbox="0 0 24 24" stroke-width="2" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
+                  </svg>
+                  Export
+              </button>
+          </div>
+        </div>
+    </div>
+    <table id="table1" class="text-gray-700 bg-white p-5">
+      <thead>
+        <tr>
+            <th class="px-4 py-2 text-center">
+              <div class="flex items-center">
+                <input id="checkbox-all" aria-describedby="checkbox-1" type="checkbox"
+                  class="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded">
+                <label for="checkbox-all" class="sr-only">checkbox</label>
+              </div>
+            </th>
+            <th class="px-4 py-2 text-center">Imagem</th>
+            <th class="px-4 py-2 text-center">Nome</th>
+            <th class="px-4 py-2 text-center">Email</th>
+            <th class="px-4 py-2 text-center">Criado em</th>
+            <th class="px-4 py-2 text-center">Status</th>
+            <th class="px-4 py-2 text-center">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+      {% for object in object_list %}
+      <tr class="hover:bg-gray-100">
+        <td class="p-4 w-4">
+          <div class="flex items-center">
+            <input id="checkbox-1" aria-describedby="checkbox-1" type="checkbox"
+              class="bg-gray-50 border-gray-300 focus:ring-3 focus:ring-cyan-200 h-4 w-4 rounded">
+            <label for="checkbox-1" class="sr-only">checkbox</label>
+          </div>
+        </td>
+
+        <td class="px-4 py-2 ">
+         
+          {% if object.profile.image %}
+          <img src="{{ object.profile.image.url }}" class="profileImage rounded-full w-12 h-12 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 object-cover object-center">
+      {% else %}
+          Sem imagem
+      {% endif %}
+          
+        </td>
+
+        <td class="px-4 py-2 text-center p-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
+          <div class="text-sm font-normal text-gray-500">
+            <div class="text-base font-normal text-gray-900">
+              <a href="{{ object.get_absolute_url }}" class="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg">{{ object.last_name}}</a>
+            </div>
+            <div class="text-sm font-normal text-gray-500">{{ object.profile.posto_grad }} {{ object.profile.re }} -{{ object.profile.dig}}</div>
+          </div> 
+        </td>
+        <td class="p-4 whitespace-nowrap text-base font-regular text-gray-500">{{ object.email|default:"---" }}</td>
+        <td class="p-4 whitespace-nowrap text-base font-re  text-gray-500">{{ object.date_joined|date:"d/m/Y H:i"|default:"---" }}</td>
+        <td class="p-4 whitespace-nowrap text-base font-regular text-gray-500">
+          {% if object.is_active %}
+                <div class="flex items-center">
+                  <div class="h-2.5 w-2.5 rounded-full bg-green-400 mr-2"></div>  Ativo
+                </div>
+              {% else %}
+                <div class="flex items-center">
+                  <div class="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>  Inativo
+                </div>
+              {% endif %}
+        </td>  
+        <td class="p-4 whitespace-nowrap text-base font-medium text-gray-600">
+          <a href="{{ object.get_absolute_url }}" class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm inline-flex items-center px-3 py-2 text-center">
+            <svg class="mr-2 h-5 w-5 " fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z"></path><path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd"></path></svg>
+          ver
+          </a>
+        
+        
+        </td> 
+      </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+  </fieldset>
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+<script>
+    const dataTable = new simpleDatatables.DataTable("#example");
+</script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dataTable1 = new simpleDatatables.DataTable("#table1", {
+            labels: {
+                placeholder: "Pesquisar...",
+                perPage: "{select} resultados por página",
+                noRows: "Nenhum registro encontrado",
+                info: "Mostrando {start} até {end} de {rows} registros",
+                noResults: "Nenhum resultado encontrado",
+                loading: "Carregando...",
+                infoFiltered: " (filtrado de {rowsTotal} registros)",
+                previous: "Anterior",
+                next: "Próximo",
+                first: "Primeiro",
+                last: "Último"
+            }
+        });
+        const dataTable2 = new simpleDatatables.DataTable("#table2", {
+            labels: {
+                placeholder: "Pesquisar...",
+                perPage: "{select} resultados por página",
+                noRows: "Nenhum registro encontrado",
+                info: "Mostrando {start} até {end} de {rows} registros",
+                noResults: "Nenhum resultado encontrado",
+                loading: "Carregando...",
+                infoFiltered: " (filtrado de {rowsTotal} registros)",
+                previous: "Anterior",
+                next: "Próximo",
+                first: "Primeiro",
+                last: "Último"
+            }
+        });
+    });
+</script>
+
+  <script>
+    const targetEl = document.getElementById('delete-user-modal')
+    const modal = new Modal(targetEl)
+
+    openModal = () => {
+      modal.show()
+    }
+    closeModal = () => {
+      modal.hide()
+    }
+  </script>
+<script>
+  function updateBorderColor() {
+      const profileImages = document.querySelectorAll('.profileImage');
+      profileImages.forEach(profileImage => {
+          if (navigator.onLine) {
+              profileImage.classList.remove('border-indigo-800', 'border-gray-300');
+              profileImage.classList.add('border-green-500');
+          } else {
+              profileImage.classList.remove('border-indigo-800', 'border-green-500');
+              profileImage.classList.add('border-gray-300');
+          }
+      });
+  }
+
+  // Atualiza a cor da borda ao carregar a página
+  updateBorderColor();
+
+  // Atualiza a cor da borda quando o status de conexão muda
+  window.addEventListener('online', updateBorderColor);
+  window.addEventListener('offline', updateBorderColor);
+</script>
+{% endblock js %}
+</main>{% endblock %}

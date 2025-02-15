@@ -1,0 +1,180 @@
+<!-- includes/aside.html -->
+<aside id="sidebar" class="fixed hidden z-20 h-full top-0 left-0 pt-16 flex lg:flex flex-shrink-0 flex-col w-64 transition-width duration-75 " aria-label="Sidebar">
+  <div class="relative flex-1 flex flex-col min-h-0 border-r border-gray-800 bg-gray-100 pt-0">
+    <div class="flex-1 flex bg-gray-800  flex-col pt-5 pb-4 overflow-y-auto">
+      <div class="flex-1 px-3 bg-gray-800 ">
+        <ul class="space-y-2 pb-2">
+          <li>
+            <br>
+            <form action="#" method="GET" class="lg:hidden">
+              <label for="mobile-search" class="sr-only">Search</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                </div>
+                <input type="text" name="email" id="mobile-search" class="bg-gray-200 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-cyan-600 focus:ring-cyan-600 block w-full pl-10 p-2.5" placeholder="Search">
+              </div>
+            </form>
+          </li>
+          <li>
+            <a href="{% url 'core:index' %}" class="text-base text-gray-500 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-house-fill" viewBox="0 0 16 16">
+                <path d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z"/>
+                <path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z"/>
+              </svg>
+              <span class="ml-3">Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'core:dashboard' %}" class="text-base text-gray-500 font-normal rounded-lg flex items-center p-2 hover:bg-gray-100 group">
+              <svg class="w-6 h-6 text-gray-500 group-hover:text-gray-500 transition duration-75" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path><path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path></svg>
+              <span class="ml-3">Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'efetivo:listar_militar' %}" class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group ">
+              <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+              </svg>
+              <span class="ml-3 flex-1 whitespace-nowrap">Efetivo</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'rpt:listar_rpt' %}" class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
+              <svg xmlns="http://www.w3.org/2000/svg" color="gray" width="25" height="25" fill="currentColor" class="bi bi-arrow-repeat" viewBox="0 0 16 16">
+                <path d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41m-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9"/>
+                <path fill-rule="evenodd" d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5 5 0 0 0 8 3M3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9z"/>
+              </svg>
+              <span class="ml-3">Rpt Interno</span>
+            </a>
+          </li>
+          <li>
+            <a href=""class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group ">
+              <svg xmlns="http://www.w3.org/2000/svg" color="gray" width="25" height="25" fill="currentColor" class="bi bi-cloud-plus-fill" viewBox="0 0 16 16">
+                <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m.5 4v1.5H10a.5.5 0 0 1 0 1H8.5V10a.5.5 0 0 1-1 0V8.5H6a.5.5 0 0 1 0-1h1.5V6a.5.5 0 0 1 1 0"/>
+              </svg>
+              <span class="ml-3 flex-1 whitespace-nowrap">Adicional e LP</span>
+            </a>
+          </li>
+          <li>
+            
+            <a href="{% url 'municipios:posto_list' %}"  class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group ">
+              <svg xmlns="http://www.w3.org/2000/svg"  color="gray" width="25" height="25" fill="currentColor" class="bi bi-diagram-3-fill" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M6 3.5A1.5 1.5 0 0 1 7.5 2h1A1.5 1.5 0 0 1 10 3.5v1A1.5 1.5 0 0 1 8.5 6v1H14a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0V8h-5v.5a.5.5 0 0 1-1 0v-1A.5.5 0 0 1 2 7h5.5V6A1.5 1.5 0 0 1 6 4.5zm-6 8A1.5 1.5 0 0 1 1.5 10h1A1.5 1.5 0 0 1 4 11.5v1A1.5 1.5 0 0 1 2.5 14h-1A1.5 1.5 0 0 1 0 12.5zm6 0A1.5 1.5 0 0 1 7.5 10h1a1.5 1.5 0 0 1 1.5 1.5v1A1.5 1.5 0 0 1 8.5 14h-1A1.5 1.5 0 0 1 6 12.5zm6 0a1.5 1.5 0 0 1 1.5-1.5h1a1.5 1.5 0 0 1 1.5 1.5v1a1.5 1.5 0 0 1-1.5 1.5h-1a1.5 1.5 0 0 1-1.5-1.5z"/>
+              </svg>
+              <span class="ml-3 flex-1 whitespace-nowrap">QPO-Municípios</span>
+            </a>
+          </li>
+          <li>
+            <a href="" class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group ">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" color="gray" height="25" fill="currentColor" class="bi bi-card-list" viewBox="0 0 16 16">
+                <path d="M14.5 3a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-13a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2z"/>
+                <path d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8m0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5m-1-5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0M4 8a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0m0 2.5a.5.5 0 1 1-1 0 .5.5 0 0 1 1 0"/>
+              </svg>
+              <span class="ml-3 flex-1 whitespace-nowrap">Ordens e Publicações</span>
+            </a>
+          </li>
+          <li>
+            <a href="" class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group ">
+              <svg xmlns="http://www.w3.org/2000/svg" width="25" color="gray" height="25" fill="currentColor" class="bi bi-graph-up-arrow" viewBox="0 0 16 16">
+                <path fill-rule="evenodd" d="M0 0h1v15h15v1H0zm10 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 .5.5v4a.5.5 0 0 1-1 0V4.9l-3.613 4.417a.5.5 0 0 1-.74.037L7.06 6.767l-3.656 5.027a.5.5 0 0 1-.808-.588l4-5.5a.5.5 0 0 1 .758-.06l2.609 2.61L13.445 4H10.5a.5.5 0 0 1-.5-.5"/>
+              </svg>
+              <span class="ml-3 flex-1 whitespace-nowrap">Relátorios</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'bm:listar_bm' %}" class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group ">
+              <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16">
+                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+              </svg>
+              <span class="ml-3 flex-1 whitespace-nowrap">Bombeiros Municipais</span>
+            </a>
+          </li>
+          <li>
+            <a href="" class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 flex items-center p-2 group ">
+              <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-calendar-date" viewBox="0 0 16 16">
+                <path d="M6.445 11.688V6.354h-.633A13 13 0 0 0 4.5 7.16v.695c.375-.257.969-.62 1.258-.777h.012v4.61zm1.188-1.305c.047.64.594 1.406 1.703 1.406 1.258 0 2-1.066 2-2.871 0-1.934-.781-2.668-1.953-2.668-.926 0-1.797.672-1.797 1.809 0 1.16.824 1.77 1.676 1.77.746 0 1.23-.376 1.383-.79h.027c-.004 1.316-.461 2.164-1.305 2.164-.664 0-1.008-.45-1.05-.82zm2.953-2.317c0 .696-.559 1.18-1.184 1.18-.601 0-1.144-.383-1.144-1.2 0-.823.582-1.21 1.168-1.21.633 0 1.16.398 1.16 1.23"/>
+                <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
+              </svg>
+              <span class="ml-3 flex-1 whitespace-nowrap">Agenda pessoal</span>
+            </a>
+          </li>
+          <li>
+            <a href="https://flowbite.com/docs/getting-started/introduction/" target="_blank" class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
+              <svg xmlns="http://www.w3.org/2000/svg" color="gray-"  width="25" height="25"fill="currentColor" class="bi bi-link-45deg" viewBox="0 0 16 16">
+                <path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/>
+                <path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/>
+              </svg>
+              <span class="ml-3">Links Úteis</span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'faisca:chatbot' %}" target="_blank" class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
+              <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-alexa" viewBox="0 0 16 16">
+                <path d="M7.996 0A8 8 0 0 0 0 8a8 8 0 0 0 6.93 7.93v-1.613a1.06 1.06 0 0 0-.717-1.008A5.6 5.6 0 0 1 2.4 7.865 5.58 5.58 0 0 1 8.054 2.4a5.6 5.6 0 0 1 5.535 5.81l-.002.046-.012.192-.005.061a5 5 0 0 1-.033.284l-.01.068c-.685 4.516-6.564 7.054-6.596 7.068A7.998 7.998 0 0 0 15.992 8 8 8 0 0 0 7.996.001Z"/>
+              </svg>
+              <span class="ml-3">Fáisca <span class="text-yellow-600"><b>IA</b></span></span>
+            </a>
+          </li>
+          <li>
+            <a href="{% url 'faisca:chatbot' %}" target="_blank" class="text-base text-gray-500 font-normal rounded-lg hover:bg-gray-100 group transition duration-75 flex items-center p-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">
+                  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/>
+                </svg>
+                <span class="ml-3">Whatsapp <span class="text-yellow-600"><b>SisCoE</b></span></span>
+            </a>
+          </li>
+          <li>
+            <button type="button" class="flex items-center w-full p-2 text-base text-gray-500 transition duration-75 rounded-lg group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700" aria-controls="dropdown-example" data-collapse-toggle="dropdown-example">
+              <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+              </svg>
+              <span class="flex-1 ms-3 text-left rtl:text-right whitespace-nowrap">Usuários</span>
+              <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 4 4 4-4"/>
+              </svg>
+            </button>
+            <ul id="dropdown-example" class="hidden py-2 space-y-2">
+              <li>
+                <a href="{% url 'user_list' %}"   class="flex items-center w-full p-2 text-gray-500 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
+                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                    <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
+                  </svg>
+                  <span class="ml-3 flex-1 whitespace-nowrap">Usuários</span>
+                </a>
+              </li>
+              <li>
+                <a href="{% url 'user_create' %}"  class="flex items-center w-full p-2 text-gray-500 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 ">
+                  <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+                    <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                    <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
+                  </svg>
+                  <span class="ml-3 flex-1 whitespace-nowrap">Cadastrar usuário</span>
+                </a> 
+              <li>
+        
+              <li>
+                <a href="{% url 'admin:index' %}" target="_blank" class="flex items-center w-full p-2 text-gray-500 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                  <svg xmlns="http://www.w3.org/2000/svg" color="gray"  width="25" height="25" fill="currentColor" class="bi bi-gear-fill" viewBox="0 0 16 16">
+                    <path d="M9.405 1.05c-.413-1.4-2.397-1.4-2.81 0l-.1.34a1.464 1.464 0 0 1-2.105.872l-.31-.17c-1.283-.698-2.686.705-1.987 1.987l.169.311c.446.82.023 1.841-.872 2.105l-.34.1c-1.4.413-1.4 2.397 0 2.81l.34.1a1.464 1.464 0 0 1 .872 2.105l-.17.31c-.698 1.283.705 2.686 1.987 1.987l.311-.169a1.464 1.464 0 0 1 2.105.872l.1.34c.413 1.4 2.397 1.4 2.81 0l.1-.34a1.464 1.464 0 0 1 2.105-.872l.31.17c1.283.698 2.686-.705 1.987-1.987l-.169-.311a1.464 1.464 0 0 1 .872-2.105l.34-.1c1.4-.413 1.4-2.397 0-2.81l-.34-.1a1.464 1.464 0 0 1-.872-2.105l.17-.31c.698-1.283-.705-2.686-1.987-1.987l-.311.169a1.464 1.464 0 0 1-2.105-.872zM8 10.93a2.929 2.929 0 1 1 0-5.86 2.929 2.929 0 0 1 0 5.858z"/>
+                  </svg>
+                  <span class="ml-3">Área Administrativa</span>
+                </a>
+              </li>
+
+            </ul>
+          </li>
+          <li>
+            <a href="{% url 'logout' %}" class="text-base text-gray-500 font-normal rounded-lg flex items-center p-2 hover:bg-red-200 group">
+              <svg class="w-6 h-6 text-red-600 " fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+              <span class="ml-3">Sair</span>
+            </a>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+  </div>
+</aside>

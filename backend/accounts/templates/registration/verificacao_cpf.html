@@ -1,0 +1,29 @@
+<!-- templates/registration/verificacao_cpf.html -->
+{% extends "base_login.html" %}
+{% load static %}
+{% block content %}
+<main class="bg-gray-150">
+  <div class="mx-auto md:h-screen flex flex-col justify-center items-center px-6 pt-8 pt:mt-0">
+    <img src="{% static 'img/logo-siscoe-black2.png' %}" class="my-5" width="180" height="152" role="img" aria-label="people-circle" id="logo">
+    <div class="bg-gray-900 shadow rounded-lg md:mt-0 w-full sm:max-w-screen-sm xl:p-0">
+      <div class="p-6 sm:p-8 lg:p-16 space-y-8">
+        <h2 class="text-2xl lg:text-3xl font-bold text-white">Verificação de CPF</h2>
+        <form class="mt-8 space-y-6" action="." method="POST">
+          {% csrf_token %}
+          <div>
+            <label for="cpf" class="text-sm font-medium text-white block mb-2">CPF</label>
+            <input id="cpf" type="text" name="cpf" class="bg-gray-300 border border-gray-300 text-gray-700 sm:text-sm rounded-lg focus:ring-cyan-600 focus:border-cyan-600 block w-full p-2.5" placeholder="Digite seu CPF" required>
+          </div>
+          <button type="submit" class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-base px-5 py-3 w-full sm:w-auto text-center">Verificar</button>
+          {% if message %}
+            <p class="text-red-500">{{ message }}</p>
+          {% endif %}
+        </form>
+        <div class="text-sm font-medium text-gray-500">
+          Você já tem uma conta? <a href="{% url 'login' %}" class="text-teal-500 hover:underline">Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+{% endblock content %}

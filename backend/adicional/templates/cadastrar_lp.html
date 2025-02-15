@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Cadastrar Adicional e LP{% endblock %}
+
+{% block 'head' %}
+<link rel="stylesheet" href="{% static 'rpt/css/cadastrar_rpt.css' %}">
+{% endblock 'head' %}
+
+{% block 'body' %}
+<body class="w-4/5 mt-30 mx-auto">
+
+    <div class="container mx-auto p-4 mt-30" id="cad_lp">
+        <fieldset class="  bg-gray-800  p-4 mb-8 rounded-md">
+   
+            <div id="01" class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="w-full md:w-9/12">
+                            <h1 class="text-3xl text-gray-200">Cadastrar Adicional e LP</h1>
+                        </div>
+                        <div class="w-full md:w-3/12 text-right">
+                            <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
+                            
+                            <a href="{% url 'adicional:listar_lp' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+
+        <fieldset>
+        <legend>
+            {% if messages %}
+            {% for message in messages %}
+                <section class="alert {{ message.tags }} p-4 mb-4 w-full   rounded-md">
+                    {{ message }}
+                </section>
+            {% endfor %}
+            {% endif %}
+        </legend>
+       
+        </fieldset>
+        <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+         <div class="mb-4">
+             <p class="text-lg ">Digite abaixo o RE (sem dígito) do militar que será cadastrado!</p>
+            <!-- Formulário de Busca -->
+             <br>
+             
+
+        <form class="flex items-center gap-1 needs-validation" method="POST" action="{% url 'adicional:buscar_militar_adicional' %}">
+            {% csrf_token %}
+            <div class="flex-none">
+                <input type="text" name="re" id="re" placeholder="Digite o RE ..." class="mt-1 block w-48 pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                <div class="text-red-500 text-sm mt-1 hidden" id="re_error">Por favor, insira o RE.</div>
+            </div>
+            <div class="flex-none">
+                <input type="submit" class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center" value="Buscar" style="padding: 5px;">
+            </div>
+        </form>
+      
+          
+          
+         </div>     
+        </fieldset>
+
+        <form class="grid gap-3 needs-validation" novalidate action="{% url 'adicional:cadastrar_lp' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="cadastro_id" value="{{ cadastro.id }}">   <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="col-span-1">
+                        <div class="container1">
+                            <div class="grid gap-4 p-5">
+                                <div class="col-span-12">
+                                    <h3 class="text-[11px] text-gray-700 hover:text-purple-800 hover:text-[15px] transition duration-300 ">Dados Funcionais</h3>
+                                    <hr class="my-4 border-b-1 border-gray-500">
+                                </div>
+
+                            </div>
+                            
+                            <div class="grid gap-4 p-5">
+                                <div class="col-span-12">
+                                    <br>
+                                    <div class="col-span-12">
+                                        <label for="validationCustom01"class="block text-sm font-medium text-gray-700">RE</label>
+                                        <input type="text" name="re" value="{{ cadastro.re }}" class="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" id="validationCustom02" readonly>
+                                    </div>
+                                    <div class="col-span-12">
+                                        <label for="validationCustom01" class="block text-sm font-medium text-gray-700">Posto/Grad</label>
+                                        <input type="text" name="posto_grad" value="{{ promocao.posto_grad }}" class="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" id="validationCustom02" readonly>
+                                    </div>
+                                    <div class="col-span-12">
+                                        <label for="validationCustom02" class="block text-sm font-medium text-gray-700">Nome</label>
+                                        <input type="text" name="nome" value="{{ cadastro.nome }}" class="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" id="validationCustom02" readonly>
+                                    </div>
+                                    <div class="col-span-12">
+                                        <label for="validationCustom01" class="block text-sm font-medium text-gray-700">SGB</label>
+                                        <input type="text" name="sgb" value="{{ detalhes.sgb }}" class="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" id="validationCustom02" readonly>
+                                    </div>
+                                    <div class="col-span-12">
+                                        <label for="validationCustom01" class="block text-sm font-medium text-gray-700">Posto ou Seção</label>
+                                        <input type="text" name="posto_secao" value="{{ detalhes.posto_secao }}" class="mt-1 block pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" id="validationCustom02" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-1">
+                        <div class="container1">
+                            <div class="grid gap-4 p-5">
+                                <div class="col-span-12">
+                                    <h3 class="text-[11px] text-gray-700 hover:text-purple-800 hover:text-[15px] transition duration-300 ">Foto de Perfil</h3>
+                                    <hr class="my-4 border-b-1 border-gray-500">
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="grid gap-4">
+                                <div class="col-span-12">
+                                    <br>
+                                    <div class="col-span-12">
+                                        <br><br>
+                                        {% if imagem and imagem.image %}
+                                            <img id="preview" src="{{ imagem.image.url }}" alt="Pré-visualização da imagem" class="max-w-xs">
+                                        {% else %}
+                                            <img id="preview" src="#" alt="Pré-visualização da imagem" class="hidden max-w-xs">
+                                        {% endif %}
+                                        <br><br>
+                                        <input class="form-control col-span-12" name="image" type="file" id="formFile" aria-label="file example" accept="image/*" onchange="previewImage(event)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                <div class="grid gap-4">
+                    <div class="grid grid-cols-2 gap-4 mb-3">
+                        <div class="col-span-1">
+                            <div class="form-group">
+                                <label for="n_bloco_adicional" class="block text-sm font-medium text-gray-700">Nº Bloco Adicional:</label>
+                                <select name="n_bloco_adicional" id="n_bloco_adicional" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                </select>
+                              
+                            </div>
+                        </div>
+                        <div class="col-span-1">
+                            <div class="form-group">
+                                <label for="data_ultimo_adicional" class="block text-sm font-medium text-gray-700">Data Último Adicional:</label>
+                                <input type="date" name="data_ultimo_adicional" id="data_ultimo_adicional" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+            
+            <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                <div class="grid gap-4">
+                    <div class="grid grid-cols-2 gap-4 mb-3">
+                        <div class="col-span-1">
+                            <div class="form-group">
+                                <label for="n_bloco_lp" class="block text-sm font-medium text-gray-700">Nº Bloco LP:</label>
+                                <select name="n_bloco_lp" id="n_bloco_lp" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                    <option value="">Selecione...</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                    <option value="6">6</option>
+                                    <option value="7">7</option>
+                                    <option value="8">8</option>
+                                </select>
+                               
+                            </div>
+                        </div>
+                        <div class="col-span-1">
+                            <div class="form-group">
+                                <label for="data_ultimo_lp" class="block text-sm font-medium text-gray-700">Data Último LP:</label>
+                                <input type="date" name="data_ultimo_lp" id="data_ultimo_lp" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                              
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        
+            <fieldset class="bg-gray-800  p-4 mb-8 rounded-md">
+                <div class="mb-4">
+                    <div class="flex items-center justify-between py-3">
+                        <div class="w-full md:w-auto">
+                           <input type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" value="Cadastrar">
+                        </div>
+                        <div class="flex space-x-2">
+                            <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
+                                    
+                            <a href="{% url 'adicional:listar_lp' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+
+        <script>
+            document.getElementById('buscarMilitarForm').addEventListener('submit', function(event) {
+                event.preventDefault(); // Impede o envio do formulário
+        
+                var re = document.getElementById('re').value;
+                if (!re) {
+                    document.getElementById('re_error').classList.remove('hidden');
+                    return;
+                }
+        
+                // Envia o formulário via AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', '{% url "adicional:buscar_militar_adicional" %}', true);
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === XMLHttpRequest.DONE) {
+                        if (xhr.status === 200) {
+                            // Sucesso: exibe a div oculta com os dados do formulário
+                            document.getElementById('formContainer').classList.remove('hidden');
+                            document.getElementById('formContainer').innerHTML = xhr.responseText;
+                        } else {
+                            // Erro: exibe uma mensagem de erro
+                            alert('Erro ao buscar os dados do militar. Por favor, tente novamente.');
+                        }
+                    }
+                };
+        
+                var formData = new FormData(document.getElementById('buscarMilitarForm'));
+                var encodedData = new URLSearchParams(formData).toString();
+                xhr.send(encodedData);
+            });
+        
+            function previewImage(event) {
+                var reader = new FileReader();
+                reader.onload = function() {
+                    var output = document.getElementById('preview');
+                    output.src = reader.result;
+                    output.classList.remove('hidden');
+                };
+                reader.readAsDataURL(event.target.files[0]);
+            }
+        </script>
+    </div>
+{% endblock %}
+
+
+

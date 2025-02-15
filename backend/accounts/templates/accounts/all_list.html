@@ -1,0 +1,185 @@
+<!-- templates/accounts/access_history.html -->
+{% extends "base.html" %}
+{% load static %}
+{% block title %} Histórico de Acessos{% endblock %}
+{% block 'head' %}
+<link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
+<link href="{% static 'flowbite.min.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet">
+{% endblock 'head' %}
+{% block 'body' %}
+
+
+
+<body>
+
+
+    <div class="container mx-auto p-4 mt-2" id="cad_efetivo">
+     <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+        <fieldset class="bg-gray-800 p-4 mb-8 rounded-md w-full" id="first-fieldset">      
+            <div id="01" class="mb-4">
+                <div class="bg-gray-800 p-4 rounded-md">
+                    <div class="flex flex-wrap items-center justify-between py-3">
+                        <div class="col-12 md:w-auto">
+                            <h3 class="text-2xl font-semibold text-gray-300">Histórico de Acessos</h3>
+                        </div>  
+                        <div class="w-full md:w-auto text-right">
+                        
+                            <a href="{% url 'user_list' %}"   class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="bg-gray-100  mb-8 rounded-md w-full" id="first-fieldset">   
+            <legend  class=" mb-8 rounded-md w-full" >
+                {% if messages %}
+                {% for message in messages %}
+                    <section class="alert {{ message.tags }}">
+                        {{ message }}
+                    </section>
+                {% endfor %}
+                {% endif %}
+            </legend>  
+            <div class="container" id="filtros"> 
+                <div class="flex flex-wrap mb-3  bg-gray-600 p-4 mb-0">
+                    <form method="GET" class=" ms-8">
+                        <div class="flex flex-wrap items-center ">
+                            <div class="mr-4">
+                                <label for="user" class="block mb-2 text-sm font-medium text-white">Usuário:</label>
+                                <select id="user" name="user" class="bg-gray-50 border border-gray-300 text-gray-600 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                    <option value="">Todos</option>
+                                    {% for user in users %}
+                                    <option value="{{ user.email }}" {% if user.email == selected_user %}selected{% endif %}>{{ user.email }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="mr-4">
+                                <label for="start_date" class="block mb-2 text-sm font-medium text-white">Data de Início:</label>
+                                <input type="date" id="start_date" name="start_date" value="{{ start_date }}" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            </div>
+                            <div class="mr-4">
+                                <label for="end_date" class="block mb-2 text-sm font-medium text-white">Data de Fim:</label>
+                                <input type="date" id="end_date" name="end_date" value="{{ end_date }}" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                            </div>
+                            <div class="mt-6 p-2">
+                                <button type="submit" class="text-white bg-blue-500 hover:bg-blue-700 px-4 py-2 rounded">Filtrar</button>
+                            </div>
+                        </div>
+                    </form> 
+                </div>
+                    </div>
+
+                <fieldset class="w-full bg-gray-200 p-4 rounded-lg">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="text-xl text-gray-700 font-semibold">Historico de Acessos</h3>
+                        </div>  
+                        <div class="container mx-auto" id="table">
+                            <div class="overflow-x-auto">
+                                <table id="table1" class="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr>
+                                            <th class="px-4 text-gray-700 py-2">Email</th>
+                                            <th class="px-4 text-gray-700 py-2">Data e de Login</th>
+                                            <th class="px-4 text-gray-700 py-2">IP</th>
+                                            <th class="px-4 text-gray-700 py-2">Nome do PC</th>
+                                            <th class="px-4 text-gray-700 py-2">Data de Logout</th>
+                                            <th class="px-4 text-gray-700 py-2">Duração</th>
+                                            <th class="px-4 text-gray-700 py-2">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for entry in all_login_history %}
+                                        <tr>
+                                            <td class="border text-gray-700 px-4 py-2">{{ entry.email }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ entry.login_time }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ entry.ip }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ entry.computer_name }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ entry.logout_time }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">{{ entry.duration }}</td>
+                                            <td class="border text-gray-700 px-4 py-2">
+                                                {% if entry.is_online and not entry.logout_time %}
+                                                <span class="inline-block w-3 h-3 bg-green-500 rounded-full"></span>
+                                                {% else %}
+                                                <span class="inline-block w-3 h-3 bg-red-500 rounded-full"></span>
+                                                {% endif %}
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div> 
+{% block js %}
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+<script>
+    const dataTable = new simpleDatatables.DataTable("#example");
+</script>
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const dataTable1 = new simpleDatatables.DataTable("#table1", {
+            labels: {
+                placeholder: "Pesquisar...",
+                perPage: "{select} resultados por página",
+                noRows: "Nenhum registro encontrado",
+                info: "Mostrando {start} até {end} de {rows} registros",
+                noResults: "Nenhum resultado encontrado",
+                loading: "Carregando...",
+                infoFiltered: " (filtrado de {rowsTotal} registros)",
+                previous: "Anterior",
+                next: "Próximo",
+                first: "Primeiro",
+                last: "Último"
+            }
+        });
+        const dataTable2 = new simpleDatatables.DataTable("#table2", {
+            labels: {
+                placeholder: "Pesquisar...",
+                perPage: "{select} resultados por página",
+                noRows: "Nenhum registro encontrado",
+                info: "Mostrando {start} até {end} de {rows} registros",
+                noResults: "Nenhum resultado encontrado",
+                loading: "Carregando...",
+                infoFiltered: " (filtrado de {rowsTotal} registros)",
+                previous: "Anterior",
+                next: "Próximo",
+                first: "Primeiro",
+                last: "Último"
+            }
+        });
+    });
+</script>
+
+  <script>
+    const targetEl = document.getElementById('delete-user-modal')
+    const modal = new Modal(targetEl)
+
+    openModal = () => {
+      modal.show()
+    }
+    closeModal = () => {
+      modal.hide()
+    }
+  </script>
+{% endblock js %}
+</main>{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
