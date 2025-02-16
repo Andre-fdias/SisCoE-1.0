@@ -3,7 +3,8 @@
 {% block title %}{{ posto.posto_atendimento }}{% endblock %}
 
 {% block 'body' %}
-<div class="md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_efetivo">
+<br>
+<div class="md:items-center md:justify-between rounded-lg  mt-4 w-full" id="cad_efetivo">
     <fieldset class="p-4 mb-8 rounded-md w-full" id="second-fieldset">
         <!-- Seção Superior - Informações Gerais -->
         <fieldset class="p-2 mb-8 rounded-md rounded-[5px]">
@@ -29,7 +30,7 @@
                         <!-- Detalhes do Posto -->
                         <div class="md:w-1/2 md:pl-8 mt-8">
                             <h1 class="text-5xl font-semibold text-gray-300 mb-4">
-                                {{ posto.posto_atendimento }}
+                                {{ posto.posto_secao}}
                             </h1>
                             
                             <div class="mb-6">
@@ -73,7 +74,79 @@
                 </div>
             </div>
         </fieldset>
+        <fieldset class=" p-2 mb-8 rounded-md rounded-[10px]">
+            <div class="flex flex-col h-auto rounded-[10px]">
+                <div class=" bg-gray-200 rounded-xl shadow-2xl  w-full p-8 transition-all duration-300 animate-fade-in">
+                    <div class="flex flex-wrap tracking-wide">
+                        <div id="02" class="w-full lg:w-1/2 p-4 leading-relaxed space-y-4">
+                            <h2 class="text-xl font-semibold text-indigo-800mb-4">Situação Funcional</h2>
+                            <hr class="my-4 border-b-1 border-gray-500">
 
+                            <table id="qpo" class="text-gray-700 bg-white p-2">
+                                <thead>
+                                    <tr>
+                                        
+                                    <th class="px-4 py-2 text-center font-size-sm"> Ten Cel <img src="{% static 'img/ten_cel.jpg' %}" class="w-13 h-10 rounded-full " role=" img"
+                                        aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center"> Maj <img src="{% static 'img/major-pm.jpg' %}" class="w-13 h-10 rounded-full " role=" img"
+                                            aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Cap
+                                            <img src="{% static 'img/capitao-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
+                                            aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center"> Ten QO<img src="{% static 'img/1-tenente-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
+                                            aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Ten QA <img src="{% static 'img/1-tenente-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
+                                            aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">St/Sgt<img src="{% static 'img/1-sargento-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
+                                            aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Cb/Sd<img src="{% static 'img/cabo-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
+                                            aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Total</th> <!-- Nova coluna -->
+                                   
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for posto in postos %}
+                                    <tr>
+                                        {% with pessoal=posto.pessoal.first %}
+                                            <td class="px-4 py-2 text-center">{{ pessoal.ten_cel }}</td>
+                                            <td class="px-4 py-2 text-center">{{ pessoal.maj }}</td>
+                                            <td class="px-4 py-2 text-center">{{ pessoal.cap }}</td>
+                                            <td class="px-4 py-2 text-center">{{ pessoal.tenqo }}</td>
+                                            <td class="px-4 py-2 text-center">{{ pessoal.tenqa }}</td>
+                                            <td class="px-4 py-2 text-center">{{ pessoal.st_sgt }}</td>
+                                            <td class="px-4 py-2 text-center">{{ pessoal.cb_sd }}</td>
+                                            <td class="px-4 py-2 text-center font-bold">
+                                                {{ pessoal.ten_cel|add:pessoal.maj|add:pessoal.cap|add:pessoal.tenqo|add:pessoal.tenqa|add:pessoal.st_sgt|add:pessoal.cb_sd }}
+                                            </td>
+                                        {% endwith %}
+                                   </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                          
+                         
+                            
+                        
+
+                        </div>
+                        <div id="03" class="w-full lg:w-1/2 p-4 leading-relaxed space-y-4">
+                            <h2 class="text-xl font-semibold text-indigo-800mb-4">Documentos e Contatos</h2>
+                            <hr class="my-4 border-b-1 border-gray-500">
+                        
+                            
+                            <hr class="my-4">
+                            <h4 class="text-1xl text-gray-700  mb-4"><b>CPF:</b> <span>{{ cadastro.cpf }}</span></h4>
+                            <h4 class="text-1xl text-gray-700  mb-4"><b>RG:</b> <span>{{ cadastro.rg }}</span></h4>
+                            <h4 class="text-1xl text-gray-700  mb-4"><b>Email:</b> <span>{{ cadastro.email }}</span></h4>
+                            <h4 class="text-1xl text-gray-700  mb-4"><b>Telefone:</b> <span>{{ cadastro.telefone }}</span></h4><br>
+                            <br><br>
+
+                 
+                    </div>
+                </div>
+
+        </fieldset>  
         <!-- Seção de Detalhes -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <!-- Detalhes da Unidade -->
@@ -101,17 +174,51 @@
             </div>
 
             <!-- Mapa -->
-            <div class="bg-gray-800 rounded-xl shadow-2xl p-4">
-                <h2 class="text-xl font-semibold text-white mb-4">Localização</h2>
-                <div class="relative w-full pb-[56.25%]"> <!-- Proporção 16:9 -->
-                    <iframe class="absolute top-0 left-0 w-full h-full rounded-lg"
-                            src="https://maps.google.com/maps?q={{ posto.cidades.first.latitude }},{{ posto.cidades.first.longitude }}&z=15&output=embed"
-                            frameborder="0"
-                            allowfullscreen>
-                    </iframe>
-                </div>
-            </div>
-        </div>
+    <!-- Substitua a seção do mapa por este código -->
+<div class="bg-gray-800 rounded-xl shadow-2xl p-4">
+    <h2 class="text-xl font-semibold text-white mb-4">Localização</h2>
+    <div id="map" class="h-96 rounded-lg"></div>
+</div>
+
+<!-- Adicione esses links no head do seu base.html -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const mapDiv = document.getElementById('map');
+    
+    // Verificar se existe contato e coordenadas
+    {% if posto.contato and posto.contato.latitude and posto.contato.longitude %}
+        const lat = parseFloat("{{ posto.contato.latitude }}".replace(',', '.'));
+        const lng = parseFloat("{{ posto.contato.longitude }}".replace(',', '.'));
+        
+        if(!isNaN(lat) && !isNaN(lng)) {
+            const map = L.map('map').setView([lat, lng], 15);
+            
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+
+            // Adicionar marcador circular
+            L.circleMarker([lat, lng], {
+                color: '#3730a3',
+                fillColor: '#4f46e5',
+                fillOpacity: 0.5,
+                radius: 8
+            }).addTo(map)
+            .bindPopup(`
+                <b>{{ posto.posto_atendimento }}</b><br>
+                ${lat.toFixed(6)}, ${lng.toFixed(6)}
+            `);
+        } else {
+            mapDiv.innerHTML = '<div class="text-red-500 p-4">Coordenadas inválidas</div>';
+        }
+    {% else %}
+        mapDiv.innerHTML = '<div class="text-yellow-500 p-4">Localização não disponível</div>';
+    {% endif %}
+});
+</script>
 
         <!-- Botão Voltar -->
         <div class="mt-8 text-center">

@@ -324,6 +324,8 @@ class Cidade(models.Model):
     def __str__(self):
         return f'{self.municipio} - {self.posto.posto_atendimento}'
     
+
+
     class Meta:
         verbose_name = "Cidade"
         verbose_name_plural = "Cidades"

@@ -2,13 +2,31 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy
 from .models import Posto, Contato, Pessoal,Cidade
 
+from django.shortcuts import render, get_object_or_404
+from .models import Posto
+
 def posto_list(request):
-    postos = Posto.objects.all()
-    return render(request, 'posto_list.html', {'postos': postos})
+    postos = Posto.objects.all().prefetch_related('pessoal', 'cidades')
+    cidades = Cidade.objects.all().select_related('posto')  # Novo queryset
+    return render(request, 'posto_list.html', {
+        'postos': postos,
+        'cidades': cidades  # Adicionar ao contexto
+    })
 
 def posto_detail(request, pk):
     posto = get_object_or_404(Posto, pk=pk)
     return render(request, 'posto_detail.html', {'posto': posto})
+
+
+def municipio_detail(request, pk):
+    cidade = get_object_or_404(Cidade, pk=pk)
+    posto = cidade.posto  # Obtenha o posto relacionado à cidade
+    return render(request, 'municipio_detail.html', {'cidade': cidade, 'posto': posto})
+
+def posto_secao_detail(request, pk):
+    posto = get_object_or_404(Posto, pk=pk)
+    return render(request, 'posto_secao_detail.html', {'posto': posto})
+
 
 def posto_create(request):
     sgb_choices = Posto.sgb_choices

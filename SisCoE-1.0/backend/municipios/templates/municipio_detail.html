@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{{ cidade.municipio }}{% endblock %}
+
+{% block 'body' %}
+
+<!-- Adicione os links do Leaflet no head do base.html ou aqui -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+
+<body>
+    <br>
+    <div class="md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_efetivo">
+        <fieldset class=" p-4 mb-8 rounded-md w-full" id="second-fieldset">
+   
+            <!-- Seção Superior - Informações Gerais -->
+            <fieldset class="bg-gray-800 mb-4 rounded-md w-full " id="qpoHeader">
+                  <div class="flex flex-col h-auto rounded-[10px]">
+                     <div class="bg-gray-800 rounded-xl shadow-2xl w-full transition-all duration-300 animate-fade-in">
+                      <div class="flex flex-col md:flex-row">
+                        <!-- Bandeira e Imagem -->
+                        <div class="md:w-1/2 relative mb-8 md:mb-0">
+                            {% if cidade.bandeira %}
+                            <div class="relative w-full h-full">
+                                <img src="{{ cidade.bandeira.url }}" 
+                                     class="foto-perfil rounded-sm w-full h-full object-cover object-center" 
+                                     alt="Bandeira de {{ cidade.municipio }}">
+                                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-gray-800"></div>
+                            </div>
+                            {% else %}
+                            <div class="flex items-center justify-center h-full">
+                                <span class="text-gray-500">Sem imagem disponível</span>
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Detalhes do Município -->
+                        <div class="md:w-1/2 md:pl-8 mt-8">
+                            <h1 class="text-5xl font-semibold text-gray-300 mb-4">
+                                {{ cidade.municipio }}
+                            </h1>
+                            
+                    
+                            <div class="mb-6">
+                                <h2 class="text-xl font-semibold text-gray-300 mb-4">Municípios Atendidos</h2>
+                                 
+                                {% for cidade in posto.cidades.all %}
+                                <div class="flex flex-wrap gap-2">
+                                     {% for cidade in posto.cidades.all %}
+                                        <span class="bg-indigo-700 text-purple-200 px-3 py-1 rounded-full text-sm">
+                                            {{ posto.posto_atendimento }}
+                                        </span>
+                                     {% endfor %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                           
+                            
+
+                            <!-- Informações de Localização -->
+                            <h2 class="text-xl font-semibold text-gray-300 mb-4">Localização</h2>
+                            <ul class="space-y-2 text-gray-500">
+                                <li class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                    </svg>
+                                    {{ cidade.posto.sgb }} - {{ cidade.posto.posto_secao }}
+                                </li>
+                                <li class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                    </svg>
+                                    Latitude: {{ cidade.latitude }}
+                                </li>
+                                <li class="flex items-center">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                                    </svg>
+                                    Longitude: {{ cidade.longitude }}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class="bg-gray-800 rounded-xl shadow-2xl p-4 mb-4">
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold text-gray-300 mb-4">Descrição</h2>
+                <p class="text-gray-400">{{ cidade.descricao }}</p>
+            </div> 
+          </fieldset>
+
+
+        <!-- Container do Mapa - Altura fixa importante -->
+        <fieldset class="bg-gray-800 rounded-xl shadow-2xl p-4 mb-4">
+            <legend class="text-xl font-semibold text-white mb-4"></legend>
+            <div id="mapDetail" class="h-[500px] rounded-lg z-0"></div>
+        </fieldset>
+
+        <!-- Botão Voltar -->
+        <div class="mt-8 text-center">
+            <a href="{% url 'municipios:posto_list' %}" 
+               class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+                Voltar para a Listagem
+            </a>
+        </div>
+    </fieldset>
+</div>
+
+<!-- Leaflet CSS e JS -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<style>
+    /* Estilos consolidados */
+    #mapDetail {
+        height: 500px;
+        z-index: 0;
+        position: relative;
+        border-radius: 0.5rem;
+    }
+    
+    .leaflet-container {
+        background: #1a202c !important;
+        font-family: inherit;
+    }
+    
+    .leaflet-control-attribution {
+        background: rgba(26, 32, 44, 0.8) !important;
+        color: #cbd5e0 !important;
+        font-size: 0.75rem;
+    }
+    
+    .pulsing-circle {
+        animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        70% { transform: scale(2.5); opacity: 0; }
+        100% { transform: scale(1); opacity: 0; }
+    }
+    </style>
+    
+    <div id="mapDetail" class="rounded-lg"></div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mapContainer = document.getElementById('mapDetail');
+        if (!mapContainer) {
+            console.error('Elemento mapDetail não encontrado');
+            return;
+        }
+    
+        // Converter e validar coordenadas
+        const latStr = "{{ cidade.latitude|default:0 }}".replace(',', '.');
+        const lngStr = "{{ cidade.longitude|default:0 }}".replace(',', '.');
+        const lat = parseFloat(latStr);
+        const lng = parseFloat(lngStr);
+    
+        if (isNaN(lat) || isNaN(lng) || lat === 0 || lng === 0) {
+            mapContainer.innerHTML = `
+                <div class="p-4 text-center bg-red-50 text-red-600 rounded-lg">
+                    <svg class="mx-auto h-12 w-12 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="mt-2 font-medium">Coordenadas inválidas</p>
+                    <p class="text-sm">Lat: ${latStr}, Lon: ${lngStr}</p>
+                </div>
+            `;
+            return;
+        }
+    
+        try {
+            // Inicializar mapa
+            const map = L.map('mapDetail', {
+                center: [lat, lng],
+                zoom: 13,
+                zoomControl: false,
+                preferCanvas: true
+            });
+    
+            // Camada base
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+    
+            // Marcador circular principal
+            const marker = L.circleMarker([lat, lng], {
+                radius: 14,
+                color: '#1e1b4b',
+                fillColor: '#4338ca',
+                fillOpacity: 0.8,
+                weight: 2
+            }).addTo(map);
+    
+            // Efeito de pulso
+            const pulse = L.circle([lat, lng], {
+                color: '#6366f1',
+                fillColor: '#6366f1',
+                radius: 40,
+                weight: 0,
+                fillOpacity: 0.2,
+                className: 'pulsing-circle'
+            }).addTo(map);
+    
+            // Popup interativo
+            marker.bindPopup(`
+                <div class="text-sm">
+                    <h3 class="font-bold mb-1">{{ cidade.municipio }}</h3>
+                    <p class="text-gray-600">📍 ${lat.toFixed(4)}, ${lng.toFixed(4)}</p>
+                </div>
+            `);
+    
+            // Ajustes finais
+            setTimeout(() => map.invalidateSize(), 100);
+            map.attributionControl.setPrefix('');
+    
+        } catch (error) {
+            console.error('Erro ao carregar mapa:', error);
+            mapContainer.innerHTML = `
+                <div class="p-4 text-center bg-yellow-50 text-yellow-700 rounded-lg">
+                    Erro ao carregar o mapa. Recarregue a página.
+                </div>
+            `;
+        }
+    });
+    </script>
+    {% endblock %}

@@ -522,7 +522,10 @@ class Promocao(models.Model):
 
 
 
-# coleta a imagem do cadastro de cada usuario
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from backend.efetivo.utils import add_cpf_to_image  # Importe a função
+
 class Imagem(models.Model):
     cadastro = models.ForeignKey(Cadastro, on_delete=models.CASCADE, related_name='imagens')
     image = models.ImageField(upload_to='img/fotos_perfil')
@@ -531,8 +534,15 @@ class Imagem(models.Model):
 
     def __str__(self):
         return f'Imagem de {self.cadastro.nome_de_guerra}'
-    
 
+@receiver(post_save, sender=Imagem)
+def add_cpf_to_profile_image(sender, instance, **kwargs):
+    cpf = instance.cadastro.cpf
+    image_path = instance.image.path
+    output_path = os.path.join(os.path.dirname(image_path), f"cpf_{os.path.basename(image_path)}")
+    add_cpf_to_image(image_path, cpf, output_path)
+    instance.image = output_path
+    instance.save()
 # modelo de dados para  gerar o historico de promoções  do militar
 
 
