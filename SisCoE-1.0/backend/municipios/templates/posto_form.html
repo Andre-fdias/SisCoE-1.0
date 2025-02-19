@@ -87,6 +87,27 @@
                     <div class="text-red-500 text-sm mt-1 hidden" id="operacional_ou_adm_error">Por favor, selecione o tipo de operação.</div>
                 </div>
             </div>
+            <br>
+            <br>
+
+            <div>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="mb-4">
+                        <p class="text-lg font-bold">Imagem do Quartel</p>
+                    </div>
+                    <div class="mb-3">
+                        <label for="image" class="block text-sm font-medium text-gray-700">Envie uma foto do quartel</label>
+                        <br><br>
+                        <img id="preview" src="#" alt="Pré-visualização da imagem" style="display: none; max-width: 200px;">
+                        <br><br>
+                        <input class="mt-1 block w-full text-base border-gray-300 border-blue-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" name="image" type="file" id="image" accept="image/*" onchange="previewImage(event)" required>
+                        <div class="text-red-500 text-sm mt-1 hidden" id="image_error">Por favor, envie uma imagem de perfil.</div>
+                    </div>
+                    <div class="flex justify-start">
+                        <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 shadow-lg shadow-red-500/50 font-medium rounded-lg text-sm px-5 py-2.5 remove-cidade">Remover</button>
+                    </div>
+                </div>
+            </div>
     </fieldset>
                 
 
@@ -314,20 +335,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Função de preview
-function previewImage(event, index) {
-    const input = event.target;
-    const preview = document.getElementById(`preview_${index}`);
-    
-    if (input.files && input.files[0]) {
+ // Função para pré-visualizar a imagem
+ function previewImage(event) {
         const reader = new FileReader();
-        reader.onload = (e) => {
-            preview.src = e.target.result;
-            preview.classList.remove('hidden');
+        reader.onload = function() {
+            const preview = document.getElementById('preview');
+            preview.src = reader.result;
+            preview.style.display = 'block';
         }
-        reader.readAsDataURL(input.files[0]);
+        reader.readAsDataURL(event.target.files[0]);
     }
-}
+
+    document.getElementById('image').addEventListener('change', previewImage);
 </script>
                 <!-- Botão de Envio -->
                 <fieldset class="bg-gray-800 p-4 mb-8 rounded-md">

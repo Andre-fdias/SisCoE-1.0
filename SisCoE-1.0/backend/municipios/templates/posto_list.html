@@ -75,17 +75,20 @@
                             <td class="px-4 py-2 text-center">{{ posto.posto_secao }}</td>
                             <td class="px-4 py-2 text-center">{{ posto.sgb }}</td>
                             <td class="px-4 py-2 text-center">{{ posto.cidade_posto }}</td>
+
                             {% with pessoal=posto.pessoal.first %}
-                                <td class="px-4 py-2 text-center">{{ pessoal.ten_cel }}</td>
-                                <td class="px-4 py-2 text-center">{{ pessoal.maj }}</td>
-                                <td class="px-4 py-2 text-center">{{ pessoal.cap }}</td>
-                                <td class="px-4 py-2 text-center">{{ pessoal.tenqo }}</td>
-                                <td class="px-4 py-2 text-center">{{ pessoal.tenqa }}</td>
-                                <td class="px-4 py-2 text-center">{{ pessoal.st_sgt }}</td>
-                                <td class="px-4 py-2 text-center">{{ pessoal.cb_sd }}</td>
-                                <td class="px-4 py-2 text-center font-bold">
-                                    {{ pessoal.ten_cel|add:pessoal.maj|add:pessoal.cap|add:pessoal.tenqo|add:pessoal.tenqa|add:pessoal.st_sgt|add:pessoal.cb_sd }}
+                      
+                                <td class="px-4 py-3 text-center">{{ pessoal.ten_cel|default:"0" }}</td>
+                                <td class="px-4 py-3 text-center">{{ pessoal.maj|default:"0" }}</td>
+                                <td class="px-4 py-3 text-center">{{ pessoal.cap|default:"0" }}</td>
+                                <td class="px-4 py-3 text-center">{{ pessoal.tenqo|default:"0" }}</td>
+                                <td class="px-4 py-3 text-center">{{ pessoal.tenqa|default:"0" }}</td>
+                                <td class="px-4 py-3 text-center">{{ pessoal.st_sgt|default:"0" }}</td>
+                                <td class="px-4 py-3 text-center">{{ pessoal.cb_sd|default:"0" }}</td>
+                                <td class="px-4 py-3 text-center font-semibold text-indigo-800">
+                                    {{ pessoal.total }}
                                 </td>
+                            
                             {% endwith %}
                             <td class="p-3">
                                 <div class="flex">

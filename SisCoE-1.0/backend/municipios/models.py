@@ -168,6 +168,13 @@ class Posto(models.Model):
     cidade_posto = models.CharField(max_length=50, blank=False, null=False, choices=cidade_posto_choices)
     tipo_cidade = models.CharField(max_length=50, blank=False, null=False, choices=op_adm_choices)
     op_adm = models.CharField(max_length=50, blank=False, null=False, choices=tipo_choices)
+    quartel = models.ImageField(
+        upload_to='img/quartel/%Y/%m/%d/', 
+        blank=True,
+        null=True,
+        verbose_name="Quartel",
+        help_text="Formato: PNG/JPG. Tamanho máximo: 2MB"
+    )
     data_criacao = models.DateTimeField(default=timezone.now)
     usuario = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
@@ -210,6 +217,14 @@ class Pessoal(models.Model):
 
     def __str__(self):
         return f'{self.posto}'
+    
+    @property
+    def total(self):
+        return (
+            self.ten_cel + self.maj + self.cap +
+            self.tenqo + self.tenqa + 
+            self.st_sgt + self.cb_sd
+        )
 
 class Cidade(models.Model):
 

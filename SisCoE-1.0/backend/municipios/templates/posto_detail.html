@@ -4,7 +4,7 @@
 
 {% block 'body' %}
 <br>
-<div class="md:items-center md:justify-between rounded-lg  mt-4 w-full" id="cad_efetivo">
+<div class="md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_efetivo">
     <fieldset class="p-4 mb-8 rounded-md w-full" id="second-fieldset">
         <!-- Seção Superior - Informações Gerais -->
         <fieldset class="p-2 mb-8 rounded-md rounded-[5px]">
@@ -12,13 +12,13 @@
                 <div class="bg-gray-800 rounded-xl shadow-2xl w-full transition-all duration-300 animate-fade-in">
                     <div class="flex flex-col md:flex-row">
                         <!-- Bandeira e Imagem -->
-                        <div class="md:w-1/2 relative mb-8 md:mb-0">
-                            {% if posto.cidades.first.bandeira %}
-                            <div class="relative w-full h-full">
-                                <img src="{{ posto.cidades.first.bandeira.url }}" 
-                                     class="foto-perfil rounded-sm w-full h-full object-cover object-center" 
-                                     alt="Bandeira de {{ posto.cidades.first.municipio }}">
-                                <div class="absolute inset-0 bg-gradient-to-r from-transparent to-gray-800"></div>
+                        <div class="md:w-1/2 relative mb-8 md:mb-0 max-h-[200px] overflow-hidden">
+                            {% if posto.quartel %}
+                            <div class="flex flex-col md:flex-row rounded-md rounded-[10px]">
+                                <div class="relative w-full h-full">
+                                    <img src="{{ posto.quartel.url }}" class="foto-perfil rounded-sm w-full h-full object-cover object-center" alt="Imagem do Quartel de {{ posto.cidades.first.municipio }}">
+                                    <div class="absolute inset-0 bg-gradient-to-r from-transparent to-gray-800"></div>
+                                </div>
                             </div>
                             {% else %}
                             <div class="flex items-center justify-center h-full">
@@ -26,26 +26,19 @@
                             </div>
                             {% endif %}
                         </div>
-
                         <!-- Detalhes do Posto -->
-                        <div class="md:w-1/2 md:pl-8 mt-8">
-                            <h1 class="text-5xl font-semibold text-gray-300 mb-4">
-                                {{ posto.posto_secao}}
-                            </h1>
-                            
+                        <div class="md:w-1/2 md:pl-8 mt-4 p-4">
+                            <h1 class="text-5xl font-semibold text-gray-300 mb-4">{{ posto.posto_secao }}</h1>
                             <div class="mb-6">
                                 <h2 class="text-xl font-semibold text-gray-300 mb-4">Municípios Atendidos</h2>
                                 <div class="flex flex-wrap gap-2">
                                     {% for cidade in posto.cidades.all %}
-                                    <span class="bg-indigo-700 text-purple-200 px-3 py-1 rounded-full text-sm">
-                                        {{ cidade.municipio }}
-                                    </span>
+                                    <span class="bg-indigo-700 text-purple-200 px-3 py-1 rounded-full text-sm">{{ cidade.municipio }}</span>
                                     {% endfor %}
                                 </div>
                             </div>
-
                             <!-- Informações de Contato -->
-                            <h2 class="text-xl font-semibold text-gray-300 mb-4">Contatos</h2>
+                            <h2 class="text-xl font-semibold text-gray-300 mb-4 p-2">Contatos</h2>
                             <ul class="space-y-2 text-gray-500">
                                 {% if posto.contato %}
                                 <li class="flex items-center">
@@ -53,7 +46,7 @@
                                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                                     </svg>
-                                    {{ posto.contato.email }}
+                                   {{posto.contato.email }}
                                 </li>
                                 <li class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
@@ -74,159 +67,371 @@
                 </div>
             </div>
         </fieldset>
-        <fieldset class=" p-2 mb-8 rounded-md rounded-[10px]">
+        <fieldset class="p-2 mb-8 rounded-md rounded-[10px]">
             <div class="flex flex-col h-auto rounded-[10px]">
-                <div class=" bg-gray-200 rounded-xl shadow-2xl  w-full p-8 transition-all duration-300 animate-fade-in">
+                <div class="bg-gray-200 rounded-xl shadow-2xl w-full p-8 transition-all duration-300 animate-fade-in">
                     <div class="flex flex-wrap tracking-wide">
                         <div id="02" class="w-full lg:w-1/2 p-4 leading-relaxed space-y-4">
-                            <h2 class="text-xl font-semibold text-indigo-800mb-4">Situação Funcional</h2>
-                            <hr class="my-4 border-b-1 border-gray-500">
-
-                            <table id="qpo" class="text-gray-700 bg-white p-2">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-4">Efetivo Fixado</h2>
+                            <hr class="my-4 border-b-1 border-gray-500 mb-4"><br>
+                            <table id="qpo" class="rounded-xl shadow-2xl text-gray-700 bg-white p-2">
                                 <thead>
                                     <tr>
-                                        
-                                    <th class="px-4 py-2 text-center font-size-sm"> Ten Cel <img src="{% static 'img/ten_cel.jpg' %}" class="w-13 h-10 rounded-full " role=" img"
-                                        aria-label="people-circle" id="logo"></th>
-                                        <th class="px-4 py-2 text-center"> Maj <img src="{% static 'img/major-pm.jpg' %}" class="w-13 h-10 rounded-full " role=" img"
-                                            aria-label="people-circle" id="logo"></th>
-                                        <th class="px-4 py-2 text-center">Cap
-                                            <img src="{% static 'img/capitao-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
-                                            aria-label="people-circle" id="logo"></th>
-                                        <th class="px-4 py-2 text-center"> Ten QO<img src="{% static 'img/1-tenente-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
-                                            aria-label="people-circle" id="logo"></th>
-                                        <th class="px-4 py-2 text-center">Ten QA <img src="{% static 'img/1-tenente-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
-                                            aria-label="people-circle" id="logo"></th>
-                                        <th class="px-4 py-2 text-center">St/Sgt<img src="{% static 'img/1-sargento-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
-                                            aria-label="people-circle" id="logo"></th>
-                                        <th class="px-4 py-2 text-center">Cb/Sd<img src="{% static 'img/cabo-pm.jpg' %}" class="w-13 h-10 rounded-full "  role=" img"
-                                            aria-label="people-circle" id="logo"></th>
-                                        <th class="px-4 py-2 text-center">Total</th> <!-- Nova coluna -->
-                                   
+                                        <th class="px-4 py-2 text-center font-size-sm">Ten Cel <img src="{% static 'img/ten_cel.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Maj <img src="{% static 'img/major-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Cap <img src="{% static 'img/capitao-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Ten QO <img src="{% static 'img/1-tenente-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Ten QA <img src="{% static 'img/1-tenente-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">St/Sgt <img src="{% static 'img/1-sargento-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Cb/Sd <img src="{% static 'img/cabo-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Total</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for posto in postos %}
-                                    <tr>
-                                        {% with pessoal=posto.pessoal.first %}
-                                            <td class="px-4 py-2 text-center">{{ pessoal.ten_cel }}</td>
-                                            <td class="px-4 py-2 text-center">{{ pessoal.maj }}</td>
-                                            <td class="px-4 py-2 text-center">{{ pessoal.cap }}</td>
-                                            <td class="px-4 py-2 text-center">{{ pessoal.tenqo }}</td>
-                                            <td class="px-4 py-2 text-center">{{ pessoal.tenqa }}</td>
-                                            <td class="px-4 py-2 text-center">{{ pessoal.st_sgt }}</td>
-                                            <td class="px-4 py-2 text-center">{{ pessoal.cb_sd }}</td>
-                                            <td class="px-4 py-2 text-center font-bold">
-                                                {{ pessoal.ten_cel|add:pessoal.maj|add:pessoal.cap|add:pessoal.tenqo|add:pessoal.tenqa|add:pessoal.st_sgt|add:pessoal.cb_sd }}
-                                            </td>
-                                        {% endwith %}
-                                   </tr>
-                                    {% endfor %}
+                                    {% with pessoal=posto.pessoal.first %}
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-center">{{ pessoal.ten_cel|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.maj|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.cap|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.tenqo|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.tenqa|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.st_sgt|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.cb_sd|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center font-semibold text-indigo-800">{{ pessoal.total }}</td>
+                                    </tr>
+                                    {% endwith %}
                                 </tbody>
                             </table>
-                          
-                         
-                            
-                        
+                            <br>
+                             <!-- Botão para abrir o modal de edição de Pessoal -->
+                        <button type="button" class="mt-8 text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2" data-modal-target="#editPessoalModal">
+                            Editar Qpo
+                        </button>
 
+                        <!-- Modal de Edição de Pessoal -->
+                        <div id="editPessoalModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                            <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
+                                <!-- Modal header -->
+                                <div class="flex items-start justify-between p-4 bg-gray-800 rounded-t border-gray-500">
+                                    <h5 class="text-xl font-semibold text-gray-300 dark:text-white" id="editPessoalModalLabel">Editar Pessoal</h5>
+                                    <button type="button" class="text-gray-200 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-close="#editPessoalModal">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-6 space-y-6">
+                                    <form id="editPessoalForm" method="post">
+                                        {% csrf_token %}
+                                        <!-- Add your form fields here -->
+                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div class="mb-4">
+                                            <label for="cel" class="block text-sm font-medium text-gray-400">Cel</label>
+                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cel" name="cel" value="{{ pessoal.cel }}">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="ten_cel" class="block text-sm font-medium text-gray-400">Ten Cel</label>
+                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="ten_cel" name="ten_cel" value="{{ pessoal.ten_cel }}">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="maj" class="block text-sm font-medium text-gray-400">Maj</label>
+                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="maj" name="maj" value="{{ pessoal.maj }}">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="cap" class="block text-sm font-medium text-gray-400">Cap</label>
+                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cap" name="cap" value="{{ pessoal.cap }}">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="tenqo" class="block text-sm font-medium text-gray-400">Ten QO</label>
+                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="tenqo" name="tenqo" value="{{ pessoal.tenqo }}">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="tenqa" class="block text-sm font-medium text-gray-400">Ten QA</label>
+                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="tenqa" name="tenqa" value="{{ pessoal.tenqa }}">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="asp" class="block text-sm font-medium text-gray-400">Asp</label>
+                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="asp" name="asp" value="{{ pessoal.asp }}">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="st_sgt" class="block text-sm font-medium text-gray-400">St/Sgt</label>
+                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="st_sgt" name="st_sgt" value="{{ pessoal.st_sgt }}">
+                                        </div>
+                                        <div class="mb-4">
+                                            <label for="cb_sd" class="block text-sm font-medium text-gray-400">Cb/Sd</label>
+                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cb_sd" name="cb_sd" value="{{ pessoal.cb_sd }}">
+                                        </div>
+                                        <div class="flex items-center justify-end space-x-4">
+                                            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#editPessoalModal">Cancelar</button>
+                                            <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
+                                        </div>
+                                    </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            function previewImage(event) {
+                                const reader = new FileReader();
+                                reader.onload = function() {
+                                    const preview = document.getElementById('preview');
+                                    preview.src = reader.result;
+                                    preview.classList.remove('hidden');
+                                }
+                                reader.readAsDataURL(event.target.files[0]);
+                            }
+
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const openModalButtons = document.querySelectorAll('[data-modal-target]');
+                                const closeModalButtons = document.querySelectorAll('[data-modal-close]');
+
+                                openModalButtons.forEach(button => {
+                                    button.addEventListener('click', () => {
+                                        const modal = document.querySelector(button.dataset.modalTarget);
+                                        openModal(modal);
+                                    });
+                                });
+
+                                closeModalButtons.forEach(button => {
+                                    button.addEventListener('click', () => {
+                                        const modal = button.closest('.fixed');
+                                        closeModal(modal);
+                                    });
+                                });
+
+                                function openModal(modal) {
+                                    if (modal == null) return;
+                                    modal.classList.remove('hidden');
+                                }
+
+                                function closeModal(modal) {
+                                    if (modal == null) return;
+                                    modal.classList.add('hidden');
+                                }
+                            });
+                        </script>
                         </div>
                         <div id="03" class="w-full lg:w-1/2 p-4 leading-relaxed space-y-4">
-                            <h2 class="text-xl font-semibold text-indigo-800mb-4">Documentos e Contatos</h2>
-                            <hr class="my-4 border-b-1 border-gray-500">
-                        
-                            
-                            <hr class="my-4">
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>CPF:</b> <span>{{ cadastro.cpf }}</span></h4>
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>RG:</b> <span>{{ cadastro.rg }}</span></h4>
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>Email:</b> <span>{{ cadastro.email }}</span></h4>
-                            <h4 class="text-1xl text-gray-700  mb-4"><b>Telefone:</b> <span>{{ cadastro.telefone }}</span></h4><br>
-                            <br><br>
-
-                 
-                    </div>
-                </div>
-
-        </fieldset>  
-        <!-- Seção de Detalhes -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Detalhes da Unidade -->
-            <div class="bg-gray-200 rounded-xl shadow-2xl p-8">
-                <h2 class="text-xl font-semibold text-indigo-800 mb-4">Detalhes da Unidade</h2>
-                <hr class="my-4 border-b-1 border-gray-500">
-                <div class="space-y-4">
-                    <div>
-                        <p class="text-gray-700"><strong>Endereço:</strong> 
-                            {{ posto.contato.rua }}, {{ posto.contato.numero }}<br>
-                            {{ posto.contato.bairro }} - {{ posto.contato.cidade }}
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-gray-700"><strong>Data de Criação:</strong> 
-                            {{ posto.data_criacao|date:"d/m/Y" }}
-                        </p>
-                    </div>
-                    <div>
-                        <p class="text-gray-700"><strong>Responsável:</strong> 
-                            {{ posto.usuario.get_full_name }}
-                        </p>
+                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Efetivo Existente</h2>
+                            <hr class="my-4 border-b-1 border-gray-500"><br>
+                            <table id="qpo" class="rounded-xl shadow-2xl text-gray-700 bg-white p-2">
+                                <thead>
+                                    <tr>
+                                        <th class="px-4 py-2 text-center font-size-sm">Ten Cel <img src="{% static 'img/ten_cel.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Maj <img src="{% static 'img/major-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Cap <img src="{% static 'img/capitao-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Ten QO <img src="{% static 'img/1-tenente-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Ten QA <img src="{% static 'img/1-tenente-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">St/Sgt <img src="{% static 'img/1-sargento-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Cb/Sd <img src="{% static 'img/cabo-pm.jpg' %}" class="w-13 h-10 rounded-full" role="img" aria-label="people-circle" id="logo"></th>
+                                        <th class="px-4 py-2 text-center">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% with pessoal=posto.pessoal.first %}
+                                    <tr class="hover:bg-gray-50">
+                                        <td class="px-4 py-3 text-center">{{ pessoal.ten_cel|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.maj|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.cap|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.tenqo|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.tenqa|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.st_sgt|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center">{{ pessoal.cb_sd|default:"0" }}</td>
+                                        <td class="px-4 py-3 text-center font-semibold text-indigo-800">{{ pessoal.total }}</td>
+                                    </tr>
+                                    {% endwith %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
+        </fieldset>
+        <fieldset class="bg-gray-200 mb-8 rounded-xl shadow-2xl">
+            <!-- Seção de Detalhes -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Detalhes da Unidade -->
+                <div class="bg-gray-200 rounded-xl p-8">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Endereço e Contatos da Unidade</h2>
+                    <hr class="my-4 border-b-1 border-gray-500">
+                    <div class="space-y-4">
+                        <div>
+                            <p class="text-gray-700"><strong>Rua:</strong> {{ posto.contato.rua }}, {{ posto.contato.numero }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-700"><strong>Bairro:</strong> {{ posto.contato.bairro }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-700"><strong>Cidade:</strong> {{ posto.contato.cidade }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-700"><strong>Email:</strong> {{ posto.contato.email }}</p>
+                        </div>
+                        <div>
+                            <p class="text-gray-700"><strong>Telefone:</strong> {{ posto.contato.telefone }}</p>
+                        </div>
+                        <!-- Botão para abrir o modal de edição de Contato -->
+                        <button type="button" class="mt-4 text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2" data-modal-target="#editContatoModal">
+                            Editar Endereço
+                        </button>
 
-            <!-- Mapa -->
+                        <!-- Modal de Edição de Contato -->
+                        <div id="editContatoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                            <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
+                                <!-- Modal header -->
+                                <div class="flex items-start justify-between p-4 bg-gray-800 rounded-t border-gray-500">
+                                    <h5 class="text-xl font-semibold text-gray-300 dark:text-white" id="editContatoModalLabel">Editar Contato</h5>
+                                    <button type="button" class="text-gray-200 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-close="#editContatoModal">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-6 space-y-6">
+                                    <form id="editContatoForm" method="post">
+                                        {% csrf_token %}
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="mb-4">
+                                                <label for="telefone" class="block text-sm font-medium text-gray-400">Telefone</label>
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="telefone" name="telefone" value="{{ contato.telefone }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="rua" class="block text-sm font-medium text-gray-400">Rua</label>
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="rua" name="rua" value="{{ contato.rua }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="numero" class="block text-sm font-medium text-gray-400">Número</label>
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="numero" name="numero" value="{{ contato.numero }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="complemento" class="block text-sm font-medium text-gray-400">Complemento</label>
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="complemento" name="complemento" value="{{ contato.complemento }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="bairro" class="block text-sm font-medium text-gray-400">Bairro</label>
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="bairro" name="bairro" value="{{ contato.bairro }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="cidade" class="block text-sm font-medium text-gray-400">Cidade</label>
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cidade" name="cidade" value="{{ contato.cidade }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="cep" class="block text-sm font-medium text-gray-400">CEP</label>
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cep" name="cep" value="{{ contato.cep }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="email" class="block text-sm font-medium text-gray-400">Email</label>
+                                                <input type="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="email" name="email" value="{{ contato.email }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="latitude" class="block text-sm font-medium text-gray-400">Latitude</label>
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="latitude" name="latitude" value="{{ contato.latitude }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="longitude" class="block text-sm font-medium text-gray-400">Longitude</label>
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="longitude" name="longitude" value="{{ contato.longitude }}">
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-end space-x-4">
+                                            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#editContatoModal">Cancelar</button>
+                                            <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <script>
+                            document.addEventListener('DOMContentLoaded', () => {
+                                const openModalButtons = document.querySelectorAll('[data-modal-target]');
+                                const closeModalButtons = document.querySelectorAll('[data-modal-close]');
+
+                                openModalButtons.forEach(button => {
+                                    button.addEventListener('click', () => {
+                                        const modal = document.querySelector(button.dataset.modalTarget);
+                                        openModal(modal);
+                                    });
+                                });
+
+                                closeModalButtons.forEach(button => {
+                                    button.addEventListener('click', () => {
+                                        const modal = button.closest('.fixed');
+                                        closeModal(modal);
+                                    });
+                                });
+
+                                function openModal(modal) {
+                                    if (modal == null) return;
+                                    modal.classList.remove('hidden');
+                                closeModal(modal) {
+                                    if (modal == null) return;
+                                    modal.classList.add('hidden');
+                                }
+                            });
+                        </script>
+                    </div>
+                    
+                </div>
+               
+               
+                <!-- Mapa -->
     <!-- Substitua a seção do mapa por este código -->
-<div class="bg-gray-800 rounded-xl shadow-2xl p-4">
-    <h2 class="text-xl font-semibold text-white mb-4">Localização</h2>
-    <div id="map" class="h-96 rounded-lg"></div>
-</div>
+            <div class="bg-gray-800 rounded-xl shadow-2xl p-4">
+                <h2 class="text-xl font-semibold text-white mb-4">Localização</h2>
+                <div id="map" class="h-96 rounded-lg"></div>
+            </div>
 
-<!-- Adicione esses links no head do seu base.html -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+            <!-- Adicione esses links no head do seu base.html -->
+            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const mapDiv = document.getElementById('map');
-    
-    // Verificar se existe contato e coordenadas
-    {% if posto.contato and posto.contato.latitude and posto.contato.longitude %}
-        const lat = parseFloat("{{ posto.contato.latitude }}".replace(',', '.'));
-        const lng = parseFloat("{{ posto.contato.longitude }}".replace(',', '.'));
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const mapDiv = document.getElementById('map');
+                
+                // Verificar se existe contato e coordenadas
+                {% if posto.contato and posto.contato.latitude and posto.contato.longitude %}
+                    const lat = parseFloat("{{ posto.contato.latitude }}".replace(',', '.'));
+                    const lng = parseFloat("{{ posto.contato.longitude }}".replace(',', '.'));
+                    
+                    if(!isNaN(lat) && !isNaN(lng)) {
+                        const map = L.map('map').setView([lat, lng], 15);
+                        
+                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        }).addTo(map);
+
+                        // Adicionar marcador circular
+                        L.circleMarker([lat, lng], {
+                            color: '#3730a3',
+                            fillColor: '#4f46e5',
+                            fillOpacity: 0.5,
+                            radius: 8
+                        }).addTo(map)
+                        .bindPopup(`
+                            <b>{{ posto.posto_atendimento }}</b><br>
+                            ${lat.toFixed(6)}, ${lng.toFixed(6)}
+                        `);
+                    } else {
+                        mapDiv.innerHTML = '<div class="text-red-500 p-4">Coordenadas inválidas</div>';
+                    }
+                {% else %}
+                    mapDiv.innerHTML = '<div class="text-yellow-500 p-4">Localização não disponível</div>';
+                {% endif %}
+            });
+            </script>
         
-        if(!isNaN(lat) && !isNaN(lng)) {
-            const map = L.map('map').setView([lat, lng], 15);
-            
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
-
-            // Adicionar marcador circular
-            L.circleMarker([lat, lng], {
-                color: '#3730a3',
-                fillColor: '#4f46e5',
-                fillOpacity: 0.5,
-                radius: 8
-            }).addTo(map)
-            .bindPopup(`
-                <b>{{ posto.posto_atendimento }}</b><br>
-                ${lat.toFixed(6)}, ${lng.toFixed(6)}
-            `);
-        } else {
-            mapDiv.innerHTML = '<div class="text-red-500 p-4">Coordenadas inválidas</div>';
-        }
-    {% else %}
-        mapDiv.innerHTML = '<div class="text-yellow-500 p-4">Localização não disponível</div>';
-    {% endif %}
-});
-</script>
-
-        <!-- Botão Voltar -->
-        <div class="mt-8 text-center">
-            <a href="{% url 'municipios:posto_list' %}" 
-               class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                Voltar para a Listagem
-            </a>
+        
+         
+        </fieldset>
+        <div class="w-full md:w-1/2 text-right">
+            <div class="container1">
+                <a href="{% url 'municipios:posto_list' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+            </div>
         </div>
     </fieldset>
 </div>
-{% endblock %}
+{% endblock %}     

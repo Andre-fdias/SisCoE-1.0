@@ -46,8 +46,9 @@ def posto_create(request):
             'cidade_posto': request.POST.get('cidade_posto'),
             'tipo_cidade': request.POST.get('tipo_cidade'),
             'op_adm': request.POST.get('op_adm'),
-            'usuario': request.user
-        }
+            'usuario': request.user,
+            'quartel': request.FILES.get('quartel')
+            }
         
         # Cria o Posto
         posto = Posto.objects.create(**posto_data)
@@ -129,6 +130,7 @@ def posto_update(request, pk):
         posto.cidade_posto = request.POST.get('cidade_posto')
         posto.tipo_cidade = request.POST.get('tipo_cidade')
         posto.op_adm = request.POST.get('op_adm')
+        posto.quartel = request.FILES.get('quartel')
         posto.save()
 
         # Atualiza Contato

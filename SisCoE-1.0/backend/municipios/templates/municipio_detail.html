@@ -43,7 +43,7 @@
                             
                     
                             <div class="mb-6">
-                                <h2 class="text-xl font-semibold text-gray-300 mb-4">Municípios Atendidos</h2>
+                                <h2 class="text-xl font-semibold text-gray-300 mb-4">Posto de Atendimento</h2>
                                  
                                 {% for cidade in posto.cidades.all %}
                                 <div class="flex flex-wrap gap-2">
@@ -84,30 +84,70 @@
                     </div>
                 </div>
             </div>
+            </fieldset>
+            <fieldset class="bg-gray-800 rounded-xl shadow-2xl p-4 mb-4">
+                <h2 class="text-xl font-semibold text-gray-300 mb-3">Descrição</h2>
+                <div class="prose prose-invert text-gray-300">
+                    {{ cidade.descricao|linebreaks }}
+                </div>
+            </fieldset>
+
+
+            <!-- Container do Mapa - Altura fixa importante -->
+            <fieldset class="bg-gray-800 rounded-xl shadow-2xl p-4 mb-4">
+                <legend class="text-xl font-semibold text-white mb-4"></legend>
+                <div id="mapDetail" class="h-[500px] rounded-lg z-0"></div>
+            </fieldset>
+
+
+
+            <fieldset class="border bg-gray-800 border-gray-800 p-4 mb-8 rounded-md">
+                <legend></legend>
+                <div id="01" class="flex flex-wrap">
+                    <div class="w-full bg-lightblue p-4 rounded-md">
+                        <div class="flex flex-wrap">
+                            <div class="w-full md:w-1/2">
+                                <div class="container1">
+                                    <div class="flex justify-start">
+                                        <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-target="#exampleModal">Excluir</button>
+                                    </div>
+                                    <div id="exampleModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                                        <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-md">
+                                            <div class="flex justify-between items-center p-4 bg-gray-800">
+                                                <h1 class="text-xl text-gray-200 font-medium">Excluir</h1>
+                                                <button type="button" class="text-gray-500 hover:text-gray-700" data-modal-close="#exampleModal">&times;</button>
+                                            </div>
+                                            <br>
+                                        
+                                            <div class="p-4 text-gray-400">
+                                                <p>Você tem certeza que deseja excluir o cadastro?</p>
+                                                <br>
+                                                <br>
+                                                <label for="password" class="block text-sm font-medium text-gray-400">Senha:</label>
+                                                <input type="password" id="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            </div>
+                                            <div class="flex justify-end space-x-2 p-4">
+                                                <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#exampleModal">Voltar</button>
+                                                <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" onclick="validatePassword()">Excluir</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="w-full md:w-1/2 text-right">
+                                <div class="container1">
+                                    <div class="flex justify-end">
+                                        <a href="{% url 'municipios:posto_list' %}"  class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                                    </div>
+                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
         </fieldset>
-        <fieldset class="bg-gray-800 rounded-xl shadow-2xl p-4 mb-4">
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold text-gray-300 mb-4">Descrição</h2>
-                <p class="text-gray-400">{{ cidade.descricao }}</p>
-            </div> 
-          </fieldset>
-
-
-        <!-- Container do Mapa - Altura fixa importante -->
-        <fieldset class="bg-gray-800 rounded-xl shadow-2xl p-4 mb-4">
-            <legend class="text-xl font-semibold text-white mb-4"></legend>
-            <div id="mapDetail" class="h-[500px] rounded-lg z-0"></div>
-        </fieldset>
-
-        <!-- Botão Voltar -->
-        <div class="mt-8 text-center">
-            <a href="{% url 'municipios:posto_list' %}" 
-               class="inline-block px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
-                Voltar para a Listagem
-            </a>
-        </div>
-    </fieldset>
-</div>
+    </div>
 
 <!-- Leaflet CSS e JS -->
 <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>

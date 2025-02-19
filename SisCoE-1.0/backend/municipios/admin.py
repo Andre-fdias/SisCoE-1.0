@@ -1,5 +1,3 @@
-# municipios/admin.py
-
 from django.contrib import admin
 from django.utils.html import format_html
 from .models import Posto, Cidade, Contato, Pessoal
@@ -37,15 +35,21 @@ class CidadeInline(admin.StackedInline):
 
 @admin.register(Posto)
 class PostoAdmin(admin.ModelAdmin):
-    inlines = [CidadeInline, ContatoInline, PessoalInline]
-    list_display = ('posto_atendimento', 'sgb_display', 'cidade_posto', 'tipo_cidade')
-    search_fields = ('posto_atendimento', 'cidade_posto')
-    list_filter = ('sgb', 'op_adm')
-    ordering = ('-data_criacao',)
+
+    readonly_fields = ('quartel_preview',)
     
+    def quartel_preview(self, obj):
+        if obj.quartel:
+            return format_html(
+                '<img src="{}" style="max-height: 200px;"/>',
+                obj.quartel.url
+            )
+        return "Nenhuma imagem cadastrada"
+    quartel_preview.short_description = "Pré-visualização do Quartel"
+
     fieldsets = (
         ('Identificação', {
-            'fields': ('sgb', 'posto_secao', 'posto_atendimento')
+            'fields': ('sgb', 'posto_secao', 'posto_atendimento', 'quartel', 'quartel_preview')
         }),
         ('Localização', {
             'fields': ('cidade_posto', 'tipo_cidade', 'op_adm')
@@ -55,6 +59,12 @@ class PostoAdmin(admin.ModelAdmin):
             'fields': ('usuario', 'data_criacao'),
         }),
     )
+
+    inlines = [CidadeInline, ContatoInline, PessoalInline]
+    list_display = ('posto_atendimento', 'sgb_display', 'cidade_posto', 'tipo_cidade')
+    search_fields = ('posto_atendimento', 'cidade_posto')
+    list_filter = ('sgb', 'op_adm')
+    ordering = ('-data_criacao',)
     
     def sgb_display(self, obj):
         return obj.get_sgb_display()
