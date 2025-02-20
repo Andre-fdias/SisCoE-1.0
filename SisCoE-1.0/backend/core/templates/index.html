@@ -294,6 +294,33 @@
       </div> 
 
 
+      
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          const carousel = document.getElementById('carousel');
+          const prevBtn = document.getElementById('prevBtn');
+          const nextBtn = document.getElementById('nextBtn');
+          let scrollAmount = 0;
+          const scrollStep = carousel.offsetWidth;
+      
+          nextBtn.addEventListener('click', () => {
+            scrollAmount += scrollStep;
+            if (scrollAmount > carousel.scrollWidth - carousel.offsetWidth) {
+              scrollAmount = 0;
+            }
+            carousel.style.transform = `translateX(-${scrollAmount}px)`;
+          });
+      
+          prevBtn.addEventListener('click', () => {
+            scrollAmount -= scrollStep;
+            if (scrollAmount < 0) {
+              scrollAmount = carousel.scrollWidth - carousel.offsetWidth;
+            }
+            carousel.style.transform = `translateX(-${scrollAmount}px)`;
+          });
+        });
+      </script>
        <!-- table aniversarinte Section -->
 
       <div id="contato" class="flex flex-row bg-gray-900 rounded-lg shadow-lg my-15">

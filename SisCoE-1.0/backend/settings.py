@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'backend.rpt',
     'backend.bm',
     'backend.municipios',
- 
+    'backend.documentos',
   
 ]
 

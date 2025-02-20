@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cadastrar Documento{% endblock %}
+
+{% block 'body' %}
+    <br>
+    <div class="md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_documento">
+        <fieldset class="p-4 mb-8 rounded-md w-full" id="second-fieldset">
+            <fieldset class="bg-gray-800 p-4 mb-8 rounded-md">
+                <div id="01" class="mb-4">
+                    <div class="bg-gray-800 p-4 rounded-md">
+                        <div class="flex flex-wrap items-center justify-between py-3">
+                            <div class="w-full md:w-9/12">
+                                <h1 class="text-3xl text-gray-200">Cadastrar Documento</h1>
+                            </div>
+                            <div class="w-full md:w-3/12 text-right">
+                                <a type="reset" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Limpar</a>
+                                <a href="{% url 'documentos:listar_documentos' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </fieldset>
+
+            <form class="needs-validation" novalidate action="{% url 'documentos:criar_documento' %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                    <div class="mb-4">
+                        <p class="text-lg font-bold">Dados do Documento</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div>
+                            <label for="data_publicacao" class="block text-sm font-medium text-gray-700">Data de Publicação:</label>
+                            <input type="date" name="data_publicacao" id="data_publicacao" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        </div>
+                        <div>
+                            <label for="data_documento" class="block text-sm font-medium text-gray-700">Data do Documento:</label>
+                            <input type="date" name="data_documento" id="data_documento" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        </div>
+                        <div>
+                            <label for="numero_documento" class="block text-sm font-medium text-gray-700">Número do Documento:</label>
+                            <input type="text" name="numero_documento" id="numero_documento" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        </div>
+                        <div class="col-span-2">
+                            <label for="assunto" class="block text-sm font-medium text-gray-700">Assunto:</label>
+                            <input type="text" name="assunto" id="assunto" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        </div>
+                        <div class="col-span-3">
+                            <label for="descricao" class="block text-sm font-medium text-gray-700">Descrição:</label>
+                            <textarea name="descricao" id="descricao" rows="4" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"></textarea>
+                        </div>
+                        <div>
+                            <label for="assinada_por" class="block text-sm font-medium text-gray-700">Assinado por:</label>
+                            <input type="text" name="assinada_por" id="assinada_por" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                        </div>
+                   
+                    </div>
+                </fieldset>
+                <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+                    <div class="mb-4">
+                        <p class="text-lg font-bold">Anexos do Documento</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div id="arquivos-container" class="col-span-3">
+                            <div class="mb-4 arquivo-input">
+                                <label for="arquivos" class="block text-sm font-medium text-gray-700">Arquivos:</label>
+                                <input type="file" name="arquivos[]" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <p class="text-sm text-gray-500">Selecione um arquivo</p>
+                                <div>
+                                    <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo de Documento:</label>
+                                    <select name="tipo[]" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                        <option value="PDF">PDF</option>
+                                        <option value="VIDEO">Vídeo</option>
+                                        <option value="AUDIO">Áudio</option>
+                                        <option value="DOC">Documento</option>
+                                        <option value="SHEET">Planilha</option>
+                                        <option value="IMAGEM">Imagem</option>
+                                        <option value="OUTRO">Outro</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-span-3">
+                            <button type="button" id="adicionar-arquivo" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-2 px-4 rounded">Adicionar Arquivo</button>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="flex items-center justify-between py-3">
+                    <input type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 shadow-lg shadow-green-500/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" value="Salvar">
+                    <a href="{% url 'documentos:listar_documentos' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                </div>
+                
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const arquivosContainer = document.getElementById('arquivos-container');
+                        const adicionarArquivoButton = document.getElementById('adicionar-arquivo');
+                
+                        adicionarArquivoButton.addEventListener('click', function() {
+                            const novoInput = document.createElement('div');
+                            novoInput.className = 'mb-4 arquivo-input';
+                            novoInput.innerHTML = `
+                                <label for="arquivos" class="block text-sm font-medium text-gray-700">Arquivos:</label>
+                                <input type="file" name="arquivos[]" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                <p class="text-sm text-gray-500">Selecione um arquivo</p>
+                                <div>
+                                    <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo de Documento:</label>
+                                    <select name="tipo[]" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
+                                        <option value="PDF">PDF</option>
+                                        <option value="VIDEO">Vídeo</option>
+                                        <option value="AUDIO">Áudio</option>
+                                        <option value="DOC">Documento</option>
+                                        <option value="SHEET">Planilha</option>
+                                        <option value="IMAGEM">Imagem</option>
+                                        <option value="OUTRO">Outro</option>
+                                    </select>
+                                </div>
+                            `;
+                            arquivosContainer.appendChild(novoInput);
+                        });
+                    });
+                </script>
+                </form>
+{% endblock %}

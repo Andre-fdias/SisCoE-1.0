@@ -14,5 +14,7 @@ urlpatterns = [
     path('rpt/', include('backend.rpt.urls', namespace='rpt')),  # noqa E501
     path('bm/', include('backend.bm.urls', namespace='bm')),  # noqa E501
     path('municipios/', include('backend.municipios.urls', namespace='municipios')),  # noqa E501
+    path('documentos/', include('backend.documentos.urls', namespace='documentos')),  # noqa E501
+
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

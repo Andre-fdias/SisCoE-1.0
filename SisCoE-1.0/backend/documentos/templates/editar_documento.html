@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block 'body' %}
+<div class="max-w-md mx-auto p-6 bg-white rounded-md shadow-md">
+    <h1 class="text-2xl font-semibold mb-4">Editar Documento</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-4">
+            <label for="data_publicacao" class="block text-sm font-medium text-gray-700">Data de Publicação</label>
+            <input type="date" name="data_publicacao" id="data_publicacao" value="{{ documento.data_publicacao|date:'Y-m-d' }}" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+        <div class="mb-4">
+            <label for="data_documento" class="block text-sm font-medium text-gray-700">Data do Documento</label>
+            <input type="date" name="data_documento" id="data_documento" value="{{ documento.data_documento|date:'Y-m-d' }}" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+        <div class="mb-4">
+            <label for="numero_documento" class="block text-sm font-medium text-gray-700">Número do Documento</label>
+            <input type="text" name="numero_documento" id="numero_documento" value="{{ documento.numero_documento }}" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+        <div class="mb-4">
+            <label for="assunto" class="block text-sm font-medium text-gray-700">Assunto</label>
+            <input type="text" name="assunto" id="assunto" value="{{ documento.assunto }}" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+        <div class="mb-4">
+            <label for="descricao" class="block text-sm font-medium text-gray-700">Descrição</label>
+            <textarea name="descricao" id="descricao" class="mt-1 p-2 w-full border rounded-md">{{ documento.descricao }}</textarea>
+        </div>
+        <div class="mb-4">
+            <label for="assinada_por" class="block text-sm font-medium text-gray-700">Assinada por</label>
+            <input type="text" name="assinada_por" id="assinada_por" value="{{ documento.assinada_por }}" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+        <div class="mb-4">
+            <label for="arquivo" class="block text-sm font-medium text-gray-700">Arquivo</label>
+            <input type="file" name="arquivo" id="arquivo" class="mt-1 p-2 w-full border rounded-md">
+        </div>
+        <div class="mb-4">
+            <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo</label>
+            <select name="tipo" id="tipo" class="mt-1 p-2 w-full border rounded-md">
+                {% for tipo, tipo_label in documento.TIPO_CHOICES %}
+                <option value="{{ tipo }}" {% if documento.tipo == tipo %}selected{% endif %}>{{ tipo_label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Salvar</button>
+    </form>
+</div>
+{% endblock %}

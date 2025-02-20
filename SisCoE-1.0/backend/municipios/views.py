@@ -130,11 +130,12 @@ def posto_update(request, pk):
         posto.cidade_posto = request.POST.get('cidade_posto')
         posto.tipo_cidade = request.POST.get('tipo_cidade')
         posto.op_adm = request.POST.get('op_adm')
-        posto.quartel = request.FILES.get('quartel')
+        if request.FILES.get('quartel'):
+            posto.quartel = request.FILES.get('quartel')
         posto.save()
 
         # Atualiza Contato
-        contato = posto.contatos.first()
+        contato = posto.contato
         if contato:
             contato.telefone = request.POST.get('telefone')
             contato.rua = request.POST.get('rua')
@@ -143,9 +144,9 @@ def posto_update(request, pk):
             contato.bairro = request.POST.get('bairro')
             contato.cidade = request.POST.get('cidade')
             contato.cep = request.POST.get('cep')
-            contato.email = request.POST.get('email_funcional')
-            contato.latitude = request.POST.get('latitude_contato')
-            contato.longitude = request.POST.get('longitude_contato')
+            contato.email = request.POST.get('email')
+            contato.latitude = request.POST.get('latitude')
+            contato.longitude = request.POST.get('longitude')
             contato.save()
 
         # Atualiza Pessoal
@@ -155,7 +156,7 @@ def posto_update(request, pk):
             pessoal.ten_cel = int(request.POST.get('ten_cel', 0))
             pessoal.maj = int(request.POST.get('maj', 0))
             pessoal.cap = int(request.POST.get('cap', 0))
-            pessoal.tenqo = int(request.POST.get('ten', 0))
+            pessoal.tenqo = int(request.POST.get('tenqo', 0))
             pessoal.tenqa = int(request.POST.get('tenqa', 0))
             pessoal.asp = int(request.POST.get('asp', 0))
             pessoal.st_sgt = int(request.POST.get('st_sgt', 0))
@@ -169,13 +170,12 @@ def posto_update(request, pk):
         longitudes = request.POST.getlist('longitudes[]')
         bandeiras = request.FILES.getlist('bandeiras[]')
         descricoes = request.POST.getlist('descricoes[]')
-       
 
         for i in range(len(municipios)):
             Cidade.objects.create(
                 posto=posto,
                 municipio=municipios[i],
-                descricao=descricoes[i],  # Nova linha
+                descricao=descricoes[i],
                 latitude=latitudes[i],
                 longitude=longitudes[i],
                 bandeira=bandeiras[i] if i < len(bandeiras) else None
@@ -184,7 +184,7 @@ def posto_update(request, pk):
         return redirect('municipios:posto_list')
 
     # Carrega dados existentes para edição
-    contato = posto.contatos.first()
+    contato = posto.contato
     pessoal = posto.pessoal.first()
     cidades = posto.cidades.all()
 
@@ -206,6 +206,8 @@ def posto_update(request, pk):
         'tipo_choices': tipo_choices,
         'op_adm_choices': op_adm_choices
     })
+
+
 
 
 def posto_delete(request, pk):

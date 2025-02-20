@@ -4,13 +4,13 @@
 
 {% block 'body' %}
 <br>
-<div class="md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_efetivo">
+<div class="md:items-center md:justify-between rounded-lg mt-4 w-full " id="cad_efetivo">
     <fieldset class="p-4 mb-8 rounded-md w-full" id="second-fieldset">
         <!-- Seção Superior - Informações Gerais -->
         <fieldset class="p-2 mb-8 rounded-md rounded-[5px]">
             <div class="flex flex-col h-auto rounded-[10px]">
                 <div class="bg-gray-800 rounded-xl shadow-2xl w-full transition-all duration-300 animate-fade-in">
-                    <div class="flex flex-col md:flex-row">
+                    <div class="flex flex-col md:flex-row ounded-md rounded-[10px]">
                         <!-- Bandeira e Imagem -->
                         <div class="md:w-1/2 relative mb-8 md:mb-0 max-h-[200px] overflow-hidden">
                             {% if posto.quartel %}
@@ -46,7 +46,7 @@
                                         <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
                                         <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
                                     </svg>
-                                   {{posto.contato.email }}
+                                   {{ posto.contato.email }}
                                 </li>
                                 <li class="flex items-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
@@ -103,115 +103,107 @@
                                 </tbody>
                             </table>
                             <br>
-                             <!-- Botão para abrir o modal de edição de Pessoal -->
-                        <button type="button" class="mt-8 text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2" data-modal-target="#editPessoalModal">
-                            Editar Qpo
-                        </button>
+                                <!-- Botão para abrir o modal de edição de Pessoal -->
+                            <button type="button" class="mt-8 text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2" data-modal-target="#editPessoalModal">
+                                Editar Qpo
+                            </button>
 
-                        <!-- Modal de Edição de Pessoal -->
-                        <div id="editPessoalModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                            <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
-                                <!-- Modal header -->
-                                <div class="flex items-start justify-between p-4 bg-gray-800 rounded-t border-gray-500">
-                                    <h5 class="text-xl font-semibold text-gray-300 dark:text-white" id="editPessoalModalLabel">Editar Pessoal</h5>
-                                    <button type="button" class="text-gray-200 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-close="#editPessoalModal">
-                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                        </svg>
-                                    </button>
-                                </div>
-                                <!-- Modal body -->
-                                <div class="p-6 space-y-6">
-                                    <form id="editPessoalForm" method="post">
-                                        {% csrf_token %}
-                                        <!-- Add your form fields here -->
-                                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        <div class="mb-4">
-                                            <label for="cel" class="block text-sm font-medium text-gray-400">Cel</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cel" name="cel" value="{{ pessoal.cel }}">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="ten_cel" class="block text-sm font-medium text-gray-400">Ten Cel</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="ten_cel" name="ten_cel" value="{{ pessoal.ten_cel }}">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="maj" class="block text-sm font-medium text-gray-400">Maj</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="maj" name="maj" value="{{ pessoal.maj }}">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="cap" class="block text-sm font-medium text-gray-400">Cap</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cap" name="cap" value="{{ pessoal.cap }}">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="tenqo" class="block text-sm font-medium text-gray-400">Ten QO</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="tenqo" name="tenqo" value="{{ pessoal.tenqo }}">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="tenqa" class="block text-sm font-medium text-gray-400">Ten QA</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="tenqa" name="tenqa" value="{{ pessoal.tenqa }}">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="asp" class="block text-sm font-medium text-gray-400">Asp</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="asp" name="asp" value="{{ pessoal.asp }}">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="st_sgt" class="block text-sm font-medium text-gray-400">St/Sgt</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="st_sgt" name="st_sgt" value="{{ pessoal.st_sgt }}">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label for="cb_sd" class="block text-sm font-medium text-gray-400">Cb/Sd</label>
-                                            <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cb_sd" name="cb_sd" value="{{ pessoal.cb_sd }}">
-                                        </div>
-                                        <div class="flex items-center justify-end space-x-4">
-                                            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#editPessoalModal">Cancelar</button>
-                                            <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
-                                        </div>
+                            <!-- Modal de Edição de Pessoal -->
+                            <div id="editPessoalModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                                <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
+                                    <!-- Modal header -->
+                                    <div class="flex items-start justify-between p-4 bg-gray-800 rounded-t border-gray-500">
+                                        <h5 class="text-xl font-semibold text-gray-300 dark:text-white" id="editPessoalModalLabel">Editar Pessoal</h5>
+                                        <button type="button" class="text-gray-200 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-close="#editPessoalModal">
+                                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </button>
                                     </div>
-                                    </form>
+                                    <!-- Modal body -->
+                                    <div class="p-6 space-y-6">
+                                        <form id="editPessoalForm" method="post">
+                                            {% csrf_token %}
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                                <div class="mb-4">
+                                                    <label for="cel" class="block text-sm font-medium text-gray-400">Cel</label>
+                                                    <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cel" name="cel" value="{{ pessoal.cel }}">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="ten_cel" class="block text-sm font-medium text-gray-400">Ten Cel</label>
+                                                    <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="ten_cel" name="ten_cel" value="{{ pessoal.ten_cel }}">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="maj" class="block text-sm font-medium text-gray-400">Maj</label>
+                                                    <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="maj" name="maj" value="{{ pessoal.maj }}">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="cap" class="block text-sm font-medium text-gray-400">Cap</label>
+                                                    <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cap" name="cap" value="{{ pessoal.cap }}">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="tenqo" class="block text-sm font-medium text-gray-400">Ten QO</label>
+                                                    <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="tenqo" name="tenqo" value="{{ pessoal.tenqo }}">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="tenqa" class="block text-sm font-medium text-gray-400">Ten QA</label>
+                                                    <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="tenqa" name="tenqa" value="{{ pessoal.tenqa }}">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="asp" class="block text-sm font-medium text-gray-400">Asp</label>
+                                                    <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="asp" name="asp" value="{{ pessoal.asp }}">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="st_sgt" class="block text-sm font-medium text-gray-400">St/Sgt</label>
+                                                    <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="st_sgt" name="st_sgt" value="{{ pessoal.st_sgt }}">
+                                                </div>
+                                                <div class="mb-4">
+                                                    <label for="cb_sd" class="block text-sm font-medium text-gray-400">Cb/Sd</label>
+                                                    <input type="number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cb_sd" name="cb_sd" value="{{ pessoal.cb_sd }}">
+                                                </div>
+                                            </div>
+                                            <div class="flex items-center justify-end space-x-4">
+                                                <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#editPessoalModal">Cancelar</button>
+                                                <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
+                                            </div>
+                                        </form>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <script>
-                            function previewImage(event) {
-                                const reader = new FileReader();
-                                reader.onload = function() {
-                                    const preview = document.getElementById('preview');
-                                    preview.src = reader.result;
-                                    preview.classList.remove('hidden');
-                                }
-                                reader.readAsDataURL(event.target.files[0]);
-                            }
+                    
+                            <script>
+                                document.addEventListener('DOMContentLoaded', () => {
+                                    const openModalButtons = document.querySelectorAll('[data-modal-target]');
+                                    const closeModalButtons = document.querySelectorAll('[data-modal-close]');
 
-                            document.addEventListener('DOMContentLoaded', () => {
-                                const openModalButtons = document.querySelectorAll('[data-modal-target]');
-                                const closeModalButtons = document.querySelectorAll('[data-modal-close]');
-
-                                openModalButtons.forEach(button => {
-                                    button.addEventListener('click', () => {
-                                        const modal = document.querySelector(button.dataset.modalTarget);
-                                        openModal(modal);
+                                    openModalButtons.forEach(button => {
+                                        button.addEventListener('click', () => {
+                                            const modal = document.querySelector(button.dataset.modalTarget);
+                                            openModal(modal);
+                                        });
                                     });
-                                });
 
-                                closeModalButtons.forEach(button => {
-                                    button.addEventListener('click', () => {
-                                        const modal = button.closest('.fixed');
-                                        closeModal(modal);
+                                    closeModalButtons.forEach(button => {
+                                        button.addEventListener('click', () => {
+                                            const modal = button.closest('.fixed');
+                                            closeModal(modal);
+                                        });
                                     });
+
+                                    function openModal(modal) {
+                                        if (modal == null) return;
+                                        modal.classList.remove('hidden');
+                                    }
+
+                                    function closeModal(modal) {
+                                        if (modal == null) return;
+                                        modal.classList.add('hidden');
+                                    }
                                 });
+                            </script>
 
-                                function openModal(modal) {
-                                    if (modal == null) return;
-                                    modal.classList.remove('hidden');
-                                }
 
-                                function closeModal(modal) {
-                                    if (modal == null) return;
-                                    modal.classList.add('hidden');
-                                }
-                            });
-                        </script>
                         </div>
                         <div id="03" class="w-full lg:w-1/2 p-4 leading-relaxed space-y-4">
                             <h2 class="text-xl font-semibold text-gray-900 mb-4">Efetivo Existente</h2>
@@ -272,13 +264,14 @@
                         <div>
                             <p class="text-gray-700"><strong>Telefone:</strong> {{ posto.contato.telefone }}</p>
                         </div>
-                        <!-- Botão para abrir o modal de edição de Contato -->
+                        <br>
+                <!-- Botão para abrir o modal de edição de Contato -->
                         <button type="button" class="mt-4 text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2" data-modal-target="#editContatoModal">
                             Editar Endereço
                         </button>
 
                         <!-- Modal de Edição de Contato -->
-                        <div id="editContatoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                        <div id="editContatoModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
                             <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
                                 <!-- Modal header -->
                                 <div class="flex items-start justify-between p-4 bg-gray-800 rounded-t border-gray-500">
@@ -296,43 +289,53 @@
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div class="mb-4">
                                                 <label for="telefone" class="block text-sm font-medium text-gray-400">Telefone</label>
-                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="telefone" name="telefone" value="{{ contato.telefone }}">
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="telefone" name="telefone" value="{{ posto.contato.telefone }}">
                                             </div>
                                             <div class="mb-4">
                                                 <label for="rua" class="block text-sm font-medium text-gray-400">Rua</label>
-                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="rua" name="rua" value="{{ contato.rua }}">
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="rua" name="rua" value="{{ posto.contato.rua }}">
                                             </div>
                                             <div class="mb-4">
                                                 <label for="numero" class="block text-sm font-medium text-gray-400">Número</label>
-                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="numero" name="numero" value="{{ contato.numero }}">
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="numero" name="numero" value="{{ posto.contato.numero }}">
                                             </div>
                                             <div class="mb-4">
                                                 <label for="complemento" class="block text-sm font-medium text-gray-400">Complemento</label>
-                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="complemento" name="complemento" value="{{ contato.complemento }}">
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="complemento" name="complemento" value="{{ posto.contato.complemento }}">
                                             </div>
                                             <div class="mb-4">
                                                 <label for="bairro" class="block text-sm font-medium text-gray-400">Bairro</label>
-                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="bairro" name="bairro" value="{{ contato.bairro }}">
+                                                <select class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="bairro" name="bairro">
+                                                    <option value="{{ posto.contato.bairro }}">{{ posto.contato.bairro }}</option>
+                                                    {% for bairro in bairros %}
+                                                        <option value="{{ bairro }}">{{ bairro }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div class="mb-4">
                                                 <label for="cidade" class="block text-sm font-medium text-gray-400">Cidade</label>
-                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cidade" name="cidade" value="{{ contato.cidade }}">
+                                                <select class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cidade" name="cidade">
+                                                    <option value="{{ posto.contato.cidade }}">{{ posto.contato.cidade }}</option>
+                                                    {% for cidade in cidades %}
+                                                        <option value="{{ cidade }}">{{ cidade }}</option>
+                                                    {% endfor %}
+                                                </select>
                                             </div>
                                             <div class="mb-4">
                                                 <label for="cep" class="block text-sm font-medium text-gray-400">CEP</label>
-                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cep" name="cep" value="{{ contato.cep }}">
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="cep" name="cep" value="{{ posto.contato.cep }}">
                                             </div>
                                             <div class="mb-4">
                                                 <label for="email" class="block text-sm font-medium text-gray-400">Email</label>
-                                                <input type="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="email" name="email" value="{{ contato.email }}">
+                                                <input type="email" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="email" name="email" value="{{ posto.contato.email }}">
                                             </div>
                                             <div class="mb-4">
                                                 <label for="latitude" class="block text-sm font-medium text-gray-400">Latitude</label>
-                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="latitude" name="latitude" value="{{ contato.latitude }}">
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="latitude" name="latitude" value="{{ posto.contato.latitude }}">
                                             </div>
                                             <div class="mb-4">
                                                 <label for="longitude" class="block text-sm font-medium text-gray-400">Longitude</label>
-                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="longitude" name="longitude" value="{{ contato.longitude }}">
+                                                <input type="text" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" id="longitude" name="longitude" value="{{ posto.contato.longitude }}">
                                             </div>
                                         </div>
                                         <div class="flex items-center justify-end space-x-4">
@@ -366,37 +369,210 @@
                                 function openModal(modal) {
                                     if (modal == null) return;
                                     modal.classList.remove('hidden');
-                                closeModal(modal) {
+                                }
+
+                                function closeModal(modal) {
                                     if (modal == null) return;
                                     modal.classList.add('hidden');
                                 }
                             });
                         </script>
-                    </div>
-                    
+
+                        <!-- Modal de Edição de Posto -->
+                        <button type="button" class="mt-4 text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2" data-modal-target="#editPostoModal">
+                            Editar Posto
+                        </button>
+
+                        <div id="editPostoModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                            <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-4xl">
+                                <!-- Modal header -->
+                                <div class="flex items-start justify-between p-4 bg-gray-800 rounded-t border-gray-500">
+                                    <h5 class="text-xl font-semibold text-gray-300 dark:text-white" id="editPostoModalLabel">Editar Posto</h5>
+                                    <button type="button" class="text-gray-200 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-close="#editPostoModal">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-6 space-y-6">
+                                    <form id="editPostoForm" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                            <div class="mb-4">
+                                                <label for="sgb" class="block text-sm font-medium text-gray-400">SGB</label>
+                                                <select name="sgb" id="sgb" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+                                                    {% for value, label in sgb_choices %}
+                                                        <option value="{{ value }}" {% if posto.sgb == value %}selected{% endif %}>{{ label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="posto_secao" class="block text-sm font-medium text-gray-400">Posto/Seção</label>
+                                                <select name="posto_secao" id="posto_secao" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+                                                    {% for value, label in posto_secao_choices %}
+                                                        <option value="{{ value }}" {% if posto.posto_secao == value %}selected{% endif %}>{{ label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="posto_atendimento" class="block text-sm font-medium text-gray-400">Posto de Atendimento</label>
+                                                <select name="posto_atendimento" id="posto_atendimento" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+                                                    {% for value, label in posto_atendimento_choices %}
+                                                        <option value="{{ value }}" {% if posto.posto_atendimento == value %}selected{% endif %}>{{ label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="tipo_cidade" class="block text-sm font-medium text-gray-400">Tipo de Cidade</label>
+                                                <select name="tipo_cidade" id="tipo_cidade" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+                                                    {% for value, label in tipo_choices %}
+                                                        <option value="{{ value }}" {% if posto.tipo_cidade == value %}selected{% endif %}>{{ label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="cidade_posto" class="block text-sm font-medium text-gray-400">Cidade do Posto/Seção</label>
+                                                <select name="cidade_posto" id="cidade_posto" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+                                                    {% for value, label in cidade_posto_choices %}
+                                                        <option value="{{ value }}" {% if posto.cidade_posto == value %}selected{% endif %}>{{ label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="op_adm" class="block text-sm font-medium text-gray-400">Operacional/Administrativo</label>
+                                                <select name="op_adm" id="op_adm" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+                                                    {% for value, label in op_adm_choices %}
+                                                        <option value="{{ value }}" {% if posto.op_adm == value %}selected{% endif %}>{{ label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="quartel" class="block text-sm font-medium text-gray-400">Imagem do Quartel</label>
+                                                <input type="file" name="quartel" id="quartel" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" accept="image/*">
+                                                {% if posto.quartel %}
+                                                    <img src="{{ posto.quartel.url }}" alt="Imagem do Quartel" class="mt-2 max-w-xs">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-end space-x-4">
+                                            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#editPostoModal">Cancelar</button>
+
+                                            <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Modal de Edição de Cidade -->
+                        <button type="button" class="mt-4 text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-4 py-2 text-center me-2 mb-2" data-modal-target="#editCidadeModal">
+                            Editar Cidade
+                        </button>
+
+                        <div id="editCidadeModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                            <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
+                                <!-- Modal header -->
+                                <div class="flex items-start justify-between p-4 bg-gray-800 rounded-t border-gray-500">
+                                    <h5 class="text-xl font-semibold text-gray-300 dark:text-white" id="editContatoModalLabel">Editar Contato</h5>
+                                    <button type="button" class="text-gray-200 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white" data-modal-close="#editContatoModal">
+                                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                                        </svg>
+                                    </button>
+                                </div>
+                                <!-- Modal body -->
+                                <div class="p-6 space-y-6">
+                               
+                                    <form id="editCidadeForm" method="post" enctype="multipart/form-data">
+                                        {% csrf_token %}
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div class="mb-4">
+                                                <label for="municipio" class="block text-sm font-medium text-gray-400">Município</label>
+                                                <select name="municipio" id="municipio" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm">
+                                                    {% for value, label in municipio_choices %}
+                                                        <option value="{{ value }}" {% if cidade.municipio == value %}selected{% endif %}>{{ label }}</option>
+                                                    {% endfor %}
+                                                </select>
+                                            </div>
+                                           
+                                            <div class="mb-4">
+                                                <label for="latitude" class="block text-sm font-medium text-gray-400">Latitude</label>
+                                                <input type="text" name="latitude" id="latitude" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" value="{{ cidade.latitude }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="longitude" class="block text-sm font-medium text-gray-400">Longitude</label>
+                                                <input type="text" name="longitude" id="longitude" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" value="{{ cidade.longitude }}">
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="descricao" class="block text-sm font-medium text-gray-400">Descrição</label>
+                                                <textarea name="descricao" id="descricao" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" rows="3">{{ cidade.descricao }}</textarea>
+                                            </div>
+                                            <div class="mb-4">
+                                                <label for="bandeira" class="block text-sm font-medium text-gray-400">Bandeira Municipal</label>
+                                                <input type="file" name="bandeira" id="bandeira" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm" accept="image/*">
+                                                {% if cidade.bandeira %}
+                                                    <img src="{{ cidade.bandeira.url }}" alt="Bandeira Municipal" class="mt-2 max-w-xs">
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-end space-x-4">
+                                            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#editCidadeModal">Cancelar</button>
+                                            <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
+                                        </div>
+                                    </form>
+                                </div></div>
+                        </div>
+                    </div> 
+                    <script>
+                        document.addEventListener('DOMContentLoaded', () => {
+                            const openModalButtons = document.querySelectorAll('[data-modal-target]');
+                            const closeModalButtons = document.querySelectorAll('[data-modal-close]');
+
+                            openModalButtons.forEach(button => {
+                                button.addEventListener('click', () => {
+                                    const modal = document.querySelector(button.dataset.modalTarget);
+                                    openModal(modal);
+                                });
+                            });
+
+                            closeModalButtons.forEach(button => {
+                                button.addEventListener('click', () => {
+                                    const modal = button.closest('.fixed');
+                                    closeModal(modal);
+                                });
+                            });
+
+                            function openModal(modal) {
+                                if (modal == null) return;
+                                modal.classList.remove('hidden');
+                            }
+
+                            function closeModal(modal) {
+                                if (modal == null) return;
+                                modal.classList.add('hidden');
+                            }
+                        });
+                    </script>
                 </div>
-               
-               
-                <!-- Mapa -->
-    <!-- Substitua a seção do mapa por este código -->
-            <div class="bg-gray-800 rounded-xl shadow-2xl p-4">
-                <h2 class="text-xl font-semibold text-white mb-4">Localização</h2>
-                <div id="map" class="h-96 rounded-lg"></div>
-            </div>
 
-            <!-- Adicione esses links no head do seu base.html -->
-            <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-            <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                                    <!-- Mapa -->
+                <!-- Substitua a seção do mapa por este código -->
+                <div class="bg-gray-800 rounded-xl shadow-2xl p-4">
+                    <div id="map" class="h-96 rounded-lg"></div>
+                    <!-- Adicione esses links no head do seu base.html -->
+                    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+                    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const mapDiv = document.getElementById('map');
-                
-                // Verificar se existe contato e coordenadas
-                {% if posto.contato and posto.contato.latitude and posto.contato.longitude %}
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                    const mapDiv = document.getElementById('map');
+
+                    // Verificar se existe contato e coordenadas
+                    {% if posto.contato and posto.contato.latitude and posto.contato.longitude %}
                     const lat = parseFloat("{{ posto.contato.latitude }}".replace(',', '.'));
                     const lng = parseFloat("{{ posto.contato.longitude }}".replace(',', '.'));
-                    
+
                     if(!isNaN(lat) && !isNaN(lng)) {
                         const map = L.map('map').setView([lat, lng], 15);
                         
@@ -418,20 +594,63 @@
                     } else {
                         mapDiv.innerHTML = '<div class="text-red-500 p-4">Coordenadas inválidas</div>';
                     }
-                {% else %}
+                    {% else %}
                     mapDiv.innerHTML = '<div class="text-yellow-500 p-4">Localização não disponível</div>';
-                {% endif %}
-            });
-            </script>
-        
-        
-         
+                    {% endif %}
+                    });
+                    </script>
+                </div>
         </fieldset>
-        <div class="w-full md:w-1/2 text-right">
-            <div class="container1">
-                <a href="{% url 'municipios:posto_list' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+        <fieldset class="border bg-gray-800 border-gray-800 p-2 mb-8 rounded-md">
+            <legend></legend>
+            <div id="01" class="flex flex-wrap">
+                <div class="w-full bg-lightblue p-4 rounded-md">
+                    <div class="flex flex-wrap">
+                        <div class="w-full md:w-1/2">
+                            <div class="container1">
+                                <div class="flex justify-start">
+                                    <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-target="#exampleModal">Excluir</button>
+                                </div>
+                                <div id="exampleModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+                                    <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-md">
+                                        <div class="flex justify-between items-center p-4 bg-gray-800">
+                                            <h1 class="text-xl text-gray-200 font-medium">Excluir</h1>
+                                            <button type="button" class="text-gray-500 hover:text-gray-700" data-modal-close="#exampleModal">&times;</button>
+                                        </div>
+                                        <br>
+                                    
+                                        <div class="p-4 text-gray-400">
+                                            <p>Você tem certeza que deseja excluir o cadastro?</p>
+                                            <br>
+                                            <br>
+                                            <label for="password" class="block text-sm font-medium text-gray-400">Senha:</label>
+                                            <input type="password" id="password" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        </div>
+                                        <div class="flex justify-end space-x-2 p-4">
+                                            <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#exampleModal">Voltar</button>
+                                            <button type="button" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" onclick="validatePassword()">Excluir</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="w-full md:w-1/2 text-right">
+                            <div class="container1">
+                                <div class="flex justify-end">
+                                    <a href="{% url 'municipios:posto_list' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                                </div>
+                            
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+        </fieldset>
     </fieldset>
+          
+     
 </div>
-{% endblock %}     
+{% endblock %}
+
+
+
