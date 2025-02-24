@@ -3,11 +3,12 @@
 {% block 'title' %} Detalhe do Documento {% endblock %}
 
 {% block 'head' %}
-<script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfobject/2.2.11/pdfobject.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown.min.css">
+
 {% endblock %}
 
 {% block 'body' %}
@@ -30,97 +31,170 @@
                             {% endif %}
                         {% endwith %}
                     </div>
-                    <p class="text-gray-300">{{ documento.tipo }}</p><br>
-                    <button id="abrirModalEditar" class="text-white bg-cyan-600 hover:bg-cyan-700 focus:ring-4 focus:ring-cyan-200 font-medium rounded-lg text-sm inline-flex items-center px-3 py-2 text-center">Editar Documento</button>
-                    <div id="modalEditar" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
-                        <div class="bg-gray-600 rounded-lg shadow-lg w-full max-w-2xl">
-                            <div class="flex items-start justify-between p-4 bg-gray-800 rounded-t border-gray-500">
-                                <h5 class="text-xl font-semibold text-gray-300">Editar Documento</h5>
-                                <button type="button" class="text-gray-200 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center" data-modal-close="#modalEditar">
-                                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </button>
+                    <p class="text-gray-300">{{ documento.tipo_badge}}</p><br>
+
+<!-- Adicionar esta seção antes dos modais para exibir mensagens -->
+{% if messages %}
+<div class="fixed top-4 right-4 z-50 space-y-2">
+    {% for message in messages %}
+    <div class="px-6 py-3 rounded-lg text-white {% if message.tags == 'error' %}bg-red-500{% else %}bg-green-500{% endif %}">
+        {{ message }}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+                <div class="flex gap-4 mt-6">
+                    <!-- Botão para abrir o Modal de Edição de Dados -->
+                   <a href="{% url 'documentos:editar_documento' documento.pk %}"  class="text-sm px-5 py-2.5 text-center me-2 mb-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-edit mr-2"></i>Editar Dados</a>
+              
+                    
+                    <!-- Botão para abrir o Modal de Arquivos -->
+                    <button onclick="openModal('modalArquivos')" 
+                    class="text-sm px-5 py-2.5 text-center me-2 mb-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                <i class="fas fa-paperclip mr-2"></i>Gerenciar Arquivos
+            </button>
+                </div>
+        
+
+                <!-- Modal Gerenciar Arquivos -->
+         
+        
+        <div id="modalArquivos" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4">
+            <div class="bg-white rounded-xl w-full max-w-3xl">
+                <div class="flex justify-between items-center p-6 border-b">
+                    <h3 class="text-2xl font-bold text-gray-800">Gerenciamento de Arquivos</h3>
+                    <button onclick="closeModal('modalArquivos')" class="text-gray-500 hover:text-gray-700 text-2xl">
+                        &times;
+                    </button>
+                </div>
+        
+                <div class="p-6">
+                    <div class="mb-8">
+                        <h4 class="text-lg font-semibold mb-4">Arquivos Anexados</h4>
+                        <div class="space-y-3">
+                            {% for arquivo in documento.arquivos.all %}
+                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-4">
+                                    <span class="text-blue-600">
+                                        <i class="fas fa-file-alt"></i>
+                                    </span>
+                                    <div>
+                                        <p class="text-sm font-medium text-gray-700">{{ arquivo.arquivo.name|truncatechars:30 }}</p>
+                                        <p class="text-xs text-gray-500">{{ arquivo.get_tipo_display }}</p>
+                                    </div>
                                 </div>
-                            <div class="p-6 space-y-6">
-                                <form method="post" enctype="multipart/form-data" action="{% url 'documentos:editar_documento' documento.pk %}">
-                                    {% csrf_token %}
-                                    <div class="mb-4">
-                                        <label for="data_publicacao" class="block text-sm font-medium text-gray-400">Data de Publicação</label>
-                                        <input type="date" name="data_publicacao" id="data_publicacao" value="{{ documento.data_publicacao|date:'Y-m-d' }}" class="bg-gray-700 border border-gray-600 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="data_documento" class="block text-sm font-medium text-gray-400">Data do Documento</label>
-                                        <input type="date" name="data_documento" id="data_documento" value="{{ documento.data_documento|date:'Y-m-d' }}" class="bg-gray-700 border border-gray-600 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="numero_documento" class="block text-sm font-medium text-gray-400">Número do Documento</label>
-                                        <input type="text" name="numero_documento" id="numero_documento" value="{{ documento.numero_documento }}" class="bg-gray-700 border border-gray-600 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="assunto" class="block text-sm font-medium text-gray-400">Assunto</label>
-                                        <input type="text" name="assunto" id="assunto" value="{{ documento.assunto }}" class="bg-gray-700 border border-gray-600 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="descricao" class="block text-sm font-medium text-gray-400">Descrição</label>
-                                        <textarea name="descricao" id="descricao" class="bg-gray-700 border border-gray-600 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">{{ documento.descricao }}</textarea>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="assinada_por" class="block text-sm font-medium text-gray-400">Assinada por</label>
-                                        <input type="text" name="assinada_por" id="assinada_por" value="{{ documento.assinada_por }}" class="bg-gray-700 border border-gray-600 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="novos_arquivos" class="block text-sm font-medium text-gray-400">Adicionar novos arquivos:</label>
-                                        <input type="file" name="novos_arquivos" id="novos_arquivos" multiple class="block w-full text-sm text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                    </div>
-                                    <div class="mb-4">
-                                        <label class="block text-sm font-medium text-gray-700">Arquivos existentes:</label>
-                                        {% for arquivo in documento.arquivos.all %}
-                                            <div class="flex items-center mb-2">
-                                                <a href="{{ arquivo.arquivo.url }}" target="_blank" class="text-blue-500 mr-2">
-                                                    {{ arquivo.arquivo.name }}
-                                                </a>
-                                                <form method="post" action="{% url 'documentos:remover_arquivo' arquivo.pk %}">
-                                                    {% csrf_token %}
-                                                    <button type="submit" class="text-red-500 text-sm">Remover</button>
-                                                </form>
-                                            </div>
-                                        {% endfor %}
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="novos_arquivos" class="block text-sm font-medium text-gray-700">Adicionar novos arquivos:</label>
-                                        <input type="file" name="novos_arquivos" id="novos_arquivos" multiple>
-                                    </div>
-                                    <div class="mb-4">
-                                        <label for="tipo" class="block text-sm font-medium text-gray-400">Tipo</label>
-                                        <select name="tipo" id="tipo" class="bg-gray-700 border border-gray-600 text-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">
-                                            {% for tipo, tipo_label in documento.TIPO_CHOICES %}
-                                            <option value="{{ tipo }}" {% if documento.tipo == tipo %}selected{% endif %}>{{ tipo_label }}</option>
-                                            {% endfor %}
-                                        </select>
-                                    </div>
-                                    <div class="flex items-center justify-end space-x-4">
-                                        <button type="button" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" data-modal-close="#modalEditar">Cancelar</button>
-                                        <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
-                                    </div>
-                                </form>
+                                <button onclick="confirmarExclusaoArquivo({{ arquivo.pk }})"
+                                        class="text-red-500 hover:text-red-700">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </div>
+                            {% empty %}
+                            <p class="text-gray-500 text-center py-4">Nenhum arquivo anexado</p>
+                            {% endfor %}
                         </div>
                     </div>
-                    <script>
-                        document.addEventListener('DOMContentLoaded', () => {
-                            const abrirModalButton = document.getElementById('abrirModalEditar');
-                            const modal = document.getElementById('modalEditar');
-                            const closeModalButton = modal.querySelector('[data-modal-close]');
-                            abrirModalButton.addEventListener('click', () => {
-                                modal.classList.remove('hidden');
-                            });
-                            closeModalButton.addEventListener('click', () => {
-                                modal.classList.add('hidden');
-                            });
+        
+                    <form method="post" action="{% url 'documentos:editar_documento_arquivos' documento.pk %}" 
+                        enctype="multipart/form-data" class="space-y-6">
+                        {% csrf_token %}
+        
+                        <div id="arquivosContainer" class="space-y-4">
+                            <div class="flex gap-4 items-center">
+                                <input type="file" name="novos_arquivos" 
+                                    class="flex-1 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                    <select name="novos_tipos" class="w-40 px-4 py-2 border rounded-lg">
+                                        {% for tipo_value, tipo_label in tipos %}
+                                        <option value="{{ tipo_value }}">{{ tipo_label }}</option>
+                                        {% endfor %}
+                                    </select>
+                            </div>
+                        </div>
+        
+                        <div class="flex justify-between items-center">
+                            <button type="button" onclick="adicionarCampoArquivo()"
+                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                <i class="fas fa-plus-circle mr-2"></i>Adicionar outro arquivo
+                            </button>
+                            
+                            <div class="space-x-4">
+                                <button type="button" onclick="closeModal('modalArquivos')"
+                                        class="px-6 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">
+                                    Cancelar
+                                </button>
+                                <button type="submit" 
+                                        class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                    Salvar Arquivos
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <script>
+            // Controle de Modais
+            function openModal(modalId) {
+                document.getElementById(modalId).classList.remove('hidden');
+                document.body.classList.add('overflow-hidden');
+            }
+        
+            function closeModal(modalId) {
+                document.getElementById(modalId).classList.add('hidden');
+                document.body.classList.remove('overflow-hidden');
+            }
+        
+            // Adicionar campos de arquivo dinamicamente
+            function adicionarCampoArquivo() {
+                const container = document.getElementById('arquivosContainer');
+                const novoCampo = document.createElement('div');
+                novoCampo.className = 'flex gap-4 items-center';
+                novoCampo.innerHTML = `
+                 
+                                <input type="file" name="novos_arquivos" 
+                                    class="flex-1 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                    <select name="novos_tipos" class="w-40 px-4 py-2 border rounded-lg">
+                                        {% for tipo_value, tipo_label in tipos %}
+                                        <option value="{{ tipo_value }}">{{ tipo_label }}</option>
+                                        {% endfor %}
+                                    </select>
+                            
+                    <button type="button" onclick="this.parentElement.remove()" 
+                            class="text-red-500 hover:text-red-700">
+                        <i class="fas fa-times"></i>
+                    </button>
+                `;
+                container.appendChild(novoCampo);
+            }
+        
+            // Confirmar exclusão de arquivo
+            async function confirmarExclusaoArquivo(arquivoId) {
+                if (confirm('Tem certeza que deseja excluir este arquivo?')) {
+                    try {
+                        const response = await fetch(`/documentos/arquivo/remover/${arquivoId}/`, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRFToken': '{{ csrf_token }}',
+                                'Accept': 'application/json',
+                            },
                         });
-                        
-                    </script>
+        
+                        if (response.ok) {
+                            location.reload(); // Recarrega a página para atualizar a lista
+                        } else {
+                            alert('Erro ao excluir arquivo');
+                        }
+                    } catch (error) {
+                        console.error('Erro:', error);
+                        alert('Falha na comunicação com o servidor');
+                    }
+                }
+            }
+        </script>
+
+
                   </div>
                   <div class="md:w-2/3 md:pl-8">
                     <h1 class="text-3xl font-semibold text-gray-300 mb-4">{{ documento.numero_documento  }}</h1>
@@ -143,7 +217,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
                           <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
                         </svg>
-                        Data do Documento: {{ documento.data_publicacao|date:"d/m/Y H:i:s" }}
+                        Data da Criação: {{ documento.data_criacao|date:"d/m/Y H:i:s" }}
                       </li>
                     </ul>
                   </div>
@@ -193,114 +267,72 @@
                         </div>
 
                         {% elif arquivo.tipo == 'PDF' %}
-                        <div class="p-2 bg-white rounded-lg shadow">
+                        <div class="p-2 bg-white rounded-lg shadow w-full">
                             <div class="flex flex-wrap gap-2 mb-2">
-                                <button class="px-3 py-1 bg-gray-200 rounded zoom-in">+</button>
-                                <button class="px-3 py-1 bg-gray-200 rounded zoom-out">-</button>
-                                <button class="px-3 py-1 bg-gray-200 rounded prev-page">Anterior</button>
+                                <button class="px-3 py-1 bg-gray-200 rounded zoom-in" data-container-id="pdf-viewer-{{ forloop.counter }}">+</button>
+                                <button class="px-3 py-1 bg-gray-200 rounded zoom-out" data-container-id="pdf-viewer-{{ forloop.counter }}">-</button>
+                                <button class="px-3 py-1 bg-gray-200 rounded prev-page" data-container-id="pdf-viewer-{{ forloop.counter }}">Anterior</button>
                                 <span class="mx-2 self-center">
                                     Página <span class="current-page">1</span> de 
                                     <span class="total-pages">...</span>
                                 </span>
-                                <button class="px-3 py-1 bg-gray-200 rounded next-page">Próxima</button>
+                                <button class="px-3 py-1 bg-gray-200 rounded next-page" data-container-id="pdf-viewer-{{ forloop.counter }}">Próxima</button>
                             </div>
                             <div id="pdf-viewer-{{ forloop.counter }}" 
-                                 class="h-[600px] overflow-auto relative"
-                                 data-url="{{ arquivo.arquivo.url }}">
-                            </div>
-                            <div class="mt-2">
-                                <a href="{{ arquivo.arquivo.url }}" 
-                                   download 
-                                   class="text-blue-600 hover:underline">
-                                   Download PDF
-                                </a>
+                                class="h-[600px]  overflow-auto relative pdf-viewer"
+                                data-url="{{ arquivo.arquivo.url }}">
                             </div>
                         </div>
-                        
+    
+   
+    
+
+
+                    {% elif arquivo.tipo == 'TEXT' %}
+                    <div class="p-4 overflow-auto bg-white border border-gray-300 rounded-lg max-h-[500px]">
+                        <pre class="font-mono whitespace-pre-wrap">{{ arquivo.conteudo }}</pre>  </div>
+
+                        {% elif arquivo.tipo == 'DOC' %}
+                    <div class="p-4 overflow-auto bg-white border border-gray-300 rounded-lg max-h-[500px]">
+                        <div id="docx-content-{{ forloop.counter }}"></div>
                         <script>
-                            document.addEventListener('DOMContentLoaded', function() {
-                                const pdfContainers = document.querySelectorAll('.pdf-viewer');
-                                
-                                pdfContainers.forEach(container => {
-                                    const url = container.dataset.url;
-                                    let scale = 1.5;
-                                    let currentPage = 1;
-                                    let pdfInstance = null;
-                                    let containerId = container.id;
-                            
-                                    // Inicialização do PDF
-                                    pdfjsLib.getDocument(url).promise.then(pdf => {
-                                        pdfInstance = pdf;
-                                        const totalPages = pdf.numPages;
-                                        container.parentElement.querySelector('.total-pages').textContent = totalPages;
-                            
-                                        // Renderizar página inicial
-                                        renderPage();
-                            
-                                        // Controles de navegação
-                                        container.closest('.pdf-viewer-container').querySelector('.prev-page').addEventListener('click', () => {
-                                            if(currentPage > 1) {
-                                                currentPage--;
-                                                renderPage();
-                                                updatePageNumber();
-                                            }
-                                        });
-                            
-                                        container.closest('.pdf-viewer-container').querySelector('.next-page').addEventListener('click', () => {
-                                            if(currentPage < totalPages) {
-                                                currentPage++;
-                                                renderPage();
-                                                updatePageNumber();
-                                            }
-                                        });
-                            
-                                        // Controles de zoom
-                                        container.closest('.pdf-viewer-container').querySelector('.zoom-in').addEventListener('click', () => {
-                                            scale += 0.25;
-                                            renderPage();
-                                        });
-                            
-                                        container.closest('.pdf-viewer-container').querySelector('.zoom-out').addEventListener('click', () => {
-                                            scale = Math.max(0.5, scale - 0.25);
-                                            renderPage();
-                                        });
-                                    });
-                            
-                                    function renderPage() {
-                                        pdfInstance.getPage(currentPage).then(page => {
-                                            const viewport = page.getViewport({ scale: scale });
-                                            const canvas = document.createElement('canvas');
-                                            const context = canvas.getContext('2d');
-                                            
-                                            canvas.height = viewport.height;
-                                            canvas.width = viewport.width;
-                                            
-                                            container.innerHTML = '';
-                                            container.appendChild(canvas);
-                            
-                                            const renderContext = {
-                                                canvasContext: context,
-                                                viewport: viewport
-                                            };
-                                            
-                                            page.render(renderContext);
-                                        });
+                            (async () => {
+                                try {
+                                    const response = await fetch("{{ arquivo.arquivo.url }}");
+                                    if (!response.ok) {
+                                        throw new Error(`Erro ao buscar DOCX: ${response.status}`);
                                     }
-                            
-                                    function updatePageNumber() {
-                                        container.parentElement.querySelector('.current-page').textContent = currentPage;
-                                    }
-                                });
-                            });
-                            </script>
+                                    const buffer = await response.arrayBuffer();
+                                    mammoth.convertToHtml({ arrayBuffer: buffer })
+                                        .then(result => {
+                                            const docxContent = document.getElementById('docx-content-{{ forloop.counter }}');
+                                            docxContent.innerHTML = result.value;
+                                            // Estilizando o conteúdo com Tailwind CSS
+                                            docxContent.querySelectorAll('p, h1, h2, h3, h4, h5, h6, ul, ol, li').forEach(el => {
+                                                el.classList.add('mb-2'); // Adiciona margem inferior aos elementos
+                                            });
+                                            docxContent.querySelectorAll('h1').forEach(el => {
+                                                el.classList.add('text-2xl', 'font-bold'); // Estiliza títulos h1
+                                            });
+                                            // Adicione mais estilos conforme necessário
+                                        })
+                                        .catch(error => {
+                                            document.getElementById('docx-content-{{ forloop.counter }}').innerHTML = `<p class="text-red-500">Erro ao exibir o documento: ${error.message}</p>`;
+                                            console.error("Erro ao converter DOCX:", error);
+                                        });
+                                } catch (error) {
+                                    document.getElementById('docx-content-{{ forloop.counter }}').innerHTML = `<p class="text-red-500">Erro ao carregar o documento: ${error.message}</p>`;
+                                    console.error("Erro ao buscar DOCX:", error);
+                                }
+                            })();
+                        </script>
+                    </div>
 
-                        {% elif arquivo.tipo == 'TEXT' %}
-                        <div class="p-4 overflow-auto bg-white border border-gray-300 rounded-lg max-h-[500px]">
-                            <pre class="font-mono whitespace-pre-wrap">{{ arquivo.conteudo }}</pre>  </div>
-
-                        {% elif arquivo.tipo == 'VIDEO' %}
+                         
+                        
+                    {% elif arquivo.tipo == 'VIDEO' %}
                     <div class="relative overflow-hidden bg-black rounded-lg aspect-video">
-                        <video controls class="w-full h-full">
+                        <video controls class="w-640 h-360">
                             {% if arquivo.extension == 'mp4' %}
                             <source src="{{ arquivo.arquivo.url }}" type="video/mp4">
                             {% elif arquivo.extension == 'webm' %}
@@ -326,34 +358,46 @@
                     
 
                     {% elif arquivo.tipo == 'SHEET' %}
-                    <div class="p-4 bg-white rounded-lg shadow">
-                        <div id="sheet-container-{{ forloop.counter }}" class="overflow-auto max-h-[500px]"></div>
-                        <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
-                        <script>
-                            (async () => {
-                                const response = await fetch("{{ arquivo.arquivo.url }}");
-                                const data = await response.arrayBuffer();
-                                const workbook = XLSX.read(data, {type: 'array'});
-                                const html = XLSX.utils.sheet_to_html(workbook.Sheets[workbook.SheetNames[0]]);
-                                document.getElementById('sheet-container-{{ forloop.counter }}').innerHTML = html;
-                            })();
-                        </script>
-                    </div>
-                    
-                        {% else %}
-                        <div>
-                            <a href="{{ arquivo.arquivo.url }}" 
-                            download 
-                            class="text-blue-600 hover:underline">
-                            Download do Arquivo ({{ arquivo.extension|upper }})
-                            </a>
+                        <div class="p-4 bg-white rounded-lg shadow">
+                            <div id="sheet-container-{{ forloop.counter }}" class="overflow-auto max-h-[500px]"></div>
+                            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+                            <script>
+                                (async () => {
+                                    try {
+                                        const response = await fetch("{{ arquivo.arquivo.url }}");
+                                        const data = await response.arrayBuffer();
+                                        const workbook = XLSX.read(data, {type: 'array'});
+                                        const html = XLSX.utils.sheet_to_html(workbook.Sheets[workbook.SheetNames[0]]);
+                                        document.getElementById('sheet-container-{{ forloop.counter }}').innerHTML = html;
+
+                                        // Estilizando a tabela com Tailwind CSS
+                                        const table = document.querySelector('#sheet-container-{{ forloop.counter }} table');
+                                        if (table) {
+                                            table.classList.add('w-full', 'border-collapse'); // Adiciona classes ao elemento table
+                                            const ths = table.querySelectorAll('th, td');
+                                            ths.forEach(th => {
+                                                th.classList.add('border', 'border-gray-300', 'p-2', 'text-left'); // Adiciona classes aos elementos th e td
+                                            });
+                                            const headerRow = table.querySelectorAll('th');
+                                            headerRow.forEach(th => {
+                                                th.classList.add('bg-gray-100'); // Adiciona classe aos elementos th do cabeçalho
+                                            });
+                                        }
+                                    } catch (error) {
+                                        document.getElementById('sheet-container-{{ forloop.counter }}').innerHTML = '<p class="text-red-500">Erro ao carregar planilha.</p>';
+                                        console.error("Erro ao buscar planilha:", error);
+                                    }
+                                })();
+                            </script>
                         </div>
-                        {% endif %}
+                    {% endif %}
 
                         <div class="mt-4 text-sm text-gray-600">
                             <p>Nome: {{ arquivo.arquivo.name }}</p>
                             <p>Tipo: {{ arquivo.get_tipo_display }}</p>
                             <p>Tamanho: {{ arquivo.arquivo.size|filesizeformat }}</p>
+                            <a href="{{ arquivo.arquivo.url }}" download class="text-blue-600 hover:underline">Download</a>
+      
                         </div>
                     </div>
                     {% empty %}
@@ -422,6 +466,90 @@
     </div>
 </div>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if (typeof pdfjsLib === 'undefined') {
+            console.error('pdfjsLib is not defined');
+            return;
+        }
+
+        const pdfContainers = document.querySelectorAll('.pdf-viewer');
+        pdfContainers.forEach(container => {
+            const url = container.dataset.url;
+            let scale = 1.5;
+            let currentPage = 1;
+            let pdfInstance = null;
+            let containerId = container.id;
+
+            pdfjsLib.getDocument(url).promise.then(pdf => {
+                pdfInstance = pdf;
+                const totalPages = pdf.numPages;
+                container.parentElement.querySelector('.total-pages').textContent = totalPages;
+                renderPage();
+                
+                // Event listeners with data-container-id
+                document.querySelectorAll(`[data-container-id="${containerId}"]`).forEach(button => {
+                    button.addEventListener('click', () => {
+                        const action = button.classList[button.classList.length - 1]; // Get the last class name
+                        switch (action) {
+                            case 'prev-page':
+                                if (currentPage > 1) {
+                                    currentPage--;
+                                    renderPage();
+                                    updatePageNumber();
+                                }
+                                break;
+                            case 'next-page':
+                                if (currentPage < totalPages) {
+                                    currentPage++;
+                                    renderPage();
+                                    updatePageNumber();
+                                }
+                                break;
+                            case 'zoom-in':
+                                scale += 0.25;
+                                renderPage();
+                                break;
+                            case 'zoom-out':
+                                scale = Math.max(0.5, scale - 0.25);
+                                renderPage();
+                                break;
+                        }
+                    });
+                });
+            });
+
+            function renderPage() {
+                pdfInstance.getPage(currentPage).then(page => {
+                    const viewport = page.getViewport({ scale: scale });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    
+                    container.innerHTML = '';
+                    container.appendChild(canvas);
+
+                    const renderContext = {
+                        canvasContext: context,
+                        viewport: viewport
+                    };
+                    
+                    page.render(renderContext);
+                });
+            }
+
+            function updatePageNumber() {
+                container.parentElement.querySelector('.current-page').textContent = currentPage;
+            }
+        });
+    });
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const abrirModalButton = document.getElementById('abrirModalExcluir');
@@ -446,4 +574,5 @@
     window.addEventListener('online', updateBorderColor);
     window.addEventListener('offline', updateBorderColor);
 </script>
+
 {% endblock %}

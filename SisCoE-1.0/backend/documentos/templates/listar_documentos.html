@@ -2,9 +2,10 @@
 {% load static %}
 {% block title %} Lista de Documentos {% endblock %}
 
-<link href="{% static 'tailwind.min.css' %}" rel="stylesheet">
-<link href="{% static 'flowbite.min.css' %}" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"></script>
+
 
 {% block 'body' %}
 
@@ -27,7 +28,7 @@
                     </div>
                 </div>
             </fieldset>
-            <fieldset class="bg-gray-100 mb-8 rounded-md w-full" id="first-fieldset">
+            <fieldset class="bg-gray-100 mb-8 rounded-md w-full overflow-x-auto" id="first-fieldset">
                 <legend class="mb-8 rounded-md w-full">
                     {% if messages %}
                         {% for message in messages %}
@@ -85,45 +86,97 @@
                         </button>
                     </div>
                 </div>
-                <table id="example" class="text-gray-700 bg-white p-2">
-                    <thead>
+                <table id="example" class="w-full text-gray-700 bg-white">
+                    <thead class="bg-gray-50">
                         <tr>
-                            <th scope="col" class="p-4">
-                                <div class="flex items-center">
-                                    <input id="checkbox-all" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                            <th scope="col" class="p-4 text-center align-middle">
+                                <div class="flex items-center justify-center">
+                                    <input id="checkbox-all" type="checkbox" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500">
                                     <label for="checkbox-all" class="sr-only">checkbox</label>
                                 </div>
                             </th>
-                            <th class="px-4 py-2 text-center">Documento</th>
-                            <th class="px-4 py-2 text-center">Assunto</th>
-                            <th class="px-4 py-2 text-center">Data Documento</th>
-                            <th class="px-4 py-2 text-center">Tipo</th>
-                            <th class="px-4 py-2 text-center">Assinada por</th>
-                            <th class="px-4 py-2 text-center">Ações</th>
+                            <th class="px-4 py-3 text-center align-middle">Documento</th>
+                            <th class="px-4 py-3 text-center align-middle">Assunto</th>
+                            <th class="px-4 py-3 text-center align-middle">Data Criação</th>
+                            <th class="px-4 py-3 text-center align-middle">Tipo</th>
+                            <th class="px-4 py-3 text-center align-middle">Assinada por</th>
+                            <th class="px-4 py-3 text-center align-middle">Ações</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for documento in documentos %}
-                            <tr>
-                                <td class="w-4 px-4 py-3">
-                                    <div class="flex items-center">
-                                        <input id="checkbox-table-search-{{ documento.pk }}" type="checkbox" onclick="event.stopPropagation()" class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500 dark:focus:ring-primary-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                                        <label for="checkbox-table-search-{{ documento.pk }}" class="sr-only">checkbox</label>
+                        <tr class="hover:bg-gray-50">
+                            <td class="p-4 text-center align-middle">
+                                <div class="flex items-center justify-center">
+                                    <input id="checkbox-table-search-{{ documento.pk }}" type="checkbox" onclick="event.stopPropagation()" 
+                                           class="w-4 h-4 bg-gray-100 border-gray-300 rounded text-primary-600 focus:ring-primary-500">
+                                    <label for="checkbox-table-search-{{ documento.pk }}" class="sr-only">checkbox</label>
+                                </div>
+                            </td>
+                                                        
+                                                        <!-- Modal -->
+                            <div id="documentModal" class="hidden fixed z-10 inset-0 overflow-y-auto">
+                                <div class="flex items-center justify-center min-h-screen">
+                                <div class="bg-white rounded-lg overflow-hidden shadow-xl transform transition-all max-w-lg w-full">
+                                    <div class="bg-gray-700 p-4">
+                                    <p class="text-gray-100" id="modalNumeroDocumento"></p>
+                                    <h2 class="text-xl font-semibold text-gray-100" id="modalAssunto"></h2>
+                                   
+                                
+                                </div>
+                                    <div class="p-4 text-gray-300 bg-gray-600">
+                                    <p class="mb-4"    id="modalDescricao"></p>
+                                    <p class="text-gray-300" id="modalAssinadaPor"></p>
+                                    <p class="text-gray-300" id="modalAnexosInfo"></p>
                                     </div>
-                                </td>
-                                <td class="px-4 py-2 text-center">{{ documento.numero_documento}}</td>
-                                <td class="px-4 py-2 text-center">{{ documento.assunto }}</td>
-                                <td class="px-4 py-2 text-center">{{ documento.data_documento|date:"d/m/Y H:i:s" }}</td>
-                                <td class="px-4 py-2 text-center">{{ documento.tipo_badge }}</td>
-                                <td class="px-4 py-2 text-center">{{ documento.assinada_por }}</td>
-                                <td class="px-4 py-2 text-center">
-                                    <a class="text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 dark:focus:ring-lime-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" href="{% url 'documentos:detalhe_documento' documento.pk %}">Ver</a>
-                             </td>
-                            </tr>
+                                </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Link com eventos de hover -->
+                            <td class="p-4 flex items-center whitespace-nowrap space-x-6 mr-12 lg:mr-0">
+                                <div class="text-sm font-normal text-gray-500">
+                                <div class="text-base font-semibold text-gray-900">
+                                    <a href="#" class="text-sm font-medium text-cyan-600 hover:bg-gray-100 rounded-lg" 
+                                    onmouseover="showModal('{{ documento.numero_documento|escapejs }}', '{{ documento.assunto|escapejs }}', '{{ documento.descricao|slice:":150"|escapejs }}...', '{{ documento.assinada_por|escapejs }}', '{{ documento.anexos_info|escapejs }}')"
+                                    onmouseout="hideModal()">
+                                    {{ documento.numero_documento }}
+                                    </a>
+                                </div>
+                                <div class="text-sm font-normal text-gray-500">{{ documento.data_documento|date:"d/m/Y H:i:s" }}</div>
+                                </div>
+                            </td>
+
+                            <script>
+                                function showModal(numeroDocumento, assunto, descricao, assinadaPor, anexosInfo) {
+                                document.getElementById('modalNumeroDocumento').innerText = numeroDocumento;
+                                document.getElementById('modalAssunto').innerText = assunto;
+                                document.getElementById('modalDescricao').innerText = descricao;
+                                document.getElementById('modalAssinadaPor').innerText = assinadaPor;
+                                document.getElementById('modalAnexosInfo').innerText = anexosInfo;
+                                document.getElementById('documentModal').classList.remove('hidden');
+                                }
+                            
+                                function hideModal() {
+                                document.getElementById('documentModal').classList.add('hidden');
+                                }
+                            </script>
+                            <td class="px-4 py-3 text-center align-middle">{{ documento.assunto }}</td>
+                            <td class="px-4 py-3 text-center align-middle">{{ documento.data_criacao|date:"d/m/Y H:i:s" }}</td>
+                            <td class="px-4 py-3 text-center align-middle">{{ documento.tipo_badge }}</td>
+                            <td class="px-4 py-3 text-center align-middle">{{ documento.assinada_por }}</td>
+                            
+                            <td class="px-4 py-3 text-center align-middle">
+                                <a href="{% url 'documentos:detalhe_documento' documento.pk %}" 
+                                   class="inline-flex items-center justify-center text-gray-900 bg-gradient-to-r from-lime-200 via-lime-400 to-lime-500 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-lime-300 font-medium rounded-lg text-sm px-3 py-2">
+                                  Ver
+                                </a>
+                              </td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
-                <div class="flex justify-end mb-3">
+                <div class="flex justify-end  mx-4">
                     <button id="printButton" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Imprimir</button>
                 </div>
             </fieldset>

@@ -54,7 +54,14 @@
                             <label for="assinada_por" class="block text-sm font-medium text-gray-700">Assinado por:</label>
                             <input type="text" name="assinada_por" id="assinada_por" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md">
                         </div>
-                   
+                        <div>
+                            <label for="tipo" class="block text-sm font-medium text-gray-700">Tipo de Documento</label>
+                            <select name="tipo" id="tipo" class="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md" required>
+                                {% for i in tipos %}
+                                <option value="{{ i.0 }}">{{ i.1 }}</option>
+                                {% endfor %}
+                            </select>
+                        <div>
                     </div>
                 </fieldset>
                 <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">

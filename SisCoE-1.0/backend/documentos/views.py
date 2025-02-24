@@ -4,6 +4,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.db.models import Q
 from datetime import datetime
+from backend.documentos.forms import DocumentoForm
+import logging
+logger = logging.getLogger(__name__)
+
 
 def listar_documentos(request):
     documentos = Documento.objects.all()
@@ -38,6 +42,7 @@ from django.http import HttpResponse
 import markdown  # Importe a biblioteca markdown
 
 # views.py (atualização da view detalhe_documento)
+
 def detalhe_documento(request, pk):
     documento = get_object_or_404(
         Documento.objects.prefetch_related('arquivos'),  # ← Otimiza o carregamento
@@ -54,79 +59,138 @@ def detalhe_documento(request, pk):
         'descricao_html': descricao_html
     })
 
+
+
+
+
 def criar_documento(request):
+    tipos = Documento.TIPO_CHOICES
+
     if request.method == 'POST':
-        data_publicacao = request.POST['data_publicacao']
-        data_documento = request.POST['data_documento']
-        numero_documento = request.POST['numero_documento']
-        assunto = request.POST['assunto']
-        descricao = request.POST['descricao']
-        assinada_por = request.POST['assinada_por']
-        arquivos = request.FILES.getlist('arquivos[]')
-        tipos = request.POST.getlist('tipo[]')
+        try:
+            data_publicacao = request.POST.get('data_publicacao')
+            data_documento = request.POST.get('data_documento')
+            numero_documento = request.POST.get('numero_documento')
+            assunto = request.POST.get('assunto')
+            descricao = request.POST.get('descricao')
+            assinada_por = request.POST.get('assinada_por')
+            arquivos = request.FILES.getlist('arquivos[]')
+            tipo = request.POST.get('tipo')
+            tipos_arquivos = request.POST.getlist('tipo[]')
 
-        # Crie um novo objeto Documento e salve no banco de dados
-        documento = Documento(
-            data_publicacao=data_publicacao,
-            data_documento=data_documento,
-            numero_documento=numero_documento,
-            assunto=assunto,
-            descricao=descricao,
-            assinada_por=assinada_por,
-            usuario=request.user  # Assumindo que o usuário está logado
-        )
-        documento.save()
+            # Parse datetime strings to datetime objects
+            data_publicacao = parse_datetime(data_publicacao)
+            data_documento = parse_datetime(data_documento)
 
-        # Verifique se o número de arquivos e tipos corresponde
-        if len(arquivos) == len(tipos):
-            for i in range(len(arquivos)):
-                arquivo = arquivos[i]
-                tipo = tipos[i]
+            if not all([data_publicacao, data_documento, numero_documento, assunto]):
+                return render(request, 'criar_documento.html', {
+                    'error': 'Campos obrigatórios faltando',
+                    'tipos': tipos
+                })
 
-                # Crie um novo objeto Arquivo e associe ao documento
+            documento = Documento(
+                data_publicacao=data_publicacao,
+                data_documento=data_documento,
+                numero_documento=numero_documento,
+                assunto=assunto,
+                descricao=descricao,
+                assinada_por=assinada_por,
+                tipo=tipo,
+                usuario=request.user
+            )
+            documento.save()
+
+            if len(arquivos) != len(tipos_arquivos):
+                raise ValueError("Número de arquivos e tipos não corresponde")
+
+            for arquivo, tipo in zip(arquivos, tipos_arquivos):
                 Arquivo.objects.create(
                     documento=documento,
                     arquivo=arquivo,
                     tipo=tipo
                 )
 
-            return redirect('documentos:listar_documentos')  # Redirecione para a lista de documentos
+            return redirect('documentos:listar_documentos')
 
-        else:
-            # Lidar com o erro de número incorreto de arquivos/tipos
-            return render(request, 'criar_documento.html', {'error': 'Número de arquivos e tipos não corresponde.'})
+        except Exception as e:
+            return render(request, 'criar_documento.html', {
+                'error': str(e),
+                'tipos': tipos
+            })
 
-    return render(request, 'criar_documento.html')
+    return render(request, 'criar_documento.html', {'tipos': tipos})
 
 
-# views.py (atualizar a view editar_documento)
-from django.forms import modelform_factory
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Documento, Arquivo
+from .forms import DocumentoForm
+import logging
+
+logger = logging.getLogger(__name__)
 
 def editar_documento(request, pk):
-    documento = get_object_or_404(Documento, pk=pk)
-    DocumentoForm = modelform_factory(Documento, fields='__all__')
-    
+    documento = get_object_or_404(Documento.objects.prefetch_related('arquivos'), pk=pk)
+    tipos = Documento.TIPO_CHOICES
+
     if request.method == 'POST':
-        form = DocumentoForm(request.POST, request.FILES, instance=documento)
+        form = DocumentoForm(request.POST, instance=documento)
         if form.is_valid():
-            documento = form.save()
-            
-            # Processar novos arquivos
-            novos_arquivos = request.FILES.getlist('novos_arquivos')
-            for arquivo in novos_arquivos:
-                Arquivo.objects.create(
-                    documento=documento,
-                    arquivo=arquivo,
-                    tipo=documento.tipo
-                )
-            
-            return redirect('documentos:detalhe_documento', pk=pk)
-    else:
-        form = DocumentoForm(instance=documento)
-    
+            try:
+                documento = form.save(commit=False)
+                if request.user.is_authenticated:
+                    documento.usuario = request.user
+                else:
+                    messages.error(request, "Usuário não autenticado.")
+                    return redirect('login')
+                documento.save()
+                messages.success(request, 'Documento atualizado com sucesso!')
+                return redirect('documentos:detalhe_documento', pk=pk)
+            except Exception as e:
+                logger.error(f"Erro ao salvar documento: {e}")
+                messages.error(request, 'Erro ao salvar documento. Tente novamente.')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
+
+    form = DocumentoForm(instance=documento)
+
     return render(request, 'editar_documento.html', {
         'documento': documento,
-        'form': form
+        'form': form,
+    })
+
+def editar_documento_arquivos(request, pk):
+    documento = get_object_or_404(Documento.objects.prefetch_related('arquivos'), pk=pk)
+    tipos = Documento.TIPO_CHOICES
+
+    if request.method == 'POST':
+        novos_arquivos = request.FILES.getlist('novos_arquivos')
+        novos_tipos = request.POST.getlist('novos_tipos')
+
+        # Validação aprimorada
+        validos = []
+        for arquivo, tipo in zip(novos_arquivos, novos_tipos):
+            if arquivo.size > 0 and tipo in dict(tipos).keys():
+                validos.append((arquivo, tipo))
+
+        if len(validos) > 0:
+            for arquivo, tipo in validos:
+                Arquivo.objects.create(
+                    documento=documento, 
+                    arquivo=arquivo, 
+                    tipo=tipo
+                )
+            messages.success(request, 'Arquivos atualizados com sucesso!')
+        else:
+            messages.error(request, 'Nenhum arquivo válido para upload')
+
+        return redirect('documentos:editar_documento_arquivos', pk=pk)
+
+    return render(request, 'editar_documento_arquivos.html', {
+        'documento': documento, 
+        'tipos': tipos
     })
 
 
@@ -157,9 +221,20 @@ def carregar_conteudo_arquivo(request, pk):
     else:
         return HttpResponse("Tipo de arquivo não suportado para visualização de conteúdo.", status=400)
 
+
     # views.py
-def remover_arquivo(request, pk):
-    arquivo = get_object_or_404(Arquivo, pk=pk)
+from django.shortcuts import get_object_or_404
+from django.http import JsonResponse, HttpResponseBadRequest
+from .models import Arquivo
+
+
+# views.py
+def remover_arquivo(request, pk):  # Alterar parâmetro para pk
     if request.method == 'POST':
-        arquivo.delete()
-    return redirect('documentos:detalhe_documento', pk=arquivo.documento.pk)
+        try:
+            arquivo = get_object_or_404(Arquivo, pk=pk)
+            arquivo.delete()
+            return JsonResponse({'status': 'success'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+    return HttpResponseBadRequest("Método inválido")

@@ -16,14 +16,14 @@ class Documento(models.Model):
     )
 
     id = models.AutoField(primary_key=True)
-    data_publicacao = models.DateTimeField()
-    data_documento = models.DateTimeField()
+    data_publicacao = models.DateField()
+    data_documento = models.DateField()
     numero_documento = models.CharField(max_length=100)
     assunto = models.CharField(max_length=200)
     descricao = models.TextField()
     assinada_por = models.CharField(max_length=100)
     data_criacao = models.DateTimeField(auto_now_add=True)
-    usuario = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
+    usuario = models.ForeignKey( settings.AUTH_USER_MODEL,     null=True,   on_delete=models.SET_NULL)  
     tipo = models.CharField(max_length=10, choices=TIPO_CHOICES, default='OUTRO')
 
     def __str__(self):
@@ -50,10 +50,31 @@ class Documento(models.Model):
         else:
             return mark_safe('<span class="bg-gray-300 text-gray-700 px-2 py-1 rounded">Desconhecido</span>')
 
+
+    @property
+    def anexos_info(self):
+            anexos = self.arquivos.all()
+            total_anexos = anexos.count()
+            tipos_anexos = ', '.join(set(anexo.tipo for anexo in anexos))
+            return f"{total_anexos} anexos ({tipos_anexos})"
+
+
 class Arquivo(models.Model):
+    TIPO_CHOICES = (
+        ('PDF', 'PDF'),
+        ('VIDEO', 'Vídeo'),
+        ('AUDIO', 'Áudio'),
+        ('DOC', 'Documento'),
+        ('SHEET', 'Planilha'),
+        ('IMAGEM', 'Imagem'),
+        ('TEXT', 'Texto'),
+        ('OUTRO', 'Outro'),
+    )
+
     documento = models.ForeignKey(Documento, related_name='arquivos', on_delete=models.CASCADE)
     arquivo = models.FileField(upload_to='documentos/')
-    tipo = models.CharField(max_length=10, choices=Documento.TIPO_CHOICES)
+    tipo = models.CharField(max_length=10, choices=TIPO_CHOICES)
+    
 
     @property
     def extension(self):

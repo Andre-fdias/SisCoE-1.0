@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'compressor',
     'django_seed',
+     'fontawesomefree',
     # minhas apps
     'backend.core',
     'backend.crm',
@@ -180,4 +181,19 @@ AUTH_USER_MODEL = 'accounts.User'
 ADMIN_DEFAULT_PERMISSIONS = [
     'add', 'change', 'delete', 'view'
 ]
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'DEBUG',
+    },
+}
 
