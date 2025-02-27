@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'backend.bm',
     'backend.municipios',
     'backend.documentos',
-  
+    'backend.agenda',
 ]
 
 MIDDLEWARE = [

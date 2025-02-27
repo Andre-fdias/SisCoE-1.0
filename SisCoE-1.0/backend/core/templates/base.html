@@ -19,13 +19,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/app.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="icon" href="{% static 'img\favicon.ico' %}">
+    <link rel="icon" href="{% static 'img/favicon.ico' %}">
     <link rel="mask-icon" href="https://demo.themesberg.com/windster/safari-pinned-tab.svg" color="#5bbad5">
-    <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel=" stylesheet">
+    <link href="https://unpkg.com/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-
-    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script>
     <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
 
     <meta name="msapplication-TileColor" content="#ffffff">
@@ -36,9 +35,7 @@
     <meta name="twitter:creator" content="@">
     <meta name="twitter:title" content="Tailwind CSS Dashboard - Windster">
     <meta name="twitter:description" content="Get started with a free and open source Tailwind CSS admin dashboard featuring a sidebar layout, advanced charts, and hundreds of components based on Flowbite">
-    <meta name="twitter:image" content="https://demo.themesberg.com/windster/">
-
-    <meta property="og:url" content="https://demo.themesberg.com/windster/">
+    <meta name="twitter:image" content="https://demo.themesberg.com/windster//">
     <meta property="og:title" content="Tailwind CSS Dashboard - Windster">
     <meta property="og:description" content="Get started with a free and open source Tailwind CSS admin dashboard featuring a sidebar layout, advanced charts, and hundreds of components based on Flowbite">
     <meta property="og:type" content="website">
@@ -46,21 +43,16 @@
     <meta property="og:image:type" content="image/png">
 
     <script src="//unpkg.com/alpinejs" defer></script>
-
 </head>
 <body class="bg-gray-500">
-
     {% include "includes/nav.html" %}
     <div class="flex overflow-hidden bg-white pt-16">
-
         {% include "includes/aside.html" %}
-
         <div class="bg-gray-900 opacity-50 hidden fixed inset-0 z-10" id="sidebarBackdrop"></div>
-
         <div id="main-content" class="h-full w-full bg-gray-400 relative overflow-y-auto lg:ml-64">
-            {% block 'body' %}
-                <main class="mt-15" ></main>
-            {% endblock  %}
+            {% block body %}
+                <main class="mt-15"></main>
+            {% endblock %}
             {% include "includes/footer.html" %}
         </div>
     </div>
@@ -69,7 +61,6 @@
     <script src="{% static 'js/app.bundle.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
     <script src="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.js"></script>
-
-    {% block js %}{% endblock js %}
+    {% block js %}{% endblock %}
 </body>
 </html>
