@@ -288,7 +288,15 @@
                 </div>
 
         </fieldset>     
-      
+        <legend>
+            {% if messages %}
+            {% for message in messages %}
+                <section class="alert {{ message.tags }} p-4 mb-4 rounded-md">
+                    {{ message }}
+                </section>
+            {% endfor %}
+            {% endif %}
+        </legend>
         <fieldset class=" p-2 mb-8 rounded-md rounded-[10px]">
             <div class="flex flex-col h-auto rounded-[10px]">
                 <div class=" bg-gray-200 rounded-xl shadow-2xl  w-full p-8 transition-all duration-300 animate-fade-in">

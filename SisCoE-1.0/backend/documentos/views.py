@@ -222,19 +222,59 @@ def carregar_conteudo_arquivo(request, pk):
         return HttpResponse("Tipo de arquivo não suportado para visualização de conteúdo.", status=400)
 
 
-    # views.py
-from django.shortcuts import get_object_or_404
-from django.http import JsonResponse, HttpResponseBadRequest
-from .models import Arquivo
 
 
-# views.py
-def remover_arquivo(request, pk):  # Alterar parâmetro para pk
+
+from django.http import JsonResponse
+
+def excluir_arquivo(request, arquivo_id):
     if request.method == 'POST':
-        try:
-            arquivo = get_object_or_404(Arquivo, pk=pk)
+         arquivo = get_object_or_404(Arquivo, pk=arquivo_id)
+         try:
             arquivo.delete()
             return JsonResponse({'status': 'success'})
-        except Exception as e:
+         except Exception as e:
             return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
-    return HttpResponseBadRequest("Método inválido")
+    return JsonResponse({'status': 'error', 'message': 'Método não permitido'}, status=405)
+
+
+
+
+
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+
+
+
+def gerenciar_arquivos(request, pk):
+    documento = get_object_or_404(Documento, pk=pk)
+    tipos = Arquivo.TIPO_CHOICES  
+    
+    if request.method == 'POST':
+        try:
+            # Processar arquivos existentes
+            for key, value in request.POST.items():
+                if key.startswith('tipo_'):
+                    arquivo_id = key.split('_')[1]
+                    arquivo = Arquivo.objects.get(id=arquivo_id)
+                    arquivo.tipo = value
+                    arquivo.save()
+
+            # Processar novos arquivos
+            novos_arquivos = request.FILES.getlist('novos_arquivos')
+            novos_tipos = request.POST.getlist('novos_tipos')
+            
+            for arquivo, tipo in zip(novos_arquivos, novos_tipos):
+                Arquivo.objects.create(
+                    documento=documento,
+                    arquivo=arquivo,
+                    tipo=tipo
+                )
+
+            messages.success(request, 'Alterações salvas com sucesso!')
+        except Exception as e:
+            messages.error(request, f'Erro ao salvar alterações: {str(e)}')
+
+        return redirect('documentos:detalhe_documento', pk=pk)
+
+    return redirect('documentos:listar_documentos')

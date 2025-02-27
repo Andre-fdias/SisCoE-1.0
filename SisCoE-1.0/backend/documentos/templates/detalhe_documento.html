@@ -5,21 +5,47 @@
 {% block 'head' %}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.5.0/github-markdown.min.css">
 
 {% endblock %}
 
 {% block 'body' %}
-<br>
-<div class="md:items-center md:justify-between rounded-lg mt-4 w-full " id="cad_efetivo">
-    <fieldset class="p-4 mb-8 rounded-md w-full" id="second-fieldset">
-        <fieldset class="p-2 mb-4 rounded-md rounded-[5px]">
-            <div class="flex flex-col h-auto rounded-[10px]">
-              <div class="bg-gray-700 rounded-xl shadow-2xl w-full p-4 transition-all duration-300 animate-fade-in">
-                <div class="flex flex-col md:flex-row">
-                  <div class="md:w-1/3 text-center mb-8 md:mb-0">
+
+
+<style>
+    /* Melhorar a aparência dos controles de áudio */
+    audio::-webkit-media-controls-panel {
+        @apply bg-gray-100 rounded-lg;
+    }
+    
+    /* Ajustar tamanho máximo do visualizador */
+    .pdf-viewer {
+        @apply max-h-[70vh];
+    }
+    
+    /* Estilizar barras de rolagem */
+    .overflow-auto::-webkit-scrollbar {
+        @apply w-2 h-2;
+    }
+    
+    .overflow-auto::-webkit-scrollbar-thumb {
+        @apply bg-gray-300 rounded-full;
+    }
+</style>
+
+
+<body>
+
+    <br>
+
+    <br>
+    <div class="md:items-center md:justify-between rounded-lg mt-4 w-full" id="cad_documento">
+        <fieldset class="p-4 mb-8 rounded-md w-full" id="second-fieldset">
+           <div class="flex flex-col h-auto rounded-[10px]">
+                <div class=" bg-gray-800 rounded-xl shadow-2xl  w-full p-8 transition-all duration-300 animate-fade-in">
+                    <div class="flex flex-col md:flex-row">
+                        <div class="md:w-1/3 text-center mb-8 md:mb-0">
                     <div class="rounded-full w-60 h-60 mx-auto mb-4 border-4 border-indigo-800 transition-transform duration-300 hover:scale-105 flex items-center justify-center">
                         {% with imagem=arquivos|first %}
                             {% if imagem.tipo == 'IMAGEM' %}
@@ -31,430 +57,332 @@
                             {% endif %}
                         {% endwith %}
                     </div>
-                    <p class="text-gray-300">{{ documento.tipo_badge}}</p><br>
+                    <p class="text-gray-300 rounded-lg ">{{ documento.tipo_badge}}</p><br>
 
-<!-- Adicionar esta seção antes dos modais para exibir mensagens -->
-{% if messages %}
-<div class="fixed top-4 right-4 z-50 space-y-2">
-    {% for message in messages %}
-    <div class="px-6 py-3 rounded-lg text-white {% if message.tags == 'error' %}bg-red-500{% else %}bg-green-500{% endif %}">
-        {{ message }}
+                    <!-- Adicionar esta seção antes dos modais para exibir mensagens -->
+                
+                        <!-- Botão para abrir o Modal de Edição de Dados -->
+                    <a href="{% url 'documentos:editar_documento' documento.pk %}"  class="text-sm px-5 py-2.5 text-center me-2 mb-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                        <i class="fas fa-edit mr-2"></i>Editar Dados</a>
+                
+                        
+                        <!-- Botão para abrir o Modal de Arquivos -->
+                        <button onclick="openModal('modalArquivos')" 
+                        class="text-sm px-5 py-2.5 text-center me-2 mb-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors ">
+                    <i class="fas fa-paperclip mr-2"></i>Gerenciar Arquivos
+                </button>
+      
+        
+
+                    <!-- Modal Gerenciar Arquivos -->
+                   <div id="modalArquivos" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4" aria-modal="true">
+                      <div class="bg-white rounded-xl w-full max-w-3xl">
+                        <div class="flex justify-between items-center p-6 border-b">
+                            <h3 class="text-2xl font-bold text-gray-800">Gerenciamento de Arquivos</h3>
+                            <button onclick="closeModal('modalArquivos')" class="text-gray-500 hover:text-gray-700 text-2xl" aria-label="Fechar modal">
+                                &times;
+                            </button>
+                        </div>
+                       
+                    
+            
+                    <div class="p-6">
+                        <div class="mb-8">
+                            <h4 class="text-lg font-semibold mb-4">Arquivos Anexados</h4>
+                            <div class="space-y-3">
+                                {% for arquivo in documento.arquivos.all %}
+                                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                                    <div class="flex items-center space-x-4">
+                                        <span class="text-blue-600">
+                                            <i class="fas fa-file-alt"></i>
+                                        </span>
+                                        <div>
+                                            <p class="text-sm font-medium text-gray-700">{{ arquivo.arquivo.name|truncatechars:30 }}</p>
+                                            <p class="text-xs text-gray-500">{{ arquivo.get_tipo_display }}</p>
+                                        </div>
+                                    </div>
+                                    <button onclick="confirmarExclusaoArquivo({{ arquivo.pk }})"
+                                            class="text-red-500 hover:text-red-700">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                                {% empty %}
+                                <p class="text-gray-500 text-center py-4">Nenhum arquivo anexado</p>
+                                {% endfor %}
+                            </div>
+                        </div>
+            
+                        <form method="post" action="{% url 'documentos:editar_documento_arquivos' documento.pk %}" 
+                            enctype="multipart/form-data" class="space-y-6">
+                            {% csrf_token %}
+            
+                            <div id="arquivosContainer" class="space-y-4">
+                                <div class="flex gap-4 items-center">
+                                    <input type="file" name="novos_arquivos" 
+                                        class="flex-1 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                        <select name="novos_tipos" class="w-40 px-4 py-2 border rounded-lg">
+                                            {% for tipo_value, tipo_label in tipos %}
+                                            <option value="{{ tipo_value }}">{{ tipo_label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                </div>
+                            </div>
+            
+                            <div class="flex justify-between items-center">
+                                <button type="button" onclick="adicionarCampoArquivo()"
+                                        class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                    <i class="fas fa-plus-circle mr-2"></i>Adicionar outro arquivo
+                                </button>
+                                
+                                <div class="space-x-4">
+                                    <button type="button" onclick="closeModal('modalArquivos')"
+                                            class="px-6 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">
+                                        Cancelar
+                                    </button>
+                                    <button type="submit" 
+                                            class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                        Salvar Arquivos
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                   </div>
+                  </div>
+        
+                   <script>
+                    // Controle de Modais
+                    function openModal(modalId) {
+                        document.getElementById(modalId).classList.remove('hidden');
+                        document.body.classList.add('overflow-hidden');
+                    }
+                
+                    function closeModal(modalId) {
+                        document.getElementById(modalId).classList.add('hidden');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                
+                    // Adicionar campos de arquivo dinamicamente
+                    function adicionarCampoArquivo() {
+                        const container = document.getElementById('arquivosContainer');
+                        const novoCampo = document.createElement('div');
+                        novoCampo.className = 'flex gap-4 items-center';
+                        novoCampo.innerHTML = `
+                        
+                                        <input type="file" name="novos_arquivos" 
+                                            class="flex-1 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+                                            <select name="novos_tipos" class="w-40 px-4 py-2 border rounded-lg">
+                                                {% for tipo_value, tipo_label in tipos %}
+                                                <option value="{{ tipo_value }}">{{ tipo_label }}</option>
+                                                {% endfor %}
+                                            </select>
+                                    
+                            <button type="button" onclick="this.parentElement.remove()" 
+                                    class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        `;
+                        container.appendChild(novoCampo);
+                    }
+                
+                    // Confirmar exclusão de arquivo
+                    async function confirmarExclusaoArquivo(arquivoId) {
+                        if (confirm('Tem certeza que deseja excluir este arquivo?')) {
+                            try {
+                                const response = await fetch(`/documentos/arquivo/remover/${arquivoId}/`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'X-CSRFToken': '{{ csrf_token }}',
+                                        'Accept': 'application/json',
+                                    },
+                                });
+                
+                                if (response.ok) {
+                                    location.reload(); // Recarrega a página para atualizar a lista
+                                } else {
+                                    alert('Erro ao excluir arquivo');
+                                }
+                            } catch (error) {
+                                console.error('Erro:', error);
+                                alert('Falha na comunicação com o servidor');
+                            }
+                        }
+                    }
+                   </script>
+
+
+                </div>
+                <div class="md:w-2/3 md:pl-8">
+                   <h1 class="text-3xl font-semibold text-gray-300 mb-4">{{ documento.numero_documento  }}</h1>
+                   <h2 class="text-2xl font-medium text-gray-300 mb-4"> Assunto:  {{ documento.assunto}}</h2>
+                   <h4 class="text-1xl text-gray-500 mb-4"><b>Data do Documento:</b> <span>{{ documento.data_documento }}</span></h4>
+                   <br>
+                   <h2 class="text-xl font-semibold text-gray-300 mb-4"></h2>
+                   <div class="flex flex-wrap gap-2 mb-6">
+                   </div>
+                   <h2 class="text-xl font-semibold text-gray-300 mb-4">Informações do Documento</h2>
+                   <ul class="space-y-2 text-gray-500">
+                        <li class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                        </svg>
+                        Assinatura: {{ documento.assinada_por }}
+                        </li>
+                        <li class="flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
+                        </svg>
+                        Data da Criação: {{ documento.data_criacao|date:"d/m/Y H:i:s" }}
+                        </li>
+                    </ul>
+                </div>
+              </div>
+            </div>
+            </div>
+        </fieldset>
+
+        <legend>
+            {% if messages %}
+            {% for message in messages %}
+                <section class="alert {{ message.tags }} p-4 mb-4 rounded-md">
+                    {{ message }}
+                </section>
+            {% endfor %}
+            {% endif %}
+        </legend>
+
+        <fieldset class=" p-4 mb-8   rounded-md w-full" id="second-fieldset">
+            <fieldset class=" p-4 mb-8 bg-gray-200  rounded-md w-full" id="second-fieldset">
+                <div class="p-4">
+                    <h2 class="mb-4 text-xl font-semibold text-indigo-800">Arquivos Anexados</h2>
+                    <hr class="my-4 border-b border-gray-500">
+                    
+                    <!-- Visualizador Principal -->
+                    <div id="arquivo-principal" class="mb-8 bg-white rounded-lg shadow-lg p-4 w-full overflow-hidden max-h-[800px] max-w-full">
+                        <p class="text-gray-500 text-center">Clique em um arquivo para visualizar</p>
+                    </div>
+            
+                 
+                    <!-- Galeria de Miniaturas -->
+                    <!-- Galeria de Miniaturas -->
+<div class="flex flex-wrap gap-4 justify-start w-full">
+    {% for arquivo in arquivos %}
+    <div class="group relative cursor-pointer bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow w-48 h-64 flex-shrink-0 flex flex-col overflow-hidden"
+        onclick="carregarArquivo('{{ arquivo.arquivo.url }}', '{{ arquivo.tipo }}', {{ forloop.counter }})">
+        
+        <!-- Miniatura -->
+        <div class="h-40 w-full bg-gray-100 flex items-center justify-center relative">
+            {% if arquivo.tipo == 'IMAGEM' %}
+                <img src="{{ arquivo.arquivo.url }}" alt="Thumbnail" class="h-full w-full object-cover">
+            
+            {% elif arquivo.tipo == 'VIDEO' %}
+                <div class="relative w-full h-full">
+                    <div class="absolute inset-0 bg-black/50 flex items-center justify-center">
+                        <i class="fas fa-play text-white text-2xl"></i>
+                    </div>
+                    <video class="h-full w-full object-cover">
+                        <source src="{{ arquivo.arquivo.url }}" type="video/mp4">
+                    </video>
+                </div>
+            
+            {% else %}
+                <div class="text-indigo-600 text-4xl flex flex-col items-center justify-center h-full gap-2">
+                    {% if arquivo.tipo == 'PDF' %}
+                        <i class="fas fa-file-pdf"></i>
+                    {% elif arquivo.tipo == 'DOC' %}
+                        <i class="fas fa-file-word"></i>
+                    {% elif arquivo.tipo == 'SHEET' %}
+                        <i class="fas fa-file-excel"></i>
+                        
+                    {% elif arquivo.tipo == 'TEXT' %}
+                        <i class="fas fa-file-alt"></i>
+                    {% else %}
+                        <i class="fas fa-file"></i>
+                    {% endif %}
+                    <span class="text-xs text-gray-500">{{ arquivo.get_tipo_display }}</span>
+                </div>
+            {% endif %}
+            
+            <!-- Badge de Tamanho -->
+            <div class="absolute bottom-1 left-1 px-2 py-1 bg-black/80 text-white rounded text-xs">
+                {{ arquivo.arquivo.size|filesizeformat }}
+            </div>
+        </div>
+
+        <!-- Footer do Card -->
+        <div class="p-2 border-t flex flex-col justify-between flex-1">
+            <p class="text-sm font-medium text-gray-700 truncate px-1 mb-1">
+                {{ arquivo.arquivo.name|truncatechars:20 }}
+            </p>
+            
+            <div class="flex justify-between items-center">
+                <!-- Botão de Download -->
+                <a href="{{ arquivo.arquivo.url }}" download 
+                   class="text-indigo-600 hover:text-indigo-800 text-sm flex items-center"
+                   onclick="event.stopPropagation()">
+                    <i class="fas fa-download mr-1"></i>Download
+                </a>
+                
+                <!-- Tipo de Arquivo -->
+                <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                    {{ arquivo.get_tipo_display }}
+                </span>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="w-full text-center py-6">
+        <p class="text-gray-500">Nenhum arquivo anexado</p>
     </div>
     {% endfor %}
 </div>
-{% endif %}
-
-                <div class="flex gap-4 mt-6">
-                    <!-- Botão para abrir o Modal de Edição de Dados -->
-                   <a href="{% url 'documentos:editar_documento' documento.pk %}"  class="text-sm px-5 py-2.5 text-center me-2 mb-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-                    <i class="fas fa-edit mr-2"></i>Editar Dados</a>
-              
-                    
-                    <!-- Botão para abrir o Modal de Arquivos -->
-                    <button onclick="openModal('modalArquivos')" 
-                    class="text-sm px-5 py-2.5 text-center me-2 mb-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
-                <i class="fas fa-paperclip mr-2"></i>Gerenciar Arquivos
-            </button>
                 </div>
-        
-
-                <!-- Modal Gerenciar Arquivos -->
-         
-        
-        <div id="modalArquivos" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center p-4">
-            <div class="bg-white rounded-xl w-full max-w-3xl">
-                <div class="flex justify-between items-center p-6 border-b">
-                    <h3 class="text-2xl font-bold text-gray-800">Gerenciamento de Arquivos</h3>
-                    <button onclick="closeModal('modalArquivos')" class="text-gray-500 hover:text-gray-700 text-2xl">
-                        &times;
-                    </button>
-                </div>
-        
-                <div class="p-6">
-                    <div class="mb-8">
-                        <h4 class="text-lg font-semibold mb-4">Arquivos Anexados</h4>
-                        <div class="space-y-3">
-                            {% for arquivo in documento.arquivos.all %}
-                            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-                                <div class="flex items-center space-x-4">
-                                    <span class="text-blue-600">
-                                        <i class="fas fa-file-alt"></i>
-                                    </span>
-                                    <div>
-                                        <p class="text-sm font-medium text-gray-700">{{ arquivo.arquivo.name|truncatechars:30 }}</p>
-                                        <p class="text-xs text-gray-500">{{ arquivo.get_tipo_display }}</p>
-                                    </div>
-                                </div>
-                                <button onclick="confirmarExclusaoArquivo({{ arquivo.pk }})"
-                                        class="text-red-500 hover:text-red-700">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                            {% empty %}
-                            <p class="text-gray-500 text-center py-4">Nenhum arquivo anexado</p>
-                            {% endfor %}
-                        </div>
-                    </div>
-        
-                    <form method="post" action="{% url 'documentos:editar_documento_arquivos' documento.pk %}" 
-                        enctype="multipart/form-data" class="space-y-6">
-                        {% csrf_token %}
-        
-                        <div id="arquivosContainer" class="space-y-4">
-                            <div class="flex gap-4 items-center">
-                                <input type="file" name="novos_arquivos" 
-                                    class="flex-1 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                    <select name="novos_tipos" class="w-40 px-4 py-2 border rounded-lg">
-                                        {% for tipo_value, tipo_label in tipos %}
-                                        <option value="{{ tipo_value }}">{{ tipo_label }}</option>
-                                        {% endfor %}
-                                    </select>
-                            </div>
-                        </div>
-        
-                        <div class="flex justify-between items-center">
-                            <button type="button" onclick="adicionarCampoArquivo()"
-                                    class="text-blue-600 hover:text-blue-800 text-sm font-medium">
-                                <i class="fas fa-plus-circle mr-2"></i>Adicionar outro arquivo
-                            </button>
-                            
-                            <div class="space-x-4">
-                                <button type="button" onclick="closeModal('modalArquivos')"
-                                        class="px-6 py-2 text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">
-                                    Cancelar
-                                </button>
-                                <button type="submit" 
-                                        class="px-6 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                                    Salvar Arquivos
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-        
-        <script>
-            // Controle de Modais
-            function openModal(modalId) {
-                document.getElementById(modalId).classList.remove('hidden');
-                document.body.classList.add('overflow-hidden');
-            }
-        
-            function closeModal(modalId) {
-                document.getElementById(modalId).classList.add('hidden');
-                document.body.classList.remove('overflow-hidden');
-            }
-        
-            // Adicionar campos de arquivo dinamicamente
-            function adicionarCampoArquivo() {
-                const container = document.getElementById('arquivosContainer');
-                const novoCampo = document.createElement('div');
-                novoCampo.className = 'flex gap-4 items-center';
-                novoCampo.innerHTML = `
-                 
-                                <input type="file" name="novos_arquivos" 
-                                    class="flex-1 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
-                                    <select name="novos_tipos" class="w-40 px-4 py-2 border rounded-lg">
-                                        {% for tipo_value, tipo_label in tipos %}
-                                        <option value="{{ tipo_value }}">{{ tipo_label }}</option>
-                                        {% endfor %}
-                                    </select>
-                            
-                    <button type="button" onclick="this.parentElement.remove()" 
-                            class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                container.appendChild(novoCampo);
-            }
-        
-            // Confirmar exclusão de arquivo
-            async function confirmarExclusaoArquivo(arquivoId) {
-                if (confirm('Tem certeza que deseja excluir este arquivo?')) {
-                    try {
-                        const response = await fetch(`/documentos/arquivo/remover/${arquivoId}/`, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRFToken': '{{ csrf_token }}',
-                                'Accept': 'application/json',
-                            },
-                        });
-        
-                        if (response.ok) {
-                            location.reload(); // Recarrega a página para atualizar a lista
-                        } else {
-                            alert('Erro ao excluir arquivo');
-                        }
-                    } catch (error) {
-                        console.error('Erro:', error);
-                        alert('Falha na comunicação com o servidor');
-                    }
-                }
-            }
-        </script>
-
-
-                  </div>
-                  <div class="md:w-2/3 md:pl-8">
-                    <h1 class="text-3xl font-semibold text-gray-300 mb-4">{{ documento.numero_documento  }}</h1>
-                    <h2 class="text-2xl font-medium text-gray-300 mb-4"> Assunto:  {{ documento.assunto}}</h2>
-                    <h4 class="text-1xl text-gray-500 mb-4"><b>Data do Documento:</b> <span>{{ documento.data_documento }}</span></h4>
-                    <br>
-                    <h2 class="text-xl font-semibold text-gray-300 mb-4"></h2>
-                    <div class="flex flex-wrap gap-2 mb-6">
-                    </div>
-                    <h2 class="text-xl font-semibold text-gray-300 mb-4">Informações do Documento</h2>
-                    <ul class="space-y-2 text-gray-500">
-                      <li class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-                          <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-                        </svg>
-                        Assinatura: {{ documento.assinada_por }}
-                      </li>
-                      <li class="flex items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-800" viewBox="0 0 20 20" fill="currentColor">
-                          <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z" />
-                        </svg>
-                        Data da Criação: {{ documento.data_criacao|date:"d/m/Y H:i:s" }}
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
+            </fieldset>
         </fieldset>
-        <fieldset class="mb-8 rounded-xl shadow-2xl bg-gray-200">
-            <div class="p-4">
-                <h2 class="mb-4 text-xl font-semibold text-indigo-800">Arquivos Anexados</h2>
-                <hr class="my-4 border-b border-gray-500">
+        <fieldset class="p-4 mb-8 rounded-md w-full">
+            <div class="bg-gray-200 rounded-xl p-8 overflow-hidden">
+                <p class="text-1xl text-gray-700"><strong>Assunto:  </strong> {{ documento.assunto}}</p>
+                <hr class="my-4 border-b-1 border-gray-500">
                 
-                <div class="space-y-6">
-                    {% for arquivo in arquivos %} 
-                     <div class="p-4 bg-gray-100 rounded-lg shadow">
-
-                        
-                        {% if arquivo.tipo == 'IMAGEM' %}
-                        <div class="mb-4">
-                            <img src="{{ arquivo.arquivo.url }}" 
-                                alt="{{ documento.assunto }}" 
-                                class="h-auto max-w-full rounded-lg shadow-lg cursor-pointer"
-                                onclick="openLightbox('{{ arquivo.arquivo.url }}')">
-                        </div>
-
-                        {% elif arquivo.tipo == 'VIDEO' %}
-                        <div class="relative mx-auto max-w-[640px] max-h-[360px] bg-gray-800 rounded-lg overflow-hidden shadow-lg">
-                            <video controls class="w-full h-full aspect-video">
-                                {% if arquivo.extension == 'mp4' %}
-                                <source src="{{ arquivo.arquivo.url }}" type="video/mp4">
-                                {% elif arquivo.extension == 'webm' %}
-                                <source src="{{ arquivo.arquivo.url }}" type="video/webm">
-                                {% else %}
-                                <source src="{{ arquivo.arquivo.url }}" type="video/{{ arquivo.extension }}">
-                                {% endif %}
-                                Seu navegador não suporta vídeos HTML5.
-                            </video>
-                        </div>
-
-                        {% elif arquivo.tipo == 'AUDIO' %}
-                        <div class="p-4 bg-white rounded-lg">
-                            <audio controls class="w-full">
-                                <source src="{{ arquivo.arquivo.url }}" 
-                                        type="audio/{{ arquivo.extension }}">
-                                Seu navegador não suporta áudio HTML5.
-                            </audio>
-                        </div>
-
-                        {% elif arquivo.tipo == 'PDF' %}
-                        <div class="p-2 bg-white rounded-lg shadow w-full">
-                            <div class="flex flex-wrap gap-2 mb-2">
-                                <button class="px-3 py-1 bg-gray-200 rounded zoom-in" data-container-id="pdf-viewer-{{ forloop.counter }}">+</button>
-                                <button class="px-3 py-1 bg-gray-200 rounded zoom-out" data-container-id="pdf-viewer-{{ forloop.counter }}">-</button>
-                                <button class="px-3 py-1 bg-gray-200 rounded prev-page" data-container-id="pdf-viewer-{{ forloop.counter }}">Anterior</button>
-                                <span class="mx-2 self-center">
-                                    Página <span class="current-page">1</span> de 
-                                    <span class="total-pages">...</span>
-                                </span>
-                                <button class="px-3 py-1 bg-gray-200 rounded next-page" data-container-id="pdf-viewer-{{ forloop.counter }}">Próxima</button>
-                            </div>
-                            <div id="pdf-viewer-{{ forloop.counter }}" 
-                                class="h-[600px]  overflow-auto relative pdf-viewer"
-                                data-url="{{ arquivo.arquivo.url }}">
-                            </div>
-                        </div>
-    
-   
-    
-
-
-                    {% elif arquivo.tipo == 'TEXT' %}
-                    <div class="p-4 overflow-auto bg-white border border-gray-300 rounded-lg max-h-[500px]">
-                        <pre class="font-mono whitespace-pre-wrap">{{ arquivo.conteudo }}</pre>  </div>
-
-                        {% elif arquivo.tipo == 'DOC' %}
-                    <div class="p-4 overflow-auto bg-white border border-gray-300 rounded-lg max-h-[500px]">
-                        <div id="docx-content-{{ forloop.counter }}"></div>
-                        <script>
-                            (async () => {
-                                try {
-                                    const response = await fetch("{{ arquivo.arquivo.url }}");
-                                    if (!response.ok) {
-                                        throw new Error(`Erro ao buscar DOCX: ${response.status}`);
-                                    }
-                                    const buffer = await response.arrayBuffer();
-                                    mammoth.convertToHtml({ arrayBuffer: buffer })
-                                        .then(result => {
-                                            const docxContent = document.getElementById('docx-content-{{ forloop.counter }}');
-                                            docxContent.innerHTML = result.value;
-                                            // Estilizando o conteúdo com Tailwind CSS
-                                            docxContent.querySelectorAll('p, h1, h2, h3, h4, h5, h6, ul, ol, li').forEach(el => {
-                                                el.classList.add('mb-2'); // Adiciona margem inferior aos elementos
-                                            });
-                                            docxContent.querySelectorAll('h1').forEach(el => {
-                                                el.classList.add('text-2xl', 'font-bold'); // Estiliza títulos h1
-                                            });
-                                            // Adicione mais estilos conforme necessário
-                                        })
-                                        .catch(error => {
-                                            document.getElementById('docx-content-{{ forloop.counter }}').innerHTML = `<p class="text-red-500">Erro ao exibir o documento: ${error.message}</p>`;
-                                            console.error("Erro ao converter DOCX:", error);
-                                        });
-                                } catch (error) {
-                                    document.getElementById('docx-content-{{ forloop.counter }}').innerHTML = `<p class="text-red-500">Erro ao carregar o documento: ${error.message}</p>`;
-                                    console.error("Erro ao buscar DOCX:", error);
-                                }
-                            })();
-                        </script>
+                <div class="space-y-4">
+                    {% if documento.tipo == 'DOC' %}
+                    <div class="border p-4 rounded-md overflow-auto max-h-[600px] max-w-full break-words">
+                        {{ conteudo }}
                     </div>
-
-                         
-                        
-                    {% elif arquivo.tipo == 'VIDEO' %}
-                    <div class="relative overflow-hidden bg-black rounded-lg aspect-video">
-                        <video controls class="w-640 h-360">
-                            {% if arquivo.extension == 'mp4' %}
-                            <source src="{{ arquivo.arquivo.url }}" type="video/mp4">
-                            {% elif arquivo.extension == 'webm' %}
-                            <source src="{{ arquivo.arquivo.url }}" type="video/webm">
-                            {% else %}
-                            <source src="{{ arquivo.arquivo.url }}" type="video/{{ arquivo.extension }}">
-                            {% endif %}
-                        </video>
+                    {% else %}
+                    <div class="mb-4 prose max-w-full overflow-auto max-h-[600px] break-words">
+                        {{ descricao_html|safe }}
                     </div>
-
-                    {% elif arquivo.tipo == 'AUDIO' %}
-                    <div class="p-4 bg-white rounded-lg">
-                        <audio controls class="w-full">
-                            {% if arquivo.extension == 'mp3' %}
-                            <source src="{{ arquivo.arquivo.url }}" type="audio/mpeg">
-                            {% elif arquivo.extension == 'wav' %}
-                            <source src="{{ arquivo.arquivo.url }}" type="audio/wav">
-                            {% else %}
-                            <source src="{{ arquivo.arquivo.url }}" type="audio/{{ arquivo.extension }}">
-                            {% endif %}
-                        </audio>
-                    </div>
-                    
-
-                    {% elif arquivo.tipo == 'SHEET' %}
-                        <div class="p-4 bg-white rounded-lg shadow">
-                            <div id="sheet-container-{{ forloop.counter }}" class="overflow-auto max-h-[500px]"></div>
-                            <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
-                            <script>
-                                (async () => {
-                                    try {
-                                        const response = await fetch("{{ arquivo.arquivo.url }}");
-                                        const data = await response.arrayBuffer();
-                                        const workbook = XLSX.read(data, {type: 'array'});
-                                        const html = XLSX.utils.sheet_to_html(workbook.Sheets[workbook.SheetNames[0]]);
-                                        document.getElementById('sheet-container-{{ forloop.counter }}').innerHTML = html;
-
-                                        // Estilizando a tabela com Tailwind CSS
-                                        const table = document.querySelector('#sheet-container-{{ forloop.counter }} table');
-                                        if (table) {
-                                            table.classList.add('w-full', 'border-collapse'); // Adiciona classes ao elemento table
-                                            const ths = table.querySelectorAll('th, td');
-                                            ths.forEach(th => {
-                                                th.classList.add('border', 'border-gray-300', 'p-2', 'text-left'); // Adiciona classes aos elementos th e td
-                                            });
-                                            const headerRow = table.querySelectorAll('th');
-                                            headerRow.forEach(th => {
-                                                th.classList.add('bg-gray-100'); // Adiciona classe aos elementos th do cabeçalho
-                                            });
-                                        }
-                                    } catch (error) {
-                                        document.getElementById('sheet-container-{{ forloop.counter }}').innerHTML = '<p class="text-red-500">Erro ao carregar planilha.</p>';
-                                        console.error("Erro ao buscar planilha:", error);
-                                    }
-                                })();
-                            </script>
-                        </div>
                     {% endif %}
-
-                        <div class="mt-4 text-sm text-gray-600">
-                            <p>Nome: {{ arquivo.arquivo.name }}</p>
-                            <p>Tipo: {{ arquivo.get_tipo_display }}</p>
-                            <p>Tamanho: {{ arquivo.arquivo.size|filesizeformat }}</p>
-                            <a href="{{ arquivo.arquivo.url }}" download class="text-blue-600 hover:underline">Download</a>
-      
+                </div>
+            </div>
+        </fieldset>
+        <fieldset class=" p-4 mb-8   rounded-md w-full" id="second-fieldset">
+           
+                <div id="01" class="flex flex-wrap">
+                    <div class="w-full bg-lightblue p-4 rounded-md">
+                    <div class="flex flex-wrap">
+                        <div class="w-full md:w-1/2">
+                        <div class="container1">
+                            <div class="flex justify-start">
+                            <button id="abrirModalExcluir" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Excluir</button>
+                            </div>
+                        </div>
+                        </div>         
+                        <div class="w-full md:w-1/2 text-right rounded-md">
+                        <div class="container1">
+                            <div class="flex justify-end">
+                            <a href="{% url 'documentos:listar_documentos' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                            </div>
+                        </div>
                         </div>
                     </div>
-                    {% empty %}
-                    <p class="text-gray-700">Nenhum arquivo anexado.</p>
-                    {% endfor %}
-                </div>
-            </div>
-        </fieldset>
-
-        <fieldset class="bg-gray-200 mb-8 rounded-xl shadow-2xl">
-            <div class="">
-                <div class="bg-gray-200 rounded-xl p-8">
-                    <h2 class="text-xl font-semibold text-gray-900 mb-4">     <p class="text-gray-700"><strong>Assunto:  </strong> {{ documento.assunto}}</p>
-                    </h2>
-                    <hr class="my-4 border-b-1 border-gray-500">
-                    <div class="space-y-4">
-                        
-                        <div class="space-y-4">
-                            {% if documento.tipo == 'DOC' %}
-                            <div class="border p-4 rounded-md">
-                                {{ conteudo }}
-                            </div>
-                            {% else %}
-                            <div class="mb-4 prose max-w-none">
-                                {{ descricao_html|safe }}
-                            </div>
-                            {% endif %}
-                        </div>
                     </div>
                 </div>
-            </div>
-        </fieldset>
-         <fieldset class="p-4 mb-8 rounded-md w-full" id="second-fieldset">
-        <fieldset class="bg-gray-100 p-2 mb-2 rounded-md">
-          <div id="01" class="flex flex-wrap">
-            <div class="w-full bg-lightblue p-4 rounded-md">
-              <div class="flex flex-wrap">
-                <div class="w-full md:w-1/2">
-                  <div class="container1">
-                    <div class="flex justify-start">
-                      <button id="abrirModalExcluir" class="text-white bg-gradient-to-r from-red-400 via-red-500 to-red-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-red-300 dark:focus:ring-red-800 shadow-lg shadow-red-500/50 dark:shadow-lg dark:shadow-red-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Excluir</button>
-                    </div>
-                  </div>
-                </div>         
-                <div class="w-full md:w-1/2 text-right rounded-md">
-                  <div class="container1">
-                    <div class="flex justify-end">
-                      <a href="{% url 'documentos:listar_documentos' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </fieldset>
-    </fieldset>
-</div>
+            </fieldset>
+        
+   </div>
 
 <div id="modalExcluir" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
     <div class="bg-gray-600 rounded-lg shadow-lg p-6">
@@ -470,6 +398,259 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js"></script>
 
+<!-- Adicione esta verificação antes de qualquer código que use XLSX -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        if(typeof XLSX === 'undefined') {
+            console.error('XLSX não carregada! Verifique:');
+            console.log('1. URL do script está correta');
+            console.log('2. Conexão com internet ativa');
+            console.log('3. Bloqueadores de conteúdo desativados');
+        }
+    });
+</script>
+
+
+<script>
+    function carregarArquivo(url, tipo, counter) {
+        const viewer = document.getElementById('arquivo-principal');
+       viewer.innerHTML = `
+        <div class="w-full h-full flex items-center justify-center">
+            <div class="animate-spin inline-block w-8 h-8 border-4 border-indigo-500 rounded-full border-t-transparent"></div>
+        </div>
+        `;
+
+        setTimeout(() => {
+            let content = '';
+            
+            if (tipo === 'IMAGEM') {
+            content = `
+                <div class="rounded-lg overflow-hidden shadow-lg">
+                    <img src="${url}" alt="Visualização" class="object-contain max-h-[70vh] mx-auto">
+                </div>
+            `;
+        }
+            else if (tipo === 'VIDEO') {
+                content = `
+                    <div class="relative bg-black rounded-lg aspect-video shadow-lg">
+                        <video controls class="w-full h-full">
+                            <source src="${url}" type="video/mp4">
+                            Seu navegador não suporta vídeos HTML5
+                        </video>
+                    </div>
+                `;
+            }
+
+            else if (tipo === 'AUDIO') {
+            content = `
+                <div class="bg-white p-6 rounded-xl shadow-lg">
+                    <div class="flex items-center gap-4 mb-4">
+                        <i class="fas fa-file-audio text-indigo-600 text-4xl"></i>
+                        <div>
+                            <p class="font-medium text-gray-700">Arquivo de Áudio</p>
+                            <p class="text-sm text-gray-500">${url.split('/').pop()}</p>
+                        </div>
+                    </div>
+                    <audio controls class="w-full">
+                        <source src="${url}" type="audio/${url.split('.').pop().toLowerCase()}">
+                    </audio>
+                </div>
+            `;
+        }
+            else if (tipo === 'PDF') {
+                content = `
+                    <div class="p-2 bg-white rounded-lg shadow w-full">
+                        <div class="flex flex-wrap gap-2 mb-2">
+                            <button class="px-3 py-1 bg-gray-200 rounded zoom-in" data-container-id="pdf-viewer-${counter}">+</button>
+                            <button class="px-3 py-1 bg-gray-200 rounded zoom-out" data-container-id="pdf-viewer-${counter}">-</button>
+                            <button class="px-3 py-1 bg-gray-200 rounded prev-page" data-container-id="pdf-viewer-${counter}">Anterior</button>
+                            <span class="mx-2 self-center">
+                                Página <span class="current-page">1</span> de 
+                                <span class="total-pages">...</span>
+                            </span>
+                            <button class="px-3 py-1 bg-gray-200 rounded next-page" data-container-id="pdf-viewer-${counter}">Próxima</button>
+                        </div>
+                        <div id="pdf-viewer-${counter}" class="h-[600px] overflow-auto relative pdf-viewer" data-url="${url}"></div>
+                    </div>
+                `;
+                inicializarVisualizadorPDF(`pdf-viewer-${counter}`, url);
+            }
+
+       
+
+
+            else if (tipo === 'SHEET') {
+            content = `
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-4 border-b bg-gray-50">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-file-excel text-green-600"></i>
+                            <span class="font-medium text-gray-700">Planilha - ${url.split('/').pop()}</span>
+                        </div>
+                    </div>
+                    <div id="sheet-container-${counter}" class="overflow-auto max-h-[60vh] p-4"></div>
+                </div>
+            `;
+            carregarPlanilha(url, `sheet-container-${counter}`);
+        }
+            else {
+                content = `
+                    <div class="text-center p-6 space-y-4">
+                        <div class="text-indigo-600 text-6xl">
+                            ${getFileIcon(tipo)}
+                        </div>
+                        <div class="space-y-2">
+                            <p class="text-gray-600 font-medium">Visualização não disponível</p>
+                            <a href="${url}" download 
+                                class="inline-flex items-center px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition-colors">
+                                <i class="fas fa-download mr-2"></i>
+                                Baixar Arquivo
+                            </a>
+                        </div>
+                    </div>
+                `;
+            }
+
+            viewer.innerHTML = content;
+        }, 300);
+    }
+
+    function getFileIcon(tipo) {
+        const icons = {
+            'PDF': 'fa-file-pdf',
+            'DOC': 'fa-file-word',
+            'SHEET': 'fa-file-excel',
+            'TEXT': 'fa-file-alt',
+            'AUDIO': 'fa-file-audio'
+        };
+        return `<i class="fas ${icons[tipo] || 'fa-file'}"></i>`;
+    }
+
+    function inicializarVisualizadorPDF(containerId, url) {
+        // ... (seu código para inicializar o visualizador de PDF) ...
+        pdfjsLib.getDocument(url).promise.then(pdf => {
+            const container = document.getElementById(containerId);
+            let scale = 1.5;
+            let currentPage = 1;
+            let pdfInstance = pdf;
+            const totalPages = pdf.numPages;
+            container.parentElement.querySelector('.total-pages').textContent = totalPages;
+            renderPage();
+            
+            // Event listeners with data-container-id
+            document.querySelectorAll(`[data-container-id="${containerId}"]`).forEach(button => {
+                button.addEventListener('click', () => {
+                    const action = button.classList[button.classList.length - 1];
+                    switch (action) {
+                        case 'prev-page':
+                            if (currentPage > 1) {
+                                currentPage--;
+                                renderPage();
+                                updatePageNumber();
+                            }
+                            break;
+                        case 'next-page':
+                            if (currentPage < totalPages) {
+                                currentPage++;
+                                renderPage();
+                                updatePageNumber();
+                            }
+                            break;
+                        case 'zoom-in':
+                            scale += 0.25;
+                            renderPage();
+                            break;
+                        case 'zoom-out':
+                            scale = Math.max(0.5, scale - 0.25);
+                            renderPage();
+                            break;
+                    }
+                });
+            });
+
+            function renderPage() {
+                pdfInstance.getPage(currentPage).then(page => {
+                    const viewport = page.getViewport({ scale: scale });
+                    const canvas = document.createElement('canvas');
+                    const context = canvas.getContext('2d');
+                    canvas.height = viewport.height;
+                    canvas.width = viewport.width;
+                    container.innerHTML = '';
+                    container.appendChild(canvas);
+                    const renderContext = { canvasContext: context, viewport: viewport };
+                    page.render(renderContext);
+                });
+            }
+
+            function updatePageNumber() {
+                container.parentElement.querySelector('.current-page').textContent = currentPage;
+            }
+        });
+    }
+
+    function carregarPlanilha(url, containerId) {
+    (async () => {
+        try {
+            const response = await fetch(url);
+            if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+            
+            const data = await response.arrayBuffer();
+            const workbook = XLSX.read(data, { type: 'array', cellHTML: false });
+            
+            const container = document.getElementById(containerId);
+            container.innerHTML = ""; // Limpar container
+
+            // Processar cada aba
+            workbook.SheetNames.forEach((sheetName, index) => {
+                const html = XLSX.utils.sheet_to_html(workbook.Sheets[sheetName], {
+                    editable: false,
+                    header: "",
+                    footer: ""
+                });
+
+                // Criar container para cada aba
+                const sheetDiv = document.createElement('div');
+                sheetDiv.className = 'mb-8';
+                sheetDiv.innerHTML = `
+                    <div class="bg-indigo-50 p-3 rounded-t-lg">
+                        <span class="font-semibold text-indigo-600">Planilha ${index + 1}:</span>
+                        <span class="text-gray-600 ml-2">${sheetName}</span>
+                    </div>
+                    <div class="overflow-auto max-h-[60vh] border border-gray-200 rounded-b-lg">
+                        ${html}
+                    </div>
+                `;
+
+                // Aplicar estilos Tailwind na tabela
+                const tables = sheetDiv.getElementsByTagName('table');
+                Array.from(tables).forEach(table => {
+                    table.classList.add('w-full', 'text-sm', 'border-collapse');
+                    
+                    // Estilizar células
+                    Array.from(table.getElementsByTagName('th')).forEach(th => {
+                        th.classList.add('bg-gray-50', 'p-2', 'border', 'border-gray-200', 'text-left', 'font-medium');
+                    });
+                    
+                    Array.from(table.getElementsByTagName('td')).forEach(td => {
+                        td.classList.add('p-2', 'border', 'border-gray-100', 'text-gray-700', 'even:bg-gray-50');
+                    });
+                });
+
+                container.appendChild(sheetDiv);
+            });
+
+        } catch (error) {
+            console.error("Erro ao carregar planilha:", error);
+            document.getElementById(containerId).innerHTML = `
+                <div class="p-4 bg-red-50 text-red-600 rounded-lg border border-red-100">
+                    <i class="fas fa-exclamation-circle mr-2"></i>
+                    Erro ao carregar planilha: ${error.message}
+                </div>
+            `;
+        }
+    })();
+}
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         if (typeof pdfjsLib === 'undefined') {
@@ -565,6 +746,8 @@
         });
     });
 </script>
+
+
 
 <script>
     function updateBorderColor() {

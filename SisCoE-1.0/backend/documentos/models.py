@@ -32,23 +32,23 @@ class Documento(models.Model):
     @property
     def tipo_badge(self):
         if self.tipo == 'PDF':
-            return mark_safe('<span class="bg-red-500 text-white px-2 py-1 rounded">PDF</span>')
+            return mark_safe('<span class="bg-red-500 text-white px-2 py-1 rounded-md">PDF</span>')
         elif self.tipo == 'VIDEO':
-            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded">Vídeo</span>')
+            return mark_safe('<span class="bg-blue-500 text-white px-2 py-1 rounded-md">Vídeo</span>')
         elif self.tipo == 'AUDIO':
-            return mark_safe('<span class="bg-green-500 text-white px-2 py-1 rounded">Áudio</span>')
+            return mark_safe('<span class="bg-green-500 text-white px-2 py-1 rounded-md">Áudio</span>')
         elif self.tipo == 'DOC':
-            return mark_safe('<span class="bg-yellow-500 text-gray-800 px-2 py-1 rounded">Documento</span>')
+            return mark_safe('<span class="bg-yellow-500 text-gray-800 px-2 py-1 rounded-md">Documento</span>')
         elif self.tipo == 'SHEET':
-            return mark_safe('<span class="bg-purple-500 text-white px-2 py-1 rounded">Planilha</span>')
+            return mark_safe('<span class="bg-purple-500 text-white px-2 py-1 rounded-md">Planilha</span>')
         elif self.tipo == 'IMAGEM':
-            return mark_safe('<span class="bg-pink-500 text-white px-2 py-1 rounded">Imagem</span>')
+            return mark_safe('<span class="bg-pink-500 text-white px-2 py-1 rounded-md">Imagem</span>')
         elif self.tipo == 'TEXT':
-            return mark_safe('<span class="bg-gray-500 text-white px-2 py-1 rounded">Texto</span>')
+            return mark_safe('<span class="bg-gray-500 text-white px-2 py-1 rounded-md">Texto</span>')
         elif self.tipo == 'OUTRO':
-            return mark_safe('<span class="bg-indigo-500 text-white px-2 py-1 rounded">Outro</span>')
+            return mark_safe('<span class="bg-indigo-500 text-white px-2 py-1 rounded-md">Outro</span>')
         else:
-            return mark_safe('<span class="bg-gray-300 text-gray-700 px-2 py-1 rounded">Desconhecido</span>')
+            return mark_safe('<span class="bg-gray-300 text-gray-700 px-2 py-1 rounded-md">Desconhecido</span>')
 
 
     @property

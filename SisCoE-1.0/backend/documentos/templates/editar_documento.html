@@ -24,19 +24,15 @@
                     </div>
                 </div>
             </fieldset>
-
-            {% if messages %}
-            <div class="mb-4">
+            <legend>
+                {% if messages %}
                 {% for message in messages %}
-                <div class="p-4 mb-4 text-sm rounded-lg 
-                            {% if message.tags == 'error' %}bg-red-100 text-red-700
-                            {% else %}bg-green-100 text-green-700{% endif %}" 
-                     role="alert">
-                    {{ message }}
-                </div>
+                    <section class="alert {{ message.tags }} p-4 mb-4 rounded-md">
+                        {{ message }}
+                    </section>
                 {% endfor %}
-            </div>
-            {% endif %}
+                {% endif %}
+            </legend>
 
             <fieldset class="bg-gray-200 p-6 rounded-md">
                 <form id="editarDocumentoForm" method="post" enctype="multipart/form-data" 
@@ -72,21 +68,39 @@
                             </select>
                         </div>
             </fieldset>
-            <fieldset class="bg-gray-200 p-6 mt-4 rounded-md">
+            <fieldset class="bg-gray-200 p-6 mt-4 mb-6 rounded-md">
                         <div class="mb-4">
                             <label for="descricao" class="block text-sm font-medium text-gray-700">Descrição</label>
                             <textarea name="descricao" id="descricao" class="bg-gray-300 border border-gray-200 text-gray-700  text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5">{{ documento.descricao }}</textarea>
                         </div>
                     
             </fieldset>
+       
+        <fieldset class="border bg-gray-200 border-gray-300 p-4 mb-8 rounded-md">
+            <div id="01" class="flex flex-wrap">
+                    <div class="w-full bg-lightblue p-4 rounded-md">
+                    <div class="flex flex-wrap">
+                        <div class="w-full md:w-1/2">
+                        <div class="container1">
+                            <div class="flex justify-start">
+                                <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
+                            </div>
+                        </div>
+                        </div>         
+                        <div class="w-full md:w-1/2 text-right rounded-md">
+                        <div class="container1">
+                            <div class="flex justify-end">
+                            <a href="{% url 'documentos:listar_documentos' %}" class="text-white bg-gradient-to-r from-blue-500 via-blue-600 to-blue-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 shadow-lg shadow-blue-500/50 dark:shadow-lg dark:shadow-blue-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Voltar</a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
         </fieldset>
-        <div class="mt-4">
-            <button type="submit" class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 shadow-lg shadow-green-500/50 dark:shadow-lg dark:shadow-green-800/80 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Salvar</button>
-
-        </div>
+    
     </form>
-</fieldset>
-</fieldset>
+</fieldset>    
 </div>
 
 {% endblock %}
