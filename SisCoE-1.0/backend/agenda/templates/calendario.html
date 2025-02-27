@@ -59,6 +59,7 @@
                     </div>
                 </div>
             </div>
+           
             <!-- Modal para Lembrete -->
             <div id="lembreteModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
                 <div class="flex items-center justify-center min-h-screen">
@@ -66,6 +67,7 @@
                         <h2 class="text-2xl font-bold mb-4">Novo Lembrete</h2>
                         <form method="post" action="{% url 'agenda:lembrete_novo' %}">
                             {% csrf_token %}
+                            <input type="hidden" id="lembreteData" name="data">
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="titulo">Título</label>
                                 <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="titulo" name="titulo" type="text" placeholder="Título">
@@ -75,12 +77,15 @@
                                 <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descricao" name="descricao" placeholder="Descrição"></textarea>
                             </div>
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="data">Data</label>
-                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="data" name="data" type="datetime-local">
-                            </div>
-                            <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="cor">Cor</label>
                                 <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="cor" name="cor" type="color" value="#3788d8">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="visibilidade">Visibilidade</label>
+                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="visibilidade" name="visibilidade">
+                                    <option value="privado">Privado</option>
+                                    <option value="publico">Público</option>
+                                </select>
                             </div>
                             <div class="flex items-center justify-between">
                                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Salvar</button>
@@ -90,7 +95,6 @@
                     </div>
                 </div>
             </div>
-
             <!-- Modal para Tarefa -->
             <div id="tarefaModal" class="fixed z-10 inset-0 overflow-y-auto hidden">
                 <div class="flex items-center justify-center min-h-screen">
@@ -98,6 +102,8 @@
                         <h2 class="text-2xl font-bold mb-4">Nova Tarefa</h2>
                         <form method="post" action="{% url 'agenda:tarefa_nova' %}">
                             {% csrf_token %}
+                            <input type="hidden" id="tarefaDataInicio" name="data_inicio">
+                            <input type="hidden" id="tarefaDataFim" name="data_fim">
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="titulo">Título</label>
                                 <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="titulo" name="titulo" type="text" placeholder="Título">
@@ -107,16 +113,15 @@
                                 <textarea class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="descricao" name="descricao" placeholder="Descrição"></textarea>
                             </div>
                             <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="data_inicio">Data de Início</label>
-                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="data_inicio" name="data_inicio" type="datetime-local">
-                            </div>
-                            <div class="mb-4">
-                                <label class="block text-gray-700 text-sm font-bold mb-2" for="data_fim">Data de Fim</label>
-                                <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="data_fim" name="data_fim" type="datetime-local">
-                            </div>
-                            <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-bold mb-2" for="cor">Cor</label>
                                 <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="cor" name="cor" type="color" value="#3788d8">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 text-sm font-bold mb-2" for="visibilidade">Visibilidade</label>
+                                <select class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="visibilidade" name="visibilidade">
+                                    <option value="privado">Privado</option>
+                                    <option value="publico">Público</option>
+                                </select>
                             </div>
                             <div class="flex items-center justify-between">
                                 <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Salvar</button>
@@ -126,6 +131,7 @@
                     </div>
                 </div>
             </div>
+
     </fieldset>
     <script>
         function openModal(modalId) {

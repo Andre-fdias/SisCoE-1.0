@@ -4,8 +4,9 @@ from .forms import LembreteForm, TarefaForm
 
 
 def calendario(request):
-    lembretes = Lembrete.objects.all()
-    tarefas = Tarefa.objects.all()
+    user = request.user
+    lembretes = Lembrete.objects.filter(user=user) | Lembrete.objects.filter(visibilidade='publico')
+    tarefas = Tarefa.objects.filter(user=user) | Tarefa.objects.filter(visibilidade='publico')
     lembrete_form = LembreteForm()
     tarefa_form = TarefaForm()
     return render(request, 'calendario.html', {
@@ -19,7 +20,9 @@ def lembrete_novo(request):
     if request.method == "POST":
         form = LembreteForm(request.POST)
         if form.is_valid():
-            form.save()
+            lembrete = form.save(commit=False)
+            lembrete.user = request.user
+            lembrete.save()
             return redirect('agenda:calendario')
     return redirect('agenda:calendario')
 
@@ -27,9 +30,12 @@ def tarefa_nova(request):
     if request.method == "POST":
         form = TarefaForm(request.POST)
         if form.is_valid():
-            form.save()
+            tarefa = form.save(commit=False)
+            tarefa.user = request.user
+            tarefa.save()
             return redirect('agenda:calendario')
     return redirect('agenda:calendario')
+
 
 def lembrete_editar(request, pk):
     lembrete = get_object_or_404(Lembrete, pk=pk)
