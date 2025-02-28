@@ -13,4 +13,7 @@ urlpatterns = [
     path('tarefa/novo/', views.tarefa_nova, name='tarefa_nova'),
     path('tarefa/editar/<int:pk>/', views.tarefa_editar, name='tarefa_editar'),
     path('tarefa/deletar/<int:pk>/', views.tarefa_deletar, name='tarefa_deletar'),
+
+
+
 ]

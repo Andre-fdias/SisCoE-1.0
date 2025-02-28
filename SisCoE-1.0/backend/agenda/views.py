@@ -2,7 +2,6 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Lembrete, Tarefa
 from .forms import LembreteForm, TarefaForm
 
-
 def calendario(request):
     user = request.user
     lembretes = Lembrete.objects.filter(user=user) | Lembrete.objects.filter(visibilidade='publico')
@@ -35,7 +34,6 @@ def tarefa_nova(request):
             tarefa.save()
             return redirect('agenda:calendario')
     return redirect('agenda:calendario')
-
 
 def lembrete_editar(request, pk):
     lembrete = get_object_or_404(Lembrete, pk=pk)
